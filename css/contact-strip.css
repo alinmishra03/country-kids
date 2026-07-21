@@ -1,0 +1,28 @@
+.contact-strip {
+    position: relative;
+    padding: 4.5rem 0;
+    background: var(--blue-gradient);
+    overflow: hidden;
+    text-align: center;
+}
+.contact-strip::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(var(--gold-rgb), 0.25), transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(255,255,255,0.12), transparent 45%);
+    pointer-events: none;
+}
+.contact-strip .container { position: relative; z-index: 2; }
+.contact-strip h2 { color: #fff; font-size: clamp(1.8rem, 4vw, 2.8rem); }
+.contact-strip p { color: rgba(255,255,255,0.9); margin: 1rem auto 0; max-width: 560px; }
+.contact-strip .contact-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+.contact-strip .btn-outline { color: #fff; border-color: rgba(255,255,255,0.7); }
+.contact-strip .btn-outline:hover { background: #fff; color: var(--blue-deep); }

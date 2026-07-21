@@ -1,0 +1,62 @@
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+}
+.about-media {
+    position: relative;
+    border-radius: var(--radius-lg);
+    background: var(--blue-gradient);
+    min-height: 360px;
+    display: grid;
+    place-items: center;
+    box-shadow: var(--shadow-elevation);
+    overflow: hidden;
+}
+.about-media .about-emoji { font-size: 7rem; }
+.about-media .about-float {
+    position: absolute;
+    background: var(--surface-elevated);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
+    padding: 0.8rem 1.1rem;
+    font-weight: 700;
+    color: var(--blue-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.about-float.one { top: 1.2rem; inset-inline-start: 1.2rem; }
+.about-float.two { bottom: 1.2rem; inset-inline-end: 1.2rem; }
+
+.about-copy .section-eyebrow { text-align: start; }
+.about-copy h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.about-copy p { color: var(--mid); margin-top: 1rem; font-size: 1.06rem; }
+.about-list {
+    list-style: none;
+    margin-top: 1.5rem;
+    display: grid;
+    gap: 0.85rem;
+}
+.about-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+}
+.about-list li .tick {
+    display: grid;
+    place-items: center;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--blue-pale);
+    color: var(--blue);
+    flex: 0 0 auto;
+    font-weight: 800;
+}
+.about-cta { margin-top: 1.8rem; }
+
+@media (max-width: 860px) {
+    .about-grid { grid-template-columns: 1fr; }
+}

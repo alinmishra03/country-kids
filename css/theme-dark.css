@@ -1,0 +1,34 @@
+/* Dark-theme component fine-tuning. The bulk of theming is handled by the token
+   overrides in base.css ([data-theme="dark"]); this file only adjusts a few
+   component surfaces that need explicit treatment on dark. MUST load last. */
+
+[data-theme="dark"] #navbar.scrolled {
+    background: var(--surface-elevated);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+[data-theme="dark"] .hero-eyebrow,
+[data-theme="dark"] .page-hero .page-eyebrow {
+    background: var(--surface-elevated);
+    color: var(--blue-deep);
+}
+
+[data-theme="dark"] .stats-bar,
+[data-theme="dark"] .contact-strip {
+    /* keep the blue gradient but deepen it so text contrast holds */
+    background: linear-gradient(135deg, #123457 0%, #0B2138 100%);
+}
+
+[data-theme="dark"] .btn-gold,
+[data-theme="dark"] .nav-cta,
+[data-theme="dark"] .mobile-cta {
+    color: #10233A;
+}
+
+[data-theme="dark"] .gallery-tile { border-color: var(--border-subtle); }
+
+[data-theme="dark"] .program-icon,
+[data-theme="dark"] .about-media .about-float,
+[data-theme="dark"] .testimonial-avatar {
+    background: var(--blue-pale);
+}

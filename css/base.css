@@ -1,0 +1,252 @@
+:root {
+    /* ─── LIGHT THEME (SKY BLUE & GOLDEN) ───
+       Background: #F3F8FD | Text: #133A63
+       Primary brand color is BLUE; accent is GOLDEN. */
+
+    /* Core Palette */
+    --bg-light: #F3F8FD;             /* Soft sky-white */
+    --bg-dark: #F3F8FD;             /* Consistent light background */
+    --text-primary: #133A63;        /* Deep ocean navy-blue */
+    --text-on-dark: #133A63;        /* Legacy support */
+    --border-gray: #D3E1F0;
+
+    /* Brand Blues */
+    --blue: #1E6FC4;                /* Primary blue */
+    --blue-deep: #14508F;           /* Darker blue (headings, hovers) */
+    --blue-light: #4F97DE;
+    --blue-pale: #E3EFFB;           /* Tinted panels */
+    --blue-gradient: linear-gradient(135deg, #1E6FC4 0%, #14508F 100%);
+
+    /* Golden Accent */
+    --gold: #F5B429;                /* Warm golden */
+    --gold-deep: #E09A11;
+    --gold-light: #FFCB57;
+    --gold-gradient: linear-gradient(90deg, #FFCB57 0%, #F5B429 55%, #E09A11 100%);
+    --gold-solid: #F5B429;
+
+    /* Premium Gradients */
+    --hero-gradient: linear-gradient(135deg, #EAF3FC 0%, #D4E7F9 100%);
+
+    /* Remapped surface tokens */
+    --black: var(--bg-light);
+    --dark: var(--bg-dark);
+    --dark2: #E9F1FA;
+    --dark3: #DCEAF7;
+
+    /* Text Scale */
+    --off-white: var(--text-primary);
+    --light: var(--text-primary);
+    --mid: #4A688A;                 /* Muted secondary text */
+    --slate: #4A688A;
+    --white: #FFFFFF;
+
+    /* Semantic Tokens */
+    --accent-ink: var(--text-primary);   /* Titles/labels are navy-blue */
+    --accent-blue: var(--blue);
+    --accent-gold: var(--gold);
+    --btn-text: #FFFFFF;                  /* White text on blue buttons */
+    --btn-text-gold: #133A63;             /* Navy text on golden buttons */
+    --accent-rgb: 30, 111, 196;           /* --blue as rgb */
+    --gold-rgb: 245, 180, 41;
+
+    /* AA-safe blue for text/fills */
+    --accent-text: var(--blue-deep);
+    --accent-bg: var(--blue);
+    --accent-bg-gradient: var(--blue-gradient);
+    --bg-primary: var(--bg-dark);
+    --bg-primary-rgb: 243, 248, 253;
+
+    --nav-h: 80px;
+
+    /* Surface layers */
+    --surface-1: var(--bg-light);
+    --surface-2: var(--dark2);
+    --surface-3: var(--dark3);
+    --surface-elevated: #FFFFFF;
+    --border-subtle: rgba(19, 58, 99, 0.12);
+    --shadow-elevation: 0 20px 50px rgba(20, 80, 143, 0.12);
+    --shadow-soft: 0 10px 30px rgba(20, 80, 143, 0.10);
+
+    --radius-lg: 22px;
+    --radius-md: 16px;
+    --radius-sm: 10px;
+
+    --theme-transition:
+        background-color 0.35s ease,
+        color 0.35s ease,
+        border-color 0.35s ease;
+
+    color-scheme: light;
+}
+
+/* ─── DARK THEME TOKENS ───
+   Activated by [data-theme="dark"] on <html>. Light mode above is untouched.
+   Contrast checked against base bg #0C1B2E:
+     • #E7EFF8 primary text        ~15 : 1
+     • #A9C0D8 secondary text      ~7  : 1
+     • #64A6E8 blue text           ~6  : 1
+     • #133A63 on #F5B429 gold     ~7  : 1 (navy on gold button) */
+[data-theme="dark"] {
+    --bg-light: #0C1B2E;
+    --bg-dark: #0C1B2E;
+    --text-primary: #E7EFF8;
+    --text-on-dark: #E7EFF8;
+    --border-gray: #24384F;
+
+    --blue: #4F97DE;
+    --blue-deep: #64A6E8;
+    --blue-light: #7CB4EC;
+    --blue-pale: #16304B;
+    --blue-gradient: linear-gradient(135deg, #2E6FB8 0%, #1B4E86 100%);
+
+    --gold: #F5C147;
+    --gold-deep: #E8A82A;
+    --gold-light: #FFD873;
+    --gold-gradient: linear-gradient(90deg, #FFD873 0%, #F5C147 55%, #E8A82A 100%);
+
+    --hero-gradient: linear-gradient(135deg, #0C1B2E 0%, #16304B 100%);
+
+    --black: var(--bg-light);
+    --dark: var(--bg-dark);
+    --dark2: #12263C;
+    --dark3: #16304B;
+
+    --off-white: var(--text-primary);
+    --light: #A9C0D8;
+    --mid: #A9C0D8;
+    --slate: #A9C0D8;
+
+    --accent-ink: var(--text-primary);
+    --accent-text: #64A6E8;
+    --accent-bg: #2E6FB8;
+    --accent-bg-gradient: var(--blue-gradient);
+
+    --bg-primary: var(--bg-dark);
+    --bg-primary-rgb: 12, 27, 46;
+    --accent-rgb: 79, 151, 222;
+
+    --surface-1: #0C1B2E;
+    --surface-2: #12263C;
+    --surface-3: #16304B;
+    --surface-elevated: #12263C;
+    --border-subtle: rgba(231, 239, 248, 0.10);
+    --shadow-elevation: 0 20px 50px rgba(0, 0, 0, 0.55);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+
+    color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    background: var(--black);
+    color: var(--off-white);
+    overflow-x: hidden;
+    line-height: 1.6;
+    transition: var(--theme-transition);
+    -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
+    color: var(--accent-ink);
+    line-height: 1.15;
+    font-weight: 700;
+}
+
+a { color: inherit; text-decoration: none; }
+
+img { max-width: 100%; display: block; }
+
+/* ─── GLOBAL FOCUS RING ─── */
+:focus-visible {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+a,
+button,
+input,
+select,
+textarea,
+[role="button"],
+[tabindex]:not([tabindex="-1"]) {
+    transition:
+        color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
+}
+
+::selection {
+    background: var(--gold);
+    color: var(--btn-text-gold);
+}
+
+/* ─── SHARED BUTTONS ─── */
+.btn-primary,
+.btn-outline,
+.btn-gold {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: 'Baloo 2', 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85rem 1.8rem;
+    border-radius: 999px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    letter-spacing: 0.2px;
+}
+
+.btn-primary {
+    background: var(--blue-gradient);
+    color: var(--btn-text);
+    box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.35);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(var(--accent-rgb), 0.45);
+}
+
+.btn-gold {
+    background: var(--gold-gradient);
+    color: var(--btn-text-gold);
+    box-shadow: 0 8px 22px rgba(var(--gold-rgb), 0.40);
+}
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(var(--gold-rgb), 0.55);
+}
+
+.btn-outline {
+    background: transparent;
+    color: var(--accent-text);
+    border-color: var(--blue);
+}
+.btn-outline:hover {
+    background: var(--blue);
+    color: var(--btn-text);
+    transform: translateY(-2px);
+}
+
+.container {
+    width: min(1200px, 92%);
+    margin-inline: auto;
+}

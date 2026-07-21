@@ -1,0 +1,10 @@
+/* Custom scrollbar tinted to the brand blue. */
+::-webkit-scrollbar { width: 12px; height: 12px; }
+::-webkit-scrollbar-track { background: var(--surface-2); }
+::-webkit-scrollbar-thumb {
+    background: var(--blue);
+    border-radius: 999px;
+    border: 3px solid var(--surface-2);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--blue-deep); }
+html { scrollbar-color: var(--blue) var(--surface-2); scrollbar-width: thin; }

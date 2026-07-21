@@ -1,0 +1,23 @@
+/* Style entry point — an @import chain whose ORDER IS LOAD-BEARING, mirroring
+   the reference project. base.css (theme tokens) first; theme-dark.css LAST so
+   [data-theme="dark"] overrides win against every rule above. The component
+   stylesheets live in ../css. */
+@import url("../css/base.css");
+@import url("../css/scrollbar.css");
+@import url("../css/nav.css");
+@import url("../css/pages.css");
+@import url("../css/hero.css");
+@import url("../css/section-commons.css");
+@import url("../css/stats-bar.css");
+@import url("../css/programs-grid.css");
+@import url("../css/about-section.css");
+@import url("../css/features.css");
+@import url("../css/testimonials.css");
+@import url("../css/gallery.css");
+@import url("../css/contact-strip.css");
+@import url("../css/enroll-page.css");
+@import url("../css/footer.css");
+/* Animations — additive motion layer, loaded after component styles. */
+@import url("../css/animations.css");
+/* Dark theme — MUST be the absolute last import so [data-theme="dark"] wins. */
+@import url("../css/theme-dark.css");

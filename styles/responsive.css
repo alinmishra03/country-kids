@@ -1,0 +1,23 @@
+/* Responsive corrections — must load LAST (imported after style.css in the
+   layout). Every rule is wrapped in a max-width media query so it cannot affect
+   the desktop layout. Mirrors the reference project's responsive layer. */
+
+@media (max-width: 1080px) {
+    .section { padding: 3.5rem 0; }
+    .section-head { margin-bottom: 2.2rem; }
+}
+
+@media (max-width: 720px) {
+    html { font-size: 15px; }
+    .hero-main-cta { flex-direction: column; align-items: stretch; }
+    .hero-main-cta .btn-primary,
+    .hero-main-cta .btn-outline { width: 100%; }
+    .about-media { min-height: 280px; }
+    .about-media .about-emoji { font-size: 5rem; }
+}
+
+@media (max-width: 420px) {
+    .contact-strip .contact-actions { flex-direction: column; }
+    .contact-strip .btn-primary,
+    .contact-strip .btn-outline { width: 100%; }
+}

@@ -1,0 +1,128 @@
+.hero {
+    position: relative;
+    min-height: 92vh;
+    display: flex;
+    align-items: center;
+    padding: calc(var(--nav-h) + 2rem) 0 3rem;
+    background: var(--hero-gradient);
+    overflow: hidden;
+}
+.hero-bg {
+    position: absolute; inset: 0;
+    background:
+        radial-gradient(circle at 15% 20%, rgba(var(--gold-rgb), 0.18), transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(var(--accent-rgb), 0.20), transparent 45%);
+    z-index: 0;
+}
+/* Floating "bubble" particles */
+.hero-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.hero-particles span {
+    position: absolute;
+    display: block;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9), rgba(var(--accent-rgb),0.25));
+    opacity: 0.5;
+    animation: bubble-float 9s ease-in-out infinite;
+}
+@keyframes bubble-float {
+    0%, 100% { transform: translateY(0) scale(1); opacity: 0.35; }
+    50% { transform: translateY(-40px) scale(1.15); opacity: 0.7; }
+}
+
+.hero-content {
+    position: relative; z-index: 2;
+    width: min(1200px, 92%);
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 3rem;
+    align-items: center;
+}
+.hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    color: var(--blue-deep);
+    background: var(--white);
+    padding: 0.5rem 1.1rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+}
+.hero-title {
+    font-size: clamp(2.6rem, 6vw, 4.4rem);
+    letter-spacing: -1px;
+}
+.hero-title span { color: var(--blue); }
+.hero-title .gold { color: var(--gold-deep); }
+.hero-subtitle {
+    margin-top: 1.1rem;
+    font-size: 1.25rem;
+    color: var(--mid);
+    max-width: 520px;
+}
+.hero-badges {
+    display: flex; flex-wrap: wrap; gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+.hero-badge {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    font-weight: 700;
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+}
+.hero-main-cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; }
+
+/* Hero art card */
+.hero-right { display: flex; justify-content: center; }
+.hero-card {
+    position: relative;
+    background: var(--surface-elevated);
+    border-radius: 28px;
+    box-shadow: var(--shadow-elevation);
+    padding: 2rem;
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid var(--border-subtle);
+}
+.hero-card-emoji {
+    font-size: 4.5rem;
+    line-height: 1;
+    text-align: center;
+    display: block;
+    margin-bottom: 0.75rem;
+}
+.hero-card h3 { text-align: center; font-size: 1.4rem; }
+.hero-card p { text-align: center; color: var(--mid); margin-top: 0.4rem; }
+.hero-card-stats {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+.hero-card-stat {
+    background: var(--blue-pale);
+    border-radius: var(--radius-md);
+    padding: 0.9rem;
+    text-align: center;
+}
+.hero-card-stat b {
+    display: block;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 1.5rem;
+    color: var(--blue-deep);
+}
+.hero-card-stat span { font-size: 0.8rem; color: var(--mid); }
+
+@media (max-width: 860px) {
+    .hero-content { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero { min-height: auto; }
+}

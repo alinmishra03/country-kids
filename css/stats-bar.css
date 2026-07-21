@@ -1,0 +1,29 @@
+.stats-bar {
+    background: var(--blue-gradient);
+    padding: 3rem 0;
+}
+.stats-grid {
+    width: min(1100px, 92%);
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    text-align: center;
+}
+.stat-item { color: #fff; }
+.stat-number {
+    font-family: 'Baloo 2', sans-serif;
+    font-size: clamp(2.2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    color: var(--gold-light);
+    line-height: 1;
+}
+.stat-label {
+    margin-top: 0.4rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.92);
+}
+@media (max-width: 640px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
+}

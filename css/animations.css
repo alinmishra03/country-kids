@@ -1,0 +1,65 @@
+/* Additive motion layer — opacity/transform only, so page geometry is never
+   affected. Mirrors the reference project's animation approach. */
+
+/* Page-in stagger applied by components/shared/Page.js on mount. */
+.fx-page-in > section {
+    opacity: 0;
+    transform: translateY(18px);
+    animation: fx-section-in 0.6s ease forwards;
+}
+.fx-page-in > section:nth-child(1) { animation-delay: 0.05s; }
+.fx-page-in > section:nth-child(2) { animation-delay: 0.12s; }
+.fx-page-in > section:nth-child(3) { animation-delay: 0.19s; }
+.fx-page-in > section:nth-child(4) { animation-delay: 0.26s; }
+.fx-page-in > section:nth-child(5) { animation-delay: 0.33s; }
+.fx-page-in > section:nth-child(n+6) { animation-delay: 0.4s; }
+@keyframes fx-section-in {
+    to { opacity: 1; transform: none; }
+}
+
+/* Scroll reveal (auto-tagged by hooks/useAnimations). */
+.fx-reveal, .fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fx-reveal.fx-in, .fade-up.fade-in { opacity: 1; transform: none; }
+
+.fx-stagger > * {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.fx-stagger.fx-in > * { opacity: 1; transform: none; }
+.fx-stagger.fx-in > *:nth-child(2) { transition-delay: 0.08s; }
+.fx-stagger.fx-in > *:nth-child(3) { transition-delay: 0.16s; }
+.fx-stagger.fx-in > *:nth-child(4) { transition-delay: 0.24s; }
+.fx-stagger.fx-in > *:nth-child(5) { transition-delay: 0.32s; }
+.fx-stagger.fx-in > *:nth-child(n+6) { transition-delay: 0.4s; }
+
+/* Image fade-in */
+.img-fade { opacity: 0; transition: opacity 0.6s ease; }
+.img-fade.img-loaded { opacity: 1; }
+
+/* Page transition overlay */
+.page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--bg-primary);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.page-transition.active { opacity: 1; pointer-events: all; }
+
+@media (prefers-reduced-motion: reduce) {
+    .fx-page-in > section,
+    .fx-reveal, .fade-up,
+    .fx-stagger > * {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
