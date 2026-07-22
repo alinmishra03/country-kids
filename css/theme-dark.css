@@ -19,7 +19,9 @@
     background: linear-gradient(135deg, #123457 0%, #0B2138 100%);
 }
 
-[data-theme="dark"] .btn-gold,
+/* Gold-FILLED navigation CTAs still need dark text for contrast. (The content
+   .btn-* buttons are now gold-OUTLINED, so they keep their gold text — no
+   override here.) */
 [data-theme="dark"] .nav-cta,
 [data-theme="dark"] .mobile-cta {
     color: #10233A;

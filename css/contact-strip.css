@@ -24,5 +24,5 @@
     gap: 1rem;
     margin-top: 2rem;
 }
-.contact-strip .btn-outline { color: #fff; border-color: rgba(255,255,255,0.7); }
-.contact-strip .btn-outline:hover { background: #fff; color: var(--blue-deep); }
+/* Buttons here use the unified gold-outline style from base.css; gold reads well
+   on the navy band, so no per-band override is needed. */

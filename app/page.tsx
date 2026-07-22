@@ -21,7 +21,7 @@ import LearningSpaces from '@/components/home/LearningSpaces';
 import PhilosophyTeaser from '@/components/home/PhilosophyTeaser';
 import ComplianceStrip from '@/components/home/ComplianceStrip';
 import Gallery from '@/components/home/Gallery';
-import Testimonials from '@/components/home/Testimonials';
+import Testimonials from '@/components/testimonials/Testimonials';
 import CTASection from '@/components/shared/CTASection';
 
 export default function HomePage() {

@@ -1,0 +1,318 @@
+/* ============================================================================
+   Family Stories — clean, premium testimonial carousel.
+   Namespaced `.fs-`. Colours come from the site theme tokens (base.css) so light
+   and dark modes are both correct with no per-theme overrides. No decorative
+   backgrounds, blur, glow, parallax or looping animations — only slide/fade
+   transitions, a subtle desktop hover lift, and the JS count-up.
+   ========================================================================== */
+
+.fs {
+    position: relative;
+    overflow-x: clip; /* guard against any horizontal overflow */
+}
+
+/* ---------------- Header ---------------- */
+.fs-head {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto;
+}
+.fs-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-pill);
+    background: rgba(var(--gold-rgb), 0.1);
+    border: 1px solid rgba(var(--gold-rgb), 0.35);
+    color: var(--gold-deep);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+}
+.fs-badge-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+}
+
+.fs-title {
+    font-family: var(--font-display);
+    color: var(--blue-deep);
+    font-weight: var(--fw-regular);
+    font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+    line-height: 1.14;
+    letter-spacing: -0.015em;
+    margin: 1.1rem 0 0;
+}
+.fs-title-accent {
+    color: var(--gold-deep);
+    font-style: italic;
+}
+.fs-underline {
+    display: block;
+    width: 88px;
+    height: 4px;
+    margin: 1.1rem auto 0;
+    border-radius: 999px;
+    background: var(--gold-gradient);
+}
+
+/* Trust pill */
+.fs-trust {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-soft);
+    font-size: 0.9rem;
+    color: var(--mid);
+}
+.fs-trust b { color: var(--blue-deep); }
+.fs-trust-stars { display: inline-flex; gap: 1px; }
+.fs-trust-stars svg { width: 15px; height: 15px; color: var(--gold); fill: var(--gold); }
+.fs-trust-sep { width: 1px; height: 16px; background: var(--border-card); }
+
+/* Trust counters */
+.fs-counters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: clamp(1.6rem, 5vw, 3.4rem);
+    margin: 2.4rem auto 0;
+}
+.fs-counter { text-align: center; }
+.fs-counter-num {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    line-height: 1;
+    color: var(--blue-deep);
+}
+.fs-counter-num .fs-counter-plus { color: var(--gold); }
+.fs-counter-label {
+    margin-top: 0.5rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.04em;
+    color: var(--mid);
+}
+
+/* ---------------- Carousel ---------------- */
+.fs-carousel {
+    position: relative;
+    margin-top: clamp(2.4rem, 5vw, 3.6rem);
+}
+.fs-stage {
+    position: relative;
+    min-height: 360px; /* fallback until JS measures the active card */
+    overflow-x: clip;
+    overflow-y: visible;
+    touch-action: pan-y;
+    outline: none;
+    transition: height 0.5s cubic-bezier(0.6, 0.01, 0.2, 1);
+}
+.fs-stage:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 8px;
+    border-radius: var(--radius-lg);
+}
+
+.fs-card {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: clamp(320px, 40vw, 500px);
+    transform: translate(-50%, -50%);
+    transition: transform 0.55s cubic-bezier(0.5, 0.02, 0.2, 1), opacity 0.55s ease;
+    will-change: transform, opacity;
+}
+
+.fs-card-inner {
+    position: relative;
+    border-radius: 24px;
+    padding: clamp(1.75rem, 3vw, 2.5rem);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    box-shadow: 0 24px 50px -30px rgba(11, 27, 43, 0.28);
+}
+/* thin static gold accent along the top edge */
+.fs-card-inner::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: clamp(1.75rem, 3vw, 2.5rem);
+    right: clamp(1.75rem, 3vw, 2.5rem);
+    height: 3px;
+    border-radius: 0 0 3px 3px;
+    background: var(--gold-gradient);
+    opacity: 0.9;
+}
+
+/* subtle hover lift — desktop pointers only */
+@media (hover: hover) and (pointer: fine) {
+    .fs-card.is-active .fs-card-inner {
+        transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .fs-card.is-active .fs-card-inner:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 34px 62px -30px rgba(11, 27, 43, 0.36);
+    }
+}
+
+.fs-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-bottom: 1.1rem;
+}
+.fs-quote-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 13px;
+    background: rgba(var(--gold-rgb), 0.12);
+    color: var(--gold);
+    flex: 0 0 auto;
+}
+.fs-quote-mark svg { width: 22px; height: 22px; fill: currentColor; }
+
+.fs-source-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.34rem 0.7rem;
+    border-radius: var(--radius-pill);
+    background: var(--surface-1);
+    border: 1px solid var(--border-card);
+    font-size: 0.74rem;
+    font-weight: var(--fw-medium);
+    color: var(--mid);
+    white-space: nowrap;
+}
+
+.fs-stars {
+    display: inline-flex;
+    gap: 3px;
+    margin-bottom: 1.1rem;
+}
+.fs-star { width: 19px; height: 19px; color: var(--gold); fill: var(--gold); }
+
+.fs-quote {
+    color: var(--text-primary);
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
+    line-height: 1.7;
+    font-weight: var(--fw-regular);
+    margin: 0;
+}
+
+.fs-author {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    margin-top: 1.6rem;
+    padding-top: 1.3rem;
+    border-top: 1px solid var(--border-card);
+}
+.fs-avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--blue-gradient);
+    color: #fff;
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: 1.1rem;
+    letter-spacing: 0.5px;
+}
+.fs-author-meta b { display: block; color: var(--blue-deep); font-size: 1rem; }
+.fs-author-meta span { font-size: 0.84rem; color: var(--mid); }
+
+/* ---------------- Arrows (desktop) ---------------- */
+.fs-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20;
+    width: 52px;
+    height: 52px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 1px solid var(--border-card);
+    background: var(--surface-elevated);
+    color: var(--blue-deep);
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.25s ease, background 0.25s ease, color 0.25s ease;
+}
+.fs-arrow svg { width: 22px; height: 22px; }
+.fs-arrow:hover {
+    background: var(--gold);
+    color: #fff;
+    transform: translateY(-50%) scale(1.06);
+}
+.fs-arrow:active { transform: translateY(-50%) scale(0.96); }
+.fs-arrow-prev { left: 0; }
+.fs-arrow-next { right: 0; }
+
+/* ---------------- Pagination ---------------- */
+.fs-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.55rem;
+    margin-top: 2rem;
+}
+.fs-dot {
+    width: 9px;
+    height: 9px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: rgba(var(--accent-rgb), 0.28);
+    cursor: pointer;
+    transition: width 0.4s cubic-bezier(0.6, 0.01, 0.2, 1), background 0.4s ease;
+}
+.fs-dot.is-active {
+    width: 30px;
+    background: var(--gold-gradient);
+}
+
+/* ---------------- CTA ---------------- */
+.fs-cta {
+    text-align: center;
+    margin-top: 2.6rem;
+}
+
+/* ---------------- Responsive ---------------- */
+@media (max-width: 1023px) {
+    .fs-arrow-prev { left: -6px; }
+    .fs-arrow-next { right: -6px; }
+}
+@media (max-width: 680px) {
+    .fs-arrow { display: none; } /* mobile: swipe + dots only */
+    .fs-card { width: min(90vw, 460px); }
+    .fs-stage { min-height: 420px; }
+    .fs-card-top { flex-wrap: wrap; }
+}
+
+/* ---------------- Reduced motion ---------------- */
+@media (prefers-reduced-motion: reduce) {
+    .fs-card,
+    .fs-stage,
+    .fs-dot,
+    .fs-arrow {
+        transition: none;
+    }
+}
