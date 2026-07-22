@@ -1,0 +1,24 @@
+/* CircularGallery (OGL/WebGL) container. Fills its wrapper; the wrapper controls
+   the responsive height. Grab cursor communicates the drag interaction. */
+.circular-gallery {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: pan-y;
+}
+.circular-gallery:active {
+    cursor: grabbing;
+}
+.circular-gallery canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+.circular-gallery:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    border-radius: 8px;
+}

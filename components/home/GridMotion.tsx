@@ -1,14 +1,14 @@
 'use client';
 
 /* GridMotion — a React-Bits-inspired animated hero background. A rotated 4×7 grid
-   of photo cards (from the site's room/gallery image pool) interleaved with dark
-   glass, abstract shapes and typography accents, drifting with the mouse
+   of PHOTO cards (from the site's room/gallery image pool) drifting with the mouse
    (horizontal, eased) plus a slow vertical float and a gentle opacity/scale
    "breathing". Dark scrims + the hero overlay keep the copy readable.
 
-   Next.js / performance notes:
-   - Rendered client-only via next/dynamic({ ssr:false }) from Hero, so `window`
-     is never touched during SSR and there are no hydration mismatches.
+   Rendering / performance notes:
+   - Render is SSR-safe (no window/document at render time — all browser access is
+     inside useEffect), so it renders on the server too and is always visible; no
+     hydration mismatch (markup is deterministic).
    - All motion lives inside a gsap.context() scoped to the root, reverted on
      unmount; the mousemove listener is removed too — no leaks.
    - Mouse easing uses gsap.quickTo (rAF-driven), so we don't spawn a tween per
@@ -18,18 +18,7 @@
 
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
-import Icon from '@/components/shared/Icon';
 import { img } from '@/lib/images';
-
-type Tile =
-    | { kind: 'image'; value: string }
-    | { kind: 'icon'; value: string }
-    | { kind: 'text'; value: string }
-    | { kind: 'glass' }
-    | { kind: 'circle' }
-    | { kind: 'hex' }
-    | { kind: 'outline' }
-    | { kind: 'gradient' };
 
 /* Photo pool — verified Unsplash ids already used across the site (rooms, gallery
    and page photos). */
@@ -53,62 +42,11 @@ const IMAGES = [
     '1503676260728-1c00da094a0b',
 ];
 
-const pic = (i: number): Tile => ({ kind: 'image', value: IMAGES[i % IMAGES.length] });
-
-/* 28 tiles (4 rows × 7): mostly photos, with glass / shape / typography accents
-   woven in for a premium mood-board feel. */
-const TILES: Tile[] = [
-    pic(0), pic(1), { kind: 'glass' }, pic(2), pic(3), { kind: 'text', value: 'Belong' }, pic(4),
-    pic(5), pic(6), { kind: 'gradient' }, pic(7), pic(8), { kind: 'hex' }, pic(9),
-    pic(10), { kind: 'glass' }, pic(11), pic(12), { kind: 'text', value: 'Play' }, pic(13), pic(14),
-    pic(15), pic(16), { kind: 'outline' }, pic(2), pic(5), { kind: 'circle' }, pic(9),
-];
-
 const ROWS = 4;
 const COLS = 7;
 
-function TileView({ tile }: { tile: Tile }) {
-    switch (tile.kind) {
-        case 'image':
-            return (
-                <div className="gm-tile gm-img">
-                    <img src={img(tile.value, 420, 55)} alt="" loading="lazy" decoding="async" />
-                    <span className="gm-img-scrim" aria-hidden="true" />
-                </div>
-            );
-        case 'icon':
-            return (
-                <div className="gm-tile gm-glass gm-icon">
-                    <Icon name={tile.value} />
-                </div>
-            );
-        case 'text':
-            return (
-                <div className="gm-tile gm-text">
-                    <span>{tile.value}</span>
-                </div>
-            );
-        case 'circle':
-            return (
-                <div className="gm-tile gm-plain">
-                    <span className="gm-circle" />
-                </div>
-            );
-        case 'hex':
-            return (
-                <div className="gm-tile gm-plain">
-                    <span className="gm-hex" />
-                </div>
-            );
-        case 'outline':
-            return <div className="gm-tile gm-outline" />;
-        case 'gradient':
-            return <div className="gm-tile gm-gradient" />;
-        case 'glass':
-        default:
-            return <div className="gm-tile gm-glass" />;
-    }
-}
+/* Every tile is a photo (cycles through the pool to fill the 28-cell grid). */
+const TILE_IMAGES = Array.from({ length: ROWS * COLS }, (_, i) => IMAGES[i % IMAGES.length]);
 
 export default function GridMotion() {
     const rootRef = useRef<HTMLDivElement>(null);
@@ -195,11 +133,22 @@ export default function GridMotion() {
                             rowRefs.current[r] = el;
                         }}
                     >
-                        {Array.from({ length: COLS }).map((_, c) => (
-                            <div className="gm-tile-wrap" key={c}>
-                                <TileView tile={TILES[r * COLS + c]} />
-                            </div>
-                        ))}
+                        {Array.from({ length: COLS }).map((_, c) => {
+                            const id = TILE_IMAGES[r * COLS + c];
+                            return (
+                                <div className="gm-tile-wrap" key={c}>
+                                    <div className="gm-tile gm-img">
+                                        <img
+                                            src={img(id, 500, 55)}
+                                            alt=""
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                        <span className="gm-img-scrim" aria-hidden="true" />
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 ))}
             </div>

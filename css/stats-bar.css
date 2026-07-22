@@ -1,32 +1,255 @@
+/* Stats section ("Country Kids at a glance") — premium cards on a WHITE band in
+   light mode (navy text, gold accents), adapting to a dark band in dark mode via
+   theme tokens. Floating background blobs + gold hover glow. Markup + motion live
+   in components/home/StatsBar.tsx (desktop grid) and StatsCarousel.tsx (mobile). */
+
 .stats-bar {
-    background: var(--blue-gradient);
-    padding: 3rem 0;
+    position: relative;
+    overflow: hidden;
+    background: #fff; /* white band (light); dark override in css/theme-dark.css */
+    padding: 4.5rem 0;
+    isolation: isolate;
 }
-.stats-grid {
-    width: min(1160px, 92%);
+
+/* ── Floating background blobs (very slow, low opacity, non-interactive) ── */
+.stats-blobs { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.stats-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(46px);
+    opacity: 0.14;
+    will-change: transform;
+}
+.stats-blob.b1 {
+    width: 360px; height: 360px;
+    top: -90px; left: 4%;
+    background: radial-gradient(circle, rgba(200, 150, 62, 0.55), transparent 70%);
+    animation: stat-blob-1 24s ease-in-out infinite;
+}
+.stats-blob.b2 {
+    width: 300px; height: 300px;
+    bottom: -110px; left: 42%;
+    background: radial-gradient(circle, rgba(52, 89, 124, 0.4), transparent 70%);
+    animation: stat-blob-2 30s ease-in-out infinite;
+}
+.stats-blob.b3 {
+    width: 320px; height: 320px;
+    top: -60px; right: 3%;
+    background: radial-gradient(circle, rgba(200, 150, 62, 0.4), transparent 70%);
+    animation: stat-blob-3 27s ease-in-out infinite;
+}
+@keyframes stat-blob-1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(34px, 26px); } }
+@keyframes stat-blob-2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-30px, -22px); } }
+@keyframes stat-blob-3 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-26px, 30px); } }
+
+/* ── Grid: desktop 6-up, tablet 3-up, mobile single column ── */
+.stats-cards {
+    position: relative;
+    z-index: 1;
+    width: min(1200px, 92%);
     margin-inline: auto;
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    gap: 1.5rem;
+    gap: 24px;
+    will-change: transform;
+}
+
+/* ── Card ── */
+.stat-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     text-align: center;
+    gap: 0.5rem;
+    padding: 1.9rem 1.1rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-soft);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    will-change: transform;
 }
-@media (max-width: 900px) {
-    .stats-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem 1rem; }
+
+/* Hover / keyboard-focus: gold border + glow. (Lift + scale via Framer's
+   whileHover/whileFocus so they don't fight inline transforms.) */
+.stat-card:hover,
+.stat-card:focus-visible {
+    border-color: rgba(var(--gold-rgb), 0.6);
+    box-shadow: var(--shadow-elevation), 0 0 30px rgba(var(--gold-rgb), 0.28);
+    outline: none;
 }
-.stat-item { color: #fff; }
-.stat-number {
+.stat-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+/* Pulsing gold glow ring while active. */
+.stat-card::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.stat-card:hover::after,
+.stat-card:focus-visible::after {
+    opacity: 1;
+    animation: stat-pulse 1.8s ease-in-out infinite;
+}
+@keyframes stat-pulse {
+    0%, 100% { box-shadow: 0 0 16px 1px rgba(var(--gold-rgb), 0.22); }
+    50% { box-shadow: 0 0 30px 6px rgba(var(--gold-rgb), 0.42); }
+}
+
+/* Icon chip. */
+.stat-icon {
+    display: grid;
+    place-items: center;
+    width: 56px; height: 56px;
+    border-radius: 16px;
+    background: rgba(var(--gold-rgb), 0.14);
+    color: var(--gold-deep);
+    transition: transform 0.3s ease, filter 0.3s ease, background 0.3s ease;
+}
+.stat-icon svg { width: 28px; height: 28px; }
+.stat-card:hover .stat-icon,
+.stat-card:focus-visible .stat-icon {
+    transform: rotate(-8deg) scale(1.08);
+    background: rgba(var(--gold-rgb), 0.22);
+    filter: drop-shadow(0 0 10px rgba(var(--gold-rgb), 0.5));
+}
+
+/* Number — large serif, navy. */
+.stat-value {
     font-family: var(--font-display);
-    font-size: clamp(2.2rem, 5vw, 3.2rem);
     font-weight: 500;
-    color: var(--gold-light);
+    font-size: clamp(2rem, 3.4vw, 2.8rem);
     line-height: 1;
+    color: var(--accent-ink);
+    letter-spacing: -0.5px;
 }
+
+/* Label — uppercase, spaced, muted. */
 .stat-label {
-    margin-top: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.72rem;
     font-weight: 500;
-    letter-spacing: 0.5px;
-    color: rgba(255,255,255,0.92);
+    color: var(--mid);
 }
-@media (max-width: 640px) {
-    .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem 1rem; }
+
+/* ── Mobile carousel (≤768px only) — desktop layout above is unchanged ── */
+.stats-mobile {
+    display: none; /* shown only at ≤768px */
+    position: relative;
+    z-index: 1;
+    width: min(520px, 92%);
+    margin-inline: auto;
+}
+.statm-stage {
+    position: relative;
+    min-height: 240px;
+    display: grid;
+    place-items: center;
+}
+.statm-deco {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+.statm-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    height: 300px;
+    max-width: 90%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.16), transparent 70%);
+}
+.statm-circle {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid var(--border-subtle);
+    will-change: transform;
+}
+.statm-circle.c1 { width: 62px; height: 62px; top: 8%; left: 6%; animation: statm-float-1 8s ease-in-out infinite; }
+.statm-circle.c2 { width: 40px; height: 40px; bottom: 10%; right: 8%; animation: statm-float-2 10s ease-in-out infinite; }
+@keyframes statm-float-1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(10px, -12px); } }
+@keyframes statm-float-2 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-10px, 10px); } }
+
+.statm-card {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    border-radius: 24px;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-elevation);
+    padding: 2.6rem 1.5rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    will-change: transform, opacity;
+}
+.statm-number {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(3.2rem, 17vw, 4.6rem);
+    line-height: 1;
+    color: var(--gold-deep);
+}
+.statm-label {
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    color: var(--mid);
+}
+
+.statm-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.75rem;
+}
+.statm-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: var(--border-gray);
+    cursor: pointer;
+    transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1), background 0.35s ease;
+}
+.statm-dot.is-active { width: 26px; background: var(--gold); }
+
+/* ── Responsive (desktop grid — unchanged) ── */
+@media (max-width: 1024px) {
+    .stats-cards { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 768px) {
+    /* Swap the static grid for the animated carousel. */
+    .stats-cards { display: none; }
+    .stats-mobile { display: block; }
+    .stats-bar { padding: 3.5rem 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stats-blob,
+    .statm-circle { animation: none; }
+    .stat-card,
+    .stat-icon { transition: none; }
+    .stat-card:hover .stat-icon,
+    .stat-card:focus-visible .stat-icon { transform: none; }
+    .stat-card:hover::after,
+    .stat-card:focus-visible::after { animation: none; }
 }

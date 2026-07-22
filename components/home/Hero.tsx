@@ -4,16 +4,14 @@
    abstract shapes, brand icons + typography) under a dark readability overlay,
    with left-aligned copy + CTAs and a frosted-glass summary card. Entrance is
    CSS-driven (hero-rise, respects reduced motion); GSAP adds a subtle background
-   parallax on scroll. GridMotion is lazy-loaded client-only (ssr:false) so there
-   are no SSR/window/hydration issues. */
+   parallax on scroll. GridMotion is SSR-safe (browser access is confined to
+   useEffect) so it renders server-side too and is always visible. */
 
 import { useRef } from 'react';
-import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Icon from '@/components/shared/Icon';
 import useGsap from '@/hooks/useGsap';
-
-const GridMotion = dynamic(() => import('@/components/home/GridMotion'), { ssr: false });
+import GridMotion from '@/components/home/GridMotion';
 
 export default function Hero() {
     const heroRef = useRef(null);
@@ -31,13 +29,6 @@ export default function Hero() {
             },
         });
     });
-
-    const scrollToNext = () => {
-        const hero = document.querySelector('.hero');
-        const next = hero?.nextElementSibling;
-        if (next) next.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        else window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
-    };
 
     return (
         <section className="hero" ref={heroRef}>
@@ -77,15 +68,6 @@ export default function Hero() {
                     </Link>
                 </div>
             </div>
-
-            <button
-                type="button"
-                className="hero-scroll"
-                onClick={scrollToNext}
-                aria-label="Scroll to content"
-            >
-                <span className="hero-scroll-mouse"><span className="hero-scroll-wheel" /></span>
-            </button>
         </section>
     );
 }

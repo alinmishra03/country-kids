@@ -25,7 +25,7 @@ export const metadata = {
 export const viewport = {
     width: 'device-width',
     initialScale: 1,
-    themeColor: '#1E6FC4',
+    themeColor: '#0B1B2B',
 };
 
 /* Runs before paint to prevent a flash of the wrong theme (FOUC). Default =

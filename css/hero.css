@@ -1,9 +1,8 @@
 /* ─── HERO ───────────────────────────────────────────────────────────────
    Image-free GridMotion animated background under a dark readability overlay,
    with a CENTERED "spotlight" composition: eyebrow → title → subtitle → badges →
-   CTAs → tagline note → a row of glass stat pills, then a scroll indicator. Text
-   sits in light colours over the dark grid in BOTH themes, so hero copy is scoped
-   to light values here rather than the global navy tokens. */
+   CTAs. Text sits in light colours over the dark grid in BOTH themes, so hero copy
+   is scoped to light values here rather than the global navy tokens. */
 
 .hero {
     position: relative;
@@ -143,47 +142,6 @@
     border-color: #fff;
 }
 
-/* ── Scroll indicator ── */
-.hero-scroll {
-    position: absolute;
-    left: 50%;
-    bottom: 1.6rem;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: grid;
-    place-items: center;
-    padding: 0.4rem;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-    animation: hero-bob 2.2s ease-in-out infinite;
-}
-.hero-scroll-mouse {
-    width: 26px;
-    height: 42px;
-    border: 2px solid rgba(255, 255, 255, 0.8);
-    border-radius: 14px;
-    display: flex;
-    justify-content: center;
-    padding-top: 7px;
-}
-.hero-scroll-wheel {
-    width: 4px;
-    height: 8px;
-    border-radius: 2px;
-    background: #fff;
-    animation: hero-wheel 1.6s ease-in-out infinite;
-}
-@keyframes hero-bob {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(6px); }
-}
-@keyframes hero-wheel {
-    0% { opacity: 0; transform: translateY(-4px); }
-    40% { opacity: 1; }
-    100% { opacity: 0; transform: translateY(8px); }
-}
-
 /* ── Responsive ── */
 @media (max-width: 960px) {
     .hero { min-height: 88vh; min-height: 88svh; }
@@ -191,15 +149,9 @@
 @media (max-width: 640px) {
     .hero { padding: calc(var(--nav-h) + 2rem) 0 4.5rem; min-height: 92vh; min-height: 92svh; }
     .hero-subtitle { max-width: 100%; }
-    .hero-scroll { bottom: 1rem; }
 }
 
 /* Respect users who prefer reduced motion — kill the non-essential motion. */
 @media (prefers-reduced-motion: reduce) {
-    .hero-content > *,
-    .hero-scroll,
-    .hero-scroll-wheel {
-        animation: none !important;
-    }
-    .hero-content > * { opacity: 1; transform: none; }
+    .hero-content > * { animation: none !important; opacity: 1; transform: none; }
 }

@@ -3,26 +3,26 @@
        Background: #F3F8FD | Text: #133A63
        Primary brand color is BLUE; accent is GOLDEN. */
 
-    /* Core Palette */
-    --bg-light: #F3F8FD;             /* Soft sky-white */
-    --bg-dark: #F3F8FD;             /* Consistent light background */
-    --text-primary: #133A63;        /* Deep ocean navy-blue */
-    --text-on-dark: #133A63;        /* Legacy support */
-    --border-gray: #D3E1F0;
+    /* Core Palette — Light Mode */
+    --bg-light: #F9F9FB;             /* Crisp white */
+    --bg-dark: #F9F9FB;             /* Consistent light background */
+    --text-primary: #0B1B2B;        /* Deep blue (navy) */
+    --text-on-dark: #0B1B2B;        /* Legacy support */
+    --border-gray: #D9DDE3;
 
-    /* Brand Blues */
-    --blue: #1E6FC4;                /* Primary blue */
-    --blue-deep: #14508F;           /* Darker blue (headings, hovers) */
-    --blue-light: #4F97DE;
-    --blue-pale: #E3EFFB;           /* Tinted panels */
-    --blue-gradient: linear-gradient(135deg, #1E6FC4 0%, #14508F 100%);
+    /* Brand Blues (deep navy is the primary) */
+    --blue: #0B1B2B;                /* Primary blue — deep navy */
+    --blue-deep: #0B1B2B;           /* Headings, hovers */
+    --blue-light: #34597C;
+    --blue-pale: #EAEEF3;           /* Tinted panels */
+    --blue-gradient: linear-gradient(135deg, #163A5C 0%, #0B1B2B 100%);
 
-    /* Golden Accent */
-    --gold: #F5B429;                /* Warm golden */
-    --gold-deep: #E09A11;
-    --gold-light: #FFCB57;
-    --gold-gradient: linear-gradient(90deg, #FFCB57 0%, #F5B429 55%, #E09A11 100%);
-    --gold-solid: #F5B429;
+    /* Golden Accent (warm gold) */
+    --gold: #C8963E;                /* Warm gold */
+    --gold-deep: #A87A2C;
+    --gold-light: #E0B45E;
+    --gold-gradient: linear-gradient(90deg, #E0B45E 0%, #C8963E 55%, #A87A2C 100%);
+    --gold-solid: #C8963E;
 
     /* Soft Green (nature / growth) */
     --green: #43A96B;
@@ -42,36 +42,36 @@
     --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
 
     /* Premium Gradients */
-    --hero-gradient: linear-gradient(135deg, #EAF3FC 0%, #D4E7F9 100%);
+    --hero-gradient: linear-gradient(135deg, #EDEFF3 0%, #E1E5EC 100%);
 
     /* Remapped surface tokens */
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #E9F1FA;
-    --dark3: #DCEAF7;
+    --dark2: #F1F2F5;
+    --dark3: #E8EAEF;
 
     /* Text Scale */
     --off-white: var(--text-primary);
     --light: var(--text-primary);
-    --mid: #4A688A;                 /* Muted secondary text */
-    --slate: #4A688A;
+    --mid: #4C5A6B;                 /* Muted secondary text */
+    --slate: #4C5A6B;
     --white: #FFFFFF;
 
     /* Semantic Tokens */
-    --accent-ink: var(--text-primary);   /* Titles/labels are navy-blue */
+    --accent-ink: var(--text-primary);   /* Titles/labels are deep navy */
     --accent-blue: var(--blue);
     --accent-gold: var(--gold);
-    --btn-text: #FFFFFF;                  /* White text on blue buttons */
-    --btn-text-gold: #133A63;             /* Navy text on golden buttons */
-    --accent-rgb: 30, 111, 196;           /* --blue as rgb */
-    --gold-rgb: 245, 180, 41;
+    --btn-text: #FFFFFF;                  /* White text on navy buttons */
+    --btn-text-gold: #0B1B2B;             /* Navy text on gold buttons */
+    --accent-rgb: 11, 27, 43;             /* --blue (navy) as rgb */
+    --gold-rgb: 200, 150, 62;
 
     /* AA-safe blue for text/fills */
     --accent-text: var(--blue-deep);
     --accent-bg: var(--blue);
     --accent-bg-gradient: var(--blue-gradient);
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 243, 248, 253;
+    --bg-primary-rgb: 249, 249, 251;
 
     --nav-h: 80px;
 
@@ -80,10 +80,10 @@
     --surface-2: var(--dark2);
     --surface-3: var(--dark3);
     --surface-elevated: #FFFFFF;
-    --border-subtle: rgba(19, 58, 99, 0.10);
+    --border-subtle: rgba(11, 27, 43, 0.10);
     /* Layered, soft premium shadows */
-    --shadow-elevation: 0 24px 60px -18px rgba(20, 80, 143, 0.28), 0 8px 24px -12px rgba(20, 80, 143, 0.12);
-    --shadow-soft: 0 12px 32px -14px rgba(20, 80, 143, 0.20), 0 4px 12px -8px rgba(20, 80, 143, 0.10);
+    --shadow-elevation: 0 24px 60px -18px rgba(11, 27, 43, 0.22), 0 8px 24px -12px rgba(11, 27, 43, 0.10);
+    --shadow-soft: 0 12px 32px -14px rgba(11, 27, 43, 0.16), 0 4px 12px -8px rgba(11, 27, 43, 0.08);
 
     --radius-xl: 28px;
     --radius-lg: 22px;
@@ -106,22 +106,23 @@
      • #64A6E8 blue text           ~6  : 1
      • #133A63 on #F5B429 gold     ~7  : 1 (navy on gold button) */
 [data-theme="dark"] {
-    --bg-light: #0C1B2E;
-    --bg-dark: #0C1B2E;
+    --bg-light: #0F172A;
+    --bg-dark: #0F172A;
     --text-primary: #E7EFF8;
     --text-on-dark: #E7EFF8;
-    --border-gray: #24384F;
+    --border-gray: #2A374A;
 
-    --blue: #4F97DE;
-    --blue-deep: #64A6E8;
-    --blue-light: #7CB4EC;
-    --blue-pale: #16304B;
-    --blue-gradient: linear-gradient(135deg, #2E6FB8 0%, #1B4E86 100%);
+    --blue: #7CC4F2;
+    --blue-deep: #9AD2F5;
+    --blue-light: #A6D8F7;
+    --blue-pale: #16273F;
+    --blue-gradient: linear-gradient(135deg, #2C6CB0 0%, #184C82 100%);
 
-    --gold: #F5C147;
-    --gold-deep: #E8A82A;
-    --gold-light: #FFD873;
-    --gold-gradient: linear-gradient(90deg, #FFD873 0%, #F5C147 55%, #E8A82A 100%);
+    --gold: #E6B34B;
+    --gold-deep: #D69E38;
+    --gold-light: #F2C766;
+    --gold-gradient: linear-gradient(90deg, #F2C766 0%, #E6B34B 55%, #D69E38 100%);
+    --gold-rgb: 230, 179, 75;
 
     --green: #5BC488;
     --green-deep: #7AD3A0;
@@ -133,12 +134,12 @@
     --orange-pale: #3A2415;
     --orange-rgb: 245, 163, 101;
 
-    --hero-gradient: linear-gradient(135deg, #0C1B2E 0%, #16304B 100%);
+    --hero-gradient: linear-gradient(135deg, #0F172A 0%, #16304B 100%);
 
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #12263C;
-    --dark3: #16304B;
+    --dark2: #16233A;
+    --dark3: #1C2E49;
 
     --off-white: var(--text-primary);
     --light: #A9C0D8;
@@ -146,18 +147,18 @@
     --slate: #A9C0D8;
 
     --accent-ink: var(--text-primary);
-    --accent-text: #64A6E8;
-    --accent-bg: #2E6FB8;
+    --accent-text: #7CC4F2;
+    --accent-bg: #2C6CB0;
     --accent-bg-gradient: var(--blue-gradient);
 
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 12, 27, 46;
-    --accent-rgb: 79, 151, 222;
+    --bg-primary-rgb: 15, 23, 42;
+    --accent-rgb: 124, 196, 242;
 
-    --surface-1: #0C1B2E;
-    --surface-2: #12263C;
-    --surface-3: #16304B;
-    --surface-elevated: #12263C;
+    --surface-1: #0F172A;
+    --surface-2: #16233A;
+    --surface-3: #1C2E49;
+    --surface-elevated: #16233A;
     --border-subtle: rgba(231, 239, 248, 0.10);
     --shadow-elevation: 0 24px 60px -18px rgba(0, 0, 0, 0.60), 0 8px 24px -12px rgba(0, 0, 0, 0.45);
     --shadow-soft: 0 12px 32px -14px rgba(0, 0, 0, 0.50), 0 4px 12px -8px rgba(0, 0, 0, 0.40);
