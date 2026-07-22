@@ -25,8 +25,10 @@
     box-shadow: 0 10px 30px -12px rgba(11, 27, 43, 0.25);
     border-bottom: 1px solid var(--border-subtle);
 }
+/* Same shell as .container so the logo and nav actions sit on exactly the same
+   left/right edge as every section's content below them. */
 .nav-inner {
-    width: min(1280px, 94%);
+    width: min(var(--shell-max), var(--shell-w));
     margin-inline: auto;
     display: flex;
     align-items: center;
@@ -39,7 +41,7 @@
     align-items: center;
     gap: 0.6rem;
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 1.3rem;
     flex-shrink: 0;
 }
@@ -64,11 +66,11 @@
     color: #fff;
     transition: color 0.35s ease;
 }
-.logo-text b { color: var(--gold-light); font-weight: 600; }
+.logo-text b { color: var(--gold-light); font-weight: var(--fw-medium); }
 .logo-text em {
     font-family: var(--font-body);
     font-style: normal;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 0.6rem;
     letter-spacing: 2px;
     text-transform: uppercase;
@@ -89,8 +91,8 @@
     margin-inline: auto;
 }
 .pill-item { position: relative; }
-.pill-split { display: inline-flex; align-items: center; border-radius: 999px; }
-.pill-link { display: inline-flex; text-decoration: none; border-radius: 999px; }
+.pill-split { display: inline-flex; align-items: center; border-radius: var(--radius-pill); }
+.pill-link { display: inline-flex; text-decoration: none; border-radius: var(--radius-pill); }
 
 .pill {
     position: relative;
@@ -98,11 +100,16 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0.5rem 0.95rem;
-    border-radius: 999px;
+    /* Fluid metrics: the nav now shares the 1200px content shell, so the eight
+       pills scale smoothly from compact at the 1080px mobile-menu breakpoint up
+       to full size at 1440px. Interpolating rather than stepping means the row
+       can never overflow at an in-between width. */
+    padding-block: 0.5rem;
+    padding-inline: clamp(0.45rem, -0.75rem + 1.78vw, 0.85rem);
+    border-radius: var(--radius-pill);
     font-family: var(--font-body);
-    font-weight: 500;
-    font-size: 0.92rem;
+    font-weight: var(--fw-medium);
+    font-size: clamp(0.78rem, 0.42rem + 0.535vw, 0.9rem);
     white-space: nowrap;
 }
 .pill-circle {
@@ -201,7 +208,7 @@
     display: block;
     padding: 0.6rem 0.85rem;
     border-radius: var(--radius-sm);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     color: var(--text-primary);
     font-size: 0.94rem;
 }
@@ -218,9 +225,9 @@
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
     font-family: var(--font-body);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     padding: 0.6rem 1.35rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     box-shadow: 0 8px 20px -8px rgba(var(--gold-rgb), 0.5);
     transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
@@ -313,7 +320,7 @@
     justify-content: space-between;
     align-items: center;
     font-family: var(--font-body);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 1.1rem;
     color: var(--text-primary);
     padding: 0.9rem 0.6rem;
@@ -366,7 +373,7 @@
 .m-group-body-inner a {
     padding: 0.65rem 0.9rem;
     color: var(--mid);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     opacity: 0.001;
     transition: opacity 0.3s ease;
 }
@@ -378,9 +385,9 @@
     text-align: center;
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     padding: 0.9rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -391,9 +398,11 @@
 body.menu-open { overflow: hidden; }
 
 /* ─── Responsive ─── */
-@media (max-width: 1200px) {
-    .pill { font-size: 0.88rem; padding-inline: 0.72rem; }
+/* Pill sizing is fluid (see .pill above); below 1280px the logo drops its
+   sub-label to give the row more room. */
+@media (max-width: 1280px) {
     .logo-text em { display: none; }
+    .pill-caret-btn { padding-inline: 0.45rem 0.05rem; }
 }
 /* Below 1080px the eight pills no longer fit — collapse to the premium mobile
    slide menu (covers tablet + mobile). */

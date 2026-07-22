@@ -1,19 +1,41 @@
 /* Responsive corrections — must load LAST (imported after style.css in the
    layout). Every rule is wrapped in a max-width media query so it cannot affect
-   the desktop layout. Mirrors the reference project's responsive layer. */
+   the desktop layout. Mirrors the reference project's responsive layer.
+
+   Vertical rhythm is retuned by overriding the layout tokens from base.css, so
+   every section, card gap and section head steps down together instead of each
+   component drifting on its own. */
 
 @media (max-width: 1080px) {
-    .section { padding: 3.5rem 0; }
-    .section-head { margin-bottom: 2.2rem; }
+    :root {
+        --section-y: 4rem;
+        --section-y-sm: 3.5rem;
+        --section-head-gap: 2.25rem;
+        --card-gap: 1.35rem;
+    }
 }
 
 @media (max-width: 720px) {
     html { font-size: 15px; }
+    :root {
+        --section-y: 3.25rem;
+        --section-y-sm: 3rem;
+        --section-head-gap: 2rem;
+        --card-gap: 1.15rem;
+        --card-pad: 1.5rem;
+        --card-pad-sm: 1.25rem;
+    }
     .hero-main-cta { flex-direction: column; align-items: stretch; }
     .hero-main-cta .btn-primary,
     .hero-main-cta .btn-gold,
     .hero-main-cta .btn-outline { width: 100%; }
     .about-media { min-height: 260px; }
+    /* Full-width phone CTA so it lines up with the stacked buttons above it. */
+    .cta-band-actions { flex-direction: column; align-items: stretch; }
+    .cta-band-actions .btn-primary,
+    .cta-band-actions .btn-gold,
+    .cta-band-actions .btn-outline,
+    .cta-band-actions .cta-band-phone { width: 100%; }
 }
 
 @media (max-width: 420px) {

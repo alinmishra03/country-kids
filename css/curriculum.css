@@ -9,10 +9,10 @@
     font-size: 0.9rem;
     color: var(--mid);
     background: var(--surface-2);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-card);
     border-radius: var(--radius-md);
-    padding: 0.9rem 1.2rem;
-    line-height: 1.6;
+    padding: 1rem 1.3rem;
+    line-height: 1.65;
 }
 
 .curric-tabs {
@@ -27,12 +27,12 @@
     align-items: center;
     gap: 0.55rem;
     font-family: var(--font-body);
-    font-size: 0.98rem;
-    font-weight: 500;
+    font-size: 0.96rem;
+    font-weight: var(--fw-medium);
     color: var(--text-primary);
     background: var(--surface-elevated);
-    border: 1.5px solid var(--border-subtle);
-    border-radius: 999px;
+    border: 1.5px solid var(--border-card);
+    border-radius: var(--radius-pill);
     padding: 0.65rem 1.3rem;
     cursor: pointer;
 }
@@ -60,20 +60,16 @@
 }
 .curric-panel-head p { color: var(--mid); line-height: 1.7; }
 
+/* Surface/shadow/hover come from the shared card system in section-commons.css;
+   the accent rule along the top edge is this card's own. */
 .curric-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    gap: var(--card-gap);
 }
 .curric-card {
     position: relative;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: 1.8rem 1.6rem 1.7rem;
-    box-shadow: var(--shadow-soft);
     overflow: hidden;
-    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
 }
 .curric-card::before {
     content: "";
@@ -82,18 +78,17 @@
     height: 4px;
     background: linear-gradient(90deg, var(--acc, var(--blue)), var(--acc-deep, var(--blue-deep)));
 }
-.curric-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-elevation); }
 .curric-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
 .curric-card p { color: var(--mid); font-size: 0.95rem; line-height: 1.65; }
 .curric-outcome {
     display: inline-block;
     font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.3px;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.4px;
     color: var(--acc-deep, var(--blue-deep));
     background: var(--acc-pale, var(--blue-pale));
     padding: 0.3rem 0.7rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     margin-bottom: 0.9rem;
 }
 

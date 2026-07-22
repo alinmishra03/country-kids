@@ -24,28 +24,24 @@
     opacity: 0.75;
 }
 
+/* Surface/shadow/hover come from the shared card system in section-commons.css. */
 .pvm-grid {
     display: grid;
-    gap: 1.75rem;
-    margin-top: 3.5rem;
+    gap: var(--card-gap);
+    margin-top: var(--section-head-gap);
 }
 .pvm-card {
     display: grid;
     grid-template-columns: 88px 1fr;
     gap: 1.75rem;
     align-items: start;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-xl);
     padding: 2rem;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
 }
-.pvm-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevation); }
 .pvm-icon {
     display: grid; place-items: center;
     width: 88px; height: 88px;
-    border-radius: 24px;
+    border-radius: var(--radius-xl);
     background: var(--blue-gradient);
     color: #fff;
     box-shadow: 0 14px 30px -14px rgba(var(--accent-rgb), 0.6);
@@ -56,10 +52,10 @@
 
 .pvm-kicker {
     display: block;
-    font-family: var(--font-display);
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 1.5px;
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 1.4px;
     text-transform: uppercase;
     color: var(--blue);
     margin-bottom: 0.5rem;
@@ -68,11 +64,11 @@
 .pvm-body p { color: var(--mid); line-height: 1.75; margin-bottom: 0.9rem; }
 .pvm-body p:last-child { margin-bottom: 0; }
 
-.values-block { margin-top: 4rem; }
+.values-block { margin-top: var(--section-y); }
 
 @media (max-width: 640px) {
-    .pvm-card { grid-template-columns: 1fr; gap: 1.1rem; }
-    .pvm-icon { width: 64px; height: 64px; border-radius: 18px; }
+    .pvm-card { grid-template-columns: 1fr; gap: 1.1rem; padding: var(--card-pad); }
+    .pvm-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); }
     .pvm-icon svg { width: 30px; height: 30px; }
     .philosophy-quote-band { padding: 2rem 1.5rem 2rem 1.5rem; }
     .philosophy-quote-band svg { display: none; }

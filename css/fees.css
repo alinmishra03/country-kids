@@ -1,48 +1,44 @@
 /* Fees & CCS page (app/fees) — the four subsidy steps and the interactive
    weekly-cost estimator. */
 
+/* Surface/shadow/hover come from the shared card system in section-commons.css;
+   the extra top inset makes room for the numbered counter badge. */
 .fee-steps {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
+    gap: var(--card-gap);
     counter-reset: fee;
 }
 .fee-step {
     position: relative;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: 2.2rem 1.5rem 1.7rem;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    padding: 2.2rem var(--card-pad-sm) var(--card-pad-sm);
 }
-.fee-step:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevation); }
 .fee-step::before {
     counter-increment: fee;
     content: counter(fee);
     position: absolute;
-    top: -18px; inset-inline-start: 1.5rem;
+    top: -20px; inset-inline-start: var(--card-pad-sm);
     display: grid; place-items: center;
     width: 40px; height: 40px;
     border-radius: 50%;
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 1.15rem;
     box-shadow: var(--shadow-soft);
 }
 .fee-step-icon {
     display: grid; place-items: center;
     width: 54px; height: 54px;
-    border-radius: 16px;
+    border-radius: var(--radius-md);
     background: var(--blue-pale);
     color: var(--blue);
-    margin-bottom: 1rem;
+    margin-bottom: 1.1rem;
 }
 .fee-step-icon svg { width: 26px; height: 26px; }
-.fee-step h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
-.fee-step p { color: var(--mid); font-size: 0.92rem; line-height: 1.6; }
+.fee-step h3 { font-size: 1.1rem; margin-bottom: 0.55rem; }
+.fee-step p { color: var(--mid); font-size: 0.92rem; line-height: 1.65; }
 
 /* Estimator. */
 .estimator {
@@ -54,19 +50,16 @@
     margin: 0 auto;
 }
 .estimator-controls {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-xl);
     padding: 2rem;
-    box-shadow: var(--shadow-soft);
 }
 .estimator-field { margin-bottom: 1.3rem; }
 .estimator-field:last-child { margin-bottom: 0; }
 .estimator-field label {
     display: block;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     color: var(--blue-deep);
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.5rem;
     font-size: 0.92rem;
 }
 .estimator-field select {

@@ -47,9 +47,8 @@ export default function Hero() {
                     <span className="gold">belongs</span>.
                 </h1>
                 <p className="hero-subtitle">
-                    A not-for-profit early learning centre — seven purpose-named rooms for children
-                    6 weeks to 6 years, where play is the truest way to learn and every child is a
-                    seed of boundless potential.
+                    Seven purpose-named rooms for children 6 weeks to 6 years, where play is
+                    the truest way to learn.
                 </p>
 
                 <div className="hero-badges">

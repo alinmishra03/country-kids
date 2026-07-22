@@ -7,15 +7,18 @@
     flex-direction: column;
     gap: 0.9rem;
 }
+/* Surface/shadow come from the shared card system in section-commons.css. The
+   accordion supplies its own inset via .faq-q / .faq-a. */
 .faq-item {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
+    padding: 0;
     border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft);
     overflow: hidden;
-    transition: border-color 0.25s ease;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
-.faq-item.is-open { border-color: color-mix(in srgb, var(--blue) 40%, transparent); }
+.faq-item.is-open {
+    border-color: color-mix(in srgb, var(--blue) 32%, transparent);
+    box-shadow: var(--shadow-elevation);
+}
 .faq-q {
     width: 100%;
     display: flex;
@@ -26,10 +29,10 @@
     background: none;
     border: none;
     cursor: pointer;
-    padding: 1.25rem 1.4rem;
+    padding: 1.3rem var(--card-pad-sm);
     font-family: var(--font-display);
     font-size: 1.08rem;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     color: var(--accent-ink);
 }
 .faq-q-icon {
@@ -52,9 +55,9 @@
 .faq-item.is-open .faq-a { grid-template-rows: 1fr; }
 .faq-a-inner { overflow: hidden; }
 .faq-a p {
-    padding: 0 1.4rem 1.35rem;
+    padding: 0 var(--card-pad-sm) 1.35rem;
     color: var(--mid);
-    line-height: 1.7;
+    line-height: 1.75;
     font-size: 0.98rem;
 }
 

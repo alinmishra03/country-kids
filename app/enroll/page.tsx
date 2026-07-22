@@ -50,7 +50,7 @@ export default function EnrollPage() {
                         ))}
                     </Reveal>
 
-                    <Reveal className="sblocks-callout" variant="fadeUp" style={{ marginTop: '3rem' }}>
+                    <Reveal className="sblocks-callout is-spaced" variant="fadeUp">
                         <div className="sblocks-callout-text">
                             <h3>{KINDER_CALLOUT.title}</h3>
                             <p>{KINDER_CALLOUT.text}</p>
@@ -81,11 +81,11 @@ export default function EnrollPage() {
                             </figure>
                             <div className="info-card">
                                 <span className="info-icon" aria-hidden="true"><Icon name="phone" /></span>
-                                <span><b>Call us</b><a href={PHONE_HREF} style={{ color: 'var(--blue)' }}>{PHONE}</a></span>
+                                <span><b>Call us</b><a href={PHONE_HREF} className="link-accent">{PHONE}</a></span>
                             </div>
                             <div className="info-card">
                                 <span className="info-icon" aria-hidden="true"><Icon name="mail" /></span>
-                                <span><b>Email</b><a href={EMAIL_HREF} style={{ color: 'var(--blue)' }}>{EMAIL}</a></span>
+                                <span><b>Email</b><a href={EMAIL_HREF} className="link-accent">{EMAIL}</a></span>
                             </div>
                             <div className="info-card">
                                 <span className="info-icon" aria-hidden="true"><Icon name="map-pin" /></span>

@@ -1,6 +1,6 @@
 .contact-strip {
     position: relative;
-    padding: 4.5rem 0;
+    padding: var(--section-y-sm) 0;
     background: var(--blue-gradient);
     overflow: hidden;
     text-align: center;

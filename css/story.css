@@ -34,7 +34,7 @@
     display: inline-block;
     font-family: var(--font-display);
     font-size: 0.8rem;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     letter-spacing: 1.5px;
     text-transform: uppercase;
     color: var(--gold-deep);
@@ -62,21 +62,14 @@
 }
 
 /* Chapter Four's "what we planted" pillars. */
+/* Surface/shadow/hover come from the shared card system in section-commons.css. */
 .story-pillars {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1.25rem;
-    margin-top: 1.6rem;
+    margin-top: 1.75rem;
 }
-.story-pillar {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem 1.3rem;
-    box-shadow: var(--shadow-soft);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
-}
-.story-pillar:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevation); }
+.story-pillar { padding: var(--card-pad-sm) 1.35rem; }
 .story-pillar-stat {
     font-family: var(--font-display);
     font-size: 2.4rem;

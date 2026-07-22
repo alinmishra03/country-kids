@@ -1,14 +1,17 @@
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1.1rem;
+    gap: 1.25rem;
 }
+/* A full-bleed photo tile — no padding, so it sits outside the shared card
+   surface, but it borrows the same radius, border and shadow language. */
 .gallery-tile {
     position: relative;
     aspect-ratio: 1 / 1;
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border-subtle);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-soft);
+    transition: var(--card-transition);
     cursor: pointer;
     overflow: hidden;
     margin: 0;
@@ -30,16 +33,21 @@
     align-items: center;
     justify-content: center;
     gap: 0.4rem;
-    padding: 1.6rem 0.75rem 0.85rem;
+    padding: 1.75rem 0.85rem 0.9rem;
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 0.95rem;
     color: #fff;
     background: linear-gradient(180deg, transparent, rgba(6, 22, 42, 0.82));
 }
 .gallery-tile-label svg { width: 18px; height: 18px; color: var(--gold-light); }
 .gallery-tile:hover {
-    transform: translateY(-4px);
+    transform: translateY(var(--card-lift));
     box-shadow: var(--shadow-elevation);
+    border-color: var(--border-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gallery-tile, .gallery-tile-img { transition: none; }
 }
 .gallery-tile:hover .gallery-tile-img { transform: scale(1.08); }

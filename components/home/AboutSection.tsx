@@ -32,7 +32,7 @@ export default function AboutSection() {
 
                     <div className="about-copy">
                         <div className="section-eyebrow">Why CountryKids</div>
-                        <h2>A place that feels like <span style={{ color: 'var(--blue)' }}>home</span></h2>
+                        <h2 className="section-title">A place that feels like <span>home</span></h2>
                         <p>
                             For over 15 years, families have trusted CountryKids to give their
                             children a safe, nurturing and stimulating start. Our teachers know

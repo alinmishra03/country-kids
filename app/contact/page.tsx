@@ -42,17 +42,17 @@ export default function ContactPage() {
                         <Reveal as="div" variant="item" className="feature-item">
                             <div className="feature-icon" aria-hidden="true"><Icon name="phone" /></div>
                             <h3>Call</h3>
-                            <p><a href={PHONE_HREF} style={{ color: 'var(--blue)', fontWeight: 500 }}>{PHONE}</a></p>
+                            <p><a href={PHONE_HREF} className="link-accent">{PHONE}</a></p>
                         </Reveal>
                         <Reveal as="div" variant="item" className="feature-item">
                             <div className="feature-icon" aria-hidden="true"><Icon name="mail" /></div>
                             <h3>Email</h3>
-                            <p><a href={EMAIL_HREF} style={{ color: 'var(--blue)', fontWeight: 500 }}>{EMAIL}</a></p>
+                            <p><a href={EMAIL_HREF} className="link-accent">{EMAIL}</a></p>
                         </Reveal>
                         <Reveal as="div" variant="item" className="feature-item">
                             <div className="feature-icon" aria-hidden="true"><Icon name="map-pin" /></div>
                             <h3>Visit</h3>
-                            <p><a href={ADDRESS.mapsHref} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--blue)', fontWeight: 500 }}>{ADDRESS.line1}<br />{ADDRESS.line2}</a></p>
+                            <p><a href={ADDRESS.mapsHref} target="_blank" rel="noopener noreferrer" className="link-accent">{ADDRESS.line1}<br />{ADDRESS.line2}</a></p>
                         </Reveal>
                         <Reveal as="div" variant="item" className="feature-item">
                             <div className="feature-icon" aria-hidden="true"><Icon name="clock" /></div>

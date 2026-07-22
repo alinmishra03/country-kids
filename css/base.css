@@ -37,9 +37,15 @@
     --orange-rgb: 240, 137, 74;
 
     /* Typography — an elegant modern serif for headings paired with a clean,
-       readable sans for text. Only light/medium weights are used (no bold). */
-    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
-    --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+       geometric-humanist sans for text. Only light/regular/medium weights are
+       used site-wide (400 body, 500 emphasis); nothing is ever bold. */
+    --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --font-body: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+
+    /* Weight scale — the ONLY three weights used anywhere on the site. */
+    --fw-light: 300;
+    --fw-regular: 400;
+    --fw-medium: 500;
 
     /* Premium Gradients */
     --hero-gradient: linear-gradient(135deg, #EDEFF3 0%, #E1E5EC 100%);
@@ -80,15 +86,47 @@
     --surface-2: var(--dark2);
     --surface-3: var(--dark3);
     --surface-elevated: #FFFFFF;
-    --border-subtle: rgba(11, 27, 43, 0.10);
-    /* Layered, soft premium shadows */
-    --shadow-elevation: 0 24px 60px -18px rgba(11, 27, 43, 0.22), 0 8px 24px -12px rgba(11, 27, 43, 0.10);
-    --shadow-soft: 0 12px 32px -14px rgba(11, 27, 43, 0.16), 0 4px 12px -8px rgba(11, 27, 43, 0.08);
+    --border-subtle: rgba(11, 27, 43, 0.08);
+    --border-card: rgba(11, 27, 43, 0.07);
+    /* Layered, soft premium shadows. Three stops each — a hairline contact
+       shadow, a mid diffuse layer and a wide ambient layer — so cards read as
+       lifted rather than outlined. */
+    --shadow-elevation:
+        0 1px 2px rgba(11, 27, 43, 0.04),
+        0 10px 24px -14px rgba(11, 27, 43, 0.14),
+        0 30px 60px -26px rgba(11, 27, 43, 0.22);
+    --shadow-soft:
+        0 1px 2px rgba(11, 27, 43, 0.04),
+        0 4px 10px -6px rgba(11, 27, 43, 0.07),
+        0 14px 30px -20px rgba(11, 27, 43, 0.14);
 
-    --radius-xl: 28px;
-    --radius-lg: 22px;
-    --radius-md: 16px;
+    --radius-xl: 24px;
+    --radius-lg: 18px;
+    --radius-md: 14px;
     --radius-sm: 10px;
+    --radius-pill: 999px;
+
+    /* ── Card system ──
+       One set of values every card surface on the site derives from, so radius,
+       padding, borders, shadows and hover feel identical everywhere. */
+    --card-pad: 1.75rem;
+    --card-pad-sm: 1.5rem;
+    --card-gap: 1.5rem;
+    --card-lift: -6px;
+    --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --card-transition:
+        transform 0.3s var(--ease-out),
+        box-shadow 0.3s ease,
+        border-color 0.3s ease;
+
+    /* ── Layout rhythm ──
+       Shared shell width + vertical section scale so every band on every page
+       lines up on the same gutters and breathes the same amount. */
+    --shell-max: 1200px;
+    --shell-w: 92%;
+    --section-y: 5.5rem;
+    --section-y-sm: 4.5rem;
+    --section-head-gap: 3rem;
 
     --theme-transition:
         background-color 0.35s ease,
@@ -160,8 +198,15 @@
     --surface-3: #1C2E49;
     --surface-elevated: #16233A;
     --border-subtle: rgba(231, 239, 248, 0.10);
-    --shadow-elevation: 0 24px 60px -18px rgba(0, 0, 0, 0.60), 0 8px 24px -12px rgba(0, 0, 0, 0.45);
-    --shadow-soft: 0 12px 32px -14px rgba(0, 0, 0, 0.50), 0 4px 12px -8px rgba(0, 0, 0, 0.40);
+    --border-card: rgba(231, 239, 248, 0.09);
+    --shadow-elevation:
+        0 1px 2px rgba(0, 0, 0, 0.30),
+        0 10px 24px -14px rgba(0, 0, 0, 0.55),
+        0 30px 60px -26px rgba(0, 0, 0, 0.65);
+    --shadow-soft:
+        0 1px 2px rgba(0, 0, 0, 0.28),
+        0 4px 10px -6px rgba(0, 0, 0, 0.38),
+        0 14px 30px -20px rgba(0, 0, 0, 0.50);
 
     color-scheme: dark;
 }
@@ -185,25 +230,27 @@ body {
     color: var(--off-white);
     overflow-x: hidden;
     line-height: 1.7;
-    font-weight: 400;
-    letter-spacing: 0.05px;
+    font-weight: var(--fw-regular);
+    letter-spacing: 0;
     transition: var(--theme-transition);
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4 {
     font-family: var(--font-display);
     color: var(--accent-ink);
-    line-height: 1.2;
-    font-weight: 500;
+    line-height: 1.25;
+    font-weight: var(--fw-medium);
     letter-spacing: 0;
 }
 /* Large display headings read best a touch lighter and tighter. */
-h1 { font-weight: 400; letter-spacing: -0.01em; }
-h2 { font-weight: 400; }
+h1 { font-weight: var(--fw-light); line-height: 1.14; letter-spacing: -0.018em; }
+h2 { font-weight: var(--fw-regular); line-height: 1.18; letter-spacing: -0.012em; }
+h3, h4 { letter-spacing: -0.005em; }
 /* Never render heavy default-bold text — keep emphasis at medium. */
-b, strong { font-weight: 500; }
+b, strong { font-weight: var(--fw-medium); }
 p { text-wrap: pretty; }
 h1, h2, h3 { text-wrap: balance; }
 
@@ -247,10 +294,10 @@ textarea,
     justify-content: center;
     gap: 0.5rem;
     font-family: var(--font-body);
-    font-weight: 500;
+    font-weight: var(--fw-medium);
     font-size: 1rem;
     padding: 0.85rem 1.8rem;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     cursor: pointer;
     border: 2px solid transparent;
     letter-spacing: 0.2px;
@@ -294,7 +341,9 @@ textarea,
 }
 .btn-outline:active { transform: translateY(0); }
 
+/* The shared shell. Every full-width band aligns its content to this so the nav
+   logo, section headings and card grids all sit on the same left/right edge. */
 .container {
-    width: min(1200px, 92%);
+    width: min(var(--shell-max), var(--shell-w));
     margin-inline: auto;
 }

@@ -39,23 +39,18 @@
 }
 .timeline-when {
     display: inline-block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.5px;
+    font-size: 0.76rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.8px;
     text-transform: uppercase;
     color: var(--blue);
     background: var(--blue-pale);
     padding: 0.3rem 0.75rem;
-    border-radius: 999px;
-    margin-bottom: 0.6rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 0.65rem;
 }
-.timeline-card {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem 1.6rem;
-    box-shadow: var(--shadow-soft);
-}
+/* Surface from the shared card system in section-commons.css. */
+.timeline-card { padding: var(--card-pad-sm); }
 .timeline-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
 .timeline-card p { color: var(--mid); font-size: 0.95rem; line-height: 1.65; }
 
@@ -69,15 +64,14 @@
     max-width: 900px;
     margin: 0 auto;
     padding: 2rem 2.2rem;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
     border-radius: var(--radius-xl);
-    box-shadow: var(--shadow-soft);
 }
+/* Modifier for when the callout follows other content in the same section. */
+.sblocks-callout.is-spaced { margin-top: var(--section-head-gap); }
 .sblocks-callout-text { flex: 1 1 340px; }
-.sblocks-callout h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
-.sblocks-callout p { color: var(--mid); font-size: 0.98rem; line-height: 1.6; }
+.sblocks-callout h3 { font-size: 1.3rem; margin-bottom: 0.45rem; }
+.sblocks-callout p { color: var(--mid); font-size: 0.98rem; line-height: 1.65; }
 
 @media (max-width: 560px) {
-    .sblocks-callout { padding: 1.6rem; }
+    .sblocks-callout { padding: var(--card-pad-sm); }
 }

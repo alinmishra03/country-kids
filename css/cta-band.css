@@ -1,7 +1,7 @@
 /* Closing call-to-action band (components/shared/CTASection.js). A deep brand
    gradient panel with a soft radial glow, reused at the foot of most pages. */
 
-.cta-band { padding: 5.5rem 0; }
+.cta-band { padding: var(--section-y) 0; }
 .cta-band-inner {
     position: relative;
     overflow: hidden;
@@ -38,11 +38,11 @@
     text-shadow: 0 2px 20px rgba(4, 16, 32, 0.35);
 }
 .cta-band-text {
-    max-width: 620px;
+    max-width: 600px;
     margin: 1.1rem auto 0;
     color: rgba(255, 255, 255, 0.92);
-    font-size: 1.12rem;
-    line-height: 1.7;
+    font-size: 1.08rem;
+    line-height: 1.75;
 }
 .cta-band-actions {
     display: flex;
@@ -52,15 +52,18 @@
     gap: 1.1rem;
     margin-top: 2.2rem;
 }
+/* Matches the .btn-* metrics in base.css so it lines up with the CTA buttons. */
 .cta-band-phone {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    font-weight: 500;
-    font-size: 1.05rem;
+    justify-content: center;
+    gap: 0.5rem;
+    font-weight: var(--fw-medium);
+    font-size: 1rem;
+    letter-spacing: 0.2px;
     color: #fff;
-    padding: 0.85rem 1.4rem;
-    border-radius: 999px;
+    padding: 0.85rem 1.8rem;
+    border-radius: var(--radius-pill);
     border: 2px solid rgba(255, 255, 255, 0.4);
 }
 .cta-band-phone svg { width: 1.15em; height: 1.15em; }

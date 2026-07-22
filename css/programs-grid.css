@@ -1,36 +1,28 @@
+/* Surface, shadow and hover lift come from the shared card system in
+   section-commons.css; only the accent bar, photo header and body live here. */
 .programs-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.6rem;
+    gap: var(--card-gap);
 }
 .program-card {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-soft);
-    padding: 2rem 1.7rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 .program-card::before {
     content: "";
     position: absolute;
     top: 0; inset-inline: 0;
-    height: 5px;
+    z-index: 2;
+    height: 4px;
     background: var(--accent-grad, var(--blue-gradient));
     opacity: 0;
-    transition: opacity 0.28s ease;
-}
-.program-card:hover {
-    transform: translateY(-8px);
-    box-shadow: var(--shadow-elevation);
-    border-color: transparent;
+    transition: opacity 0.3s ease;
 }
 .program-card:hover::before { opacity: 1; }
 /* Full-bleed photo header — bleeds past the card padding to the rounded edges. */
 .program-media {
-    margin: -2rem -1.7rem 1.3rem;
+    margin: calc(var(--card-pad) * -1) calc(var(--card-pad) * -1) 1.35rem;
     height: 180px;
     overflow: hidden;
     background: var(--blue-pale);
@@ -49,16 +41,16 @@
     z-index: 1;
     border: 3px solid var(--surface-elevated);
     box-shadow: var(--shadow-soft);
-    width: 66px; height: 66px;
+    width: 64px; height: 64px;
     display: grid;
     place-items: center;
-    border-radius: 20px;
+    border-radius: var(--radius-md);
     background: var(--accent-soft, var(--blue-pale));
     color: var(--accent-strong, var(--blue));
-    margin-bottom: 1.15rem;
+    margin-bottom: 1.25rem;
     transition: transform 0.28s ease;
 }
-.program-icon svg { width: 32px; height: 32px; }
+.program-icon svg { width: 30px; height: 30px; }
 .program-card:hover .program-icon { transform: scale(1.08) rotate(-3deg); }
 
 /* Rotate the accent colour across cards for a lively-but-consistent palette. */
@@ -70,22 +62,23 @@
 .program-card h3 { font-size: 1.3rem; }
 .program-age {
     display: inline-block;
-    margin: 0.5rem 0 0.85rem;
-    font-weight: 500;
-    font-size: 0.82rem;
+    margin: 0.55rem 0 0.9rem;
+    font-weight: var(--fw-medium);
+    font-size: 0.78rem;
+    letter-spacing: 0.2px;
     color: var(--accent-strong, var(--blue));
     background: var(--accent-soft, var(--blue-pale));
-    padding: 0.28rem 0.75rem;
-    border-radius: 999px;
+    padding: 0.3rem 0.75rem;
+    border-radius: var(--radius-pill);
 }
-.program-card p { color: var(--mid); font-size: 0.97rem; line-height: 1.6; }
+.program-card p { color: var(--mid); font-size: 0.97rem; line-height: 1.65; }
 .program-card .program-link {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    margin-top: 1.15rem;
-    font-family: var(--font-display);
-    font-weight: 500;
+    margin-top: 1.25rem;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
     color: var(--accent-strong, var(--blue));
 }
 .program-card .program-link span { transition: transform 0.2s ease; }

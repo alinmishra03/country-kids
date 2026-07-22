@@ -1,21 +1,22 @@
 /* Shared section scaffolding used across home sections. */
 section { position: relative; }
 
-.section { padding: 5.5rem 0; }
+.section { padding: var(--section-y) 0; }
 .section-alt { background: var(--surface-2); }
 
-.section-head { text-align: center; max-width: 720px; margin: 0 auto 3.25rem; }
+.section-head { text-align: center; max-width: 720px; margin: 0 auto var(--section-head-gap); }
 .section-eyebrow {
     display: inline-block;
-    font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: 1.5px;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    letter-spacing: 1.4px;
     text-transform: uppercase;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
+    line-height: 1.5;
     color: var(--blue);
     background: var(--blue-pale);
-    padding: 0.4rem 0.9rem;
-    border-radius: 999px;
+    padding: 0.4rem 0.95rem;
+    border-radius: var(--radius-pill);
     margin-bottom: 1rem;
 }
 .section-title { font-size: clamp(2rem, 4vw, 2.75rem); }
@@ -23,9 +24,17 @@ section { position: relative; }
 .section-subtitle {
     margin-top: 1rem;
     color: var(--mid);
-    font-size: 1.1rem;
-    line-height: 1.65;
+    font-size: 1.08rem;
+    line-height: 1.7;
 }
+
+/* Inline accent link (phone / email / address inside body copy). Shared so the
+   pages don't each repeat the same inline colour + weight. */
+.link-accent {
+    color: var(--blue);
+    font-weight: var(--fw-medium);
+}
+.link-accent:hover { color: var(--gold-deep); }
 
 /* Decorative divider dots */
 .divider-dots {
@@ -41,16 +50,60 @@ section { position: relative; }
 .divider-dots span:nth-child(2) { background: var(--blue); }
 .divider-dots span:nth-child(3) { background: var(--gold); }
 
-/* Generic card */
-.card {
+/* ─── SHARED CARD SURFACE ──────────────────────────────────────────────────
+   One definition every card-like panel on the site inherits, so radius, padding,
+   border, shadow and hover feel identical everywhere. Component stylesheets load
+   after this file and only add what is genuinely unique (media, accents, inner
+   layout) — they no longer repeat the surface.
+
+   Deliberately excluded: .stat-card / .statm-card (Framer Motion drives their
+   transform inline, so a CSS transform transition would fight it) and
+   .gallery-tile (a full-bleed photo tile with no padding). */
+.card,
+.program-card,
+.feature-item,
+.room-card,
+.testimonial-card,
+.pillar-card,
+.value-chip,
+.curric-card,
+.fee-step,
+.timeline-card,
+.story-pillar,
+.pvm-card,
+.faq-item,
+.enroll-info .info-card,
+.enroll-form,
+.estimator-controls,
+.contact-hours,
+.sblocks-callout {
     background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-card);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: 1.8rem;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    padding: var(--card-pad);
+    transition: var(--card-transition);
 }
-.card:hover {
-    transform: translateY(-6px);
+
+/* Interactive cards share a single lift + elevation so hover reads the same on
+   every page. The border warms slightly to keep the edge from vanishing. */
+.card:hover,
+.program-card:hover,
+.feature-item:hover,
+.room-card:hover,
+.pillar-card:hover,
+.value-chip:hover,
+.curric-card:hover,
+.fee-step:hover,
+.story-pillar:hover,
+.pvm-card:hover {
+    transform: translateY(var(--card-lift));
     box-shadow: var(--shadow-elevation);
+    border-color: var(--border-subtle);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card, .program-card, .feature-item, .room-card, .testimonial-card,
+    .pillar-card, .value-chip, .curric-card, .fee-step, .timeline-card,
+    .story-pillar, .pvm-card { transition: none; }
 }
