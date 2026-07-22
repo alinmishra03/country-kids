@@ -345,8 +345,9 @@ export default function SiteHeader() {
                             id="themeToggleHeaderMobile"
                             className="theme-toggle-header-mobile"
                         />
-                        <Link className="nav-cta" href="/enroll">
-                            Enrol Now
+                        <Link className="btn-gold nav-cta" href="/enroll">
+                            Enroll Now
+                            <Icon name="arrow-right" />
                         </Link>
                         <button
                             className="hamburger"
@@ -414,8 +415,8 @@ export default function SiteHeader() {
                         )
                     )}
 
-                    <Link className="m-item mobile-cta" href="/enroll" onClick={closeMobile}>
-                        <Icon name="sparkles" /> Enrol Now
+                    <Link className="btn-gold m-item mobile-cta" href="/enroll" onClick={closeMobile}>
+                        <Icon name="sparkles" /> Enroll Now
                     </Link>
 
                     <div className="m-item mobile-toggles-row">

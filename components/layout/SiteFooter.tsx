@@ -7,6 +7,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/shared/Icon';
+import Reveal from '@/components/shared/Reveal';
 import { ROOM_LINKS } from '@/lib/rooms-data';
 import {
     SITE,
@@ -41,7 +42,7 @@ function SocialIcon({ brand }) {
 
 const FAMILY_LINKS = [
     { href: '/enroll', label: 'Book a Tour' },
-    { href: '/enroll', label: 'Enrol Now' },
+    { href: '/enroll', label: 'Enroll Now' },
     { href: '/fees', label: 'Fees & CCS' },
     { href: '/curriculum', label: 'Our Curriculum' },
     { href: '/compliance', label: 'Quality & Compliance' },
@@ -56,53 +57,126 @@ const ABOUT_LINKS = [
     { href: '/contact', label: 'Contact Us' },
 ];
 
-/* Newsletter signup band. Client-side only (no backend) — on submit it swaps to
-   a confirmation, mirroring the EnrollForm pattern. Wire the submit handler to
-   your email service when ready. */
+/* Benefit badges shown under the description (navy glass + gold icon + white). */
+const NEWSLETTER_BENEFITS = [
+    { icon: 'clipboard-check', label: 'Enrolment Updates' },
+    { icon: 'users', label: 'Community News' },
+    { icon: 'heart-handshake', label: 'Parenting Tips' },
+];
+
+/* Newsletter CTA. Client-side only (no backend wired yet) — validates the email,
+   shows a loading state, then swaps to a success confirmation. The submit handler
+   currently simulates the request; wire it to your email service where noted
+   without changing the surrounding UI/validation flow. */
 function NewsletterBand() {
-    const [sent, setSent] = useState(false);
+    const [email, setEmail] = useState('');
+    const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success'
+    const [error, setError] = useState('');
+
+    const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // TODO: POST the email to your newsletter service here.
-        setSent(true);
+        if (status === 'loading') return;
+        if (!isValidEmail(email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+        setError('');
+        setStatus('loading');
+        // TODO: POST the email to your newsletter service here, then setStatus on
+        // its resolution. The timeout only simulates that round-trip.
+        window.setTimeout(() => setStatus('success'), 900);
     };
 
     return (
-        <div className="footer-newsletter">
-            <div className="footer-newsletter-inner container">
-                <div className="footer-newsletter-glow" aria-hidden="true" />
-                <div className="footer-newsletter-text">
-                    <h3>Stay in the loop</h3>
-                    <p>
-                        Occasional news on tours, enrolments, kinder funding and community
-                        events — straight to your inbox.
+        <Reveal
+            as="section"
+            variant="fadeUp"
+            once
+            className="newsletter-cta"
+            aria-labelledby="newsletter-heading"
+        >
+            <div className="newsletter-cta-glow" aria-hidden="true" />
+            <div className="newsletter-cta-inner container">
+                    <span className="newsletter-eyebrow">Stay Connected</span>
+                    <h2 id="newsletter-heading" className="newsletter-title">
+                        Stay in the loop with Country Kids
+                    </h2>
+                    <span className="newsletter-title-accent" aria-hidden="true" />
+                    <p className="newsletter-desc">
+                        Receive occasional updates about tours, enrolments, community events
+                        and parenting resources.
                     </p>
+
+                    <ul className="newsletter-badges">
+                        {NEWSLETTER_BENEFITS.map((b) => (
+                            <li className="newsletter-badge" key={b.label}>
+                                <Icon name={b.icon} /> {b.label}
+                            </li>
+                        ))}
+                    </ul>
+
+                    {status === 'success' ? (
+                        <p className="newsletter-success" role="status">
+                            <Icon name="circle-check" />
+                            <span>
+                                <b>Thanks for subscribing!</b> You&rsquo;ll receive occasional
+                                updates from Country Kids.
+                            </span>
+                        </p>
+                    ) : (
+                        <form className="newsletter-form" onSubmit={handleSubmit} noValidate>
+                            <label className="newsletter-label" htmlFor="newsletter-email">
+                                Email address
+                            </label>
+                            <div className="newsletter-pill">
+                                <input
+                                    id="newsletter-email"
+                                    className="newsletter-input"
+                                    name="email"
+                                    type="email"
+                                    inputMode="email"
+                                    autoComplete="email"
+                                    placeholder="Enter your email address"
+                                    value={email}
+                                    onChange={(e) => {
+                                        setEmail(e.target.value);
+                                        if (error) setError('');
+                                    }}
+                                    aria-invalid={error ? 'true' : 'false'}
+                                    aria-describedby={error ? 'newsletter-error' : undefined}
+                                    disabled={status === 'loading'}
+                                    required
+                                />
+                                <button
+                                    type="submit"
+                                    className="newsletter-submit"
+                                    disabled={status === 'loading'}
+                                >
+                                    {status === 'loading' ? (
+                                        <>
+                                            <span className="btn-spinner" aria-hidden="true" />
+                                            Subscribing…
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Icon name="send" /> Subscribe
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                            {error && (
+                                <p className="newsletter-error" id="newsletter-error" role="alert">
+                                    {error}
+                                </p>
+                            )}
+                        </form>
+                    )}
+
+                    <p className="newsletter-trust">No spam · Unsubscribe anytime</p>
                 </div>
-                {sent ? (
-                    <p className="footer-newsletter-success" role="status">
-                        <Icon name="circle-check" /> Thank you — you&rsquo;re on the list.
-                    </p>
-                ) : (
-                    <form className="footer-newsletter-form" onSubmit={handleSubmit}>
-                        <label className="footer-newsletter-label" htmlFor="newsletter-email">
-                            Email address
-                        </label>
-                        <input
-                            id="newsletter-email"
-                            name="email"
-                            type="email"
-                            required
-                            autoComplete="email"
-                            placeholder="you@example.com"
-                        />
-                        <button type="submit" className="btn-gold">
-                            <Icon name="send" /> Subscribe
-                        </button>
-                    </form>
-                )}
-            </div>
-        </div>
+            </Reveal>
     );
 }
 

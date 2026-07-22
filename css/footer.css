@@ -4,50 +4,112 @@
     padding: 0 0 1.5rem;
 }
 
-/* ── Newsletter band ── */
-.footer-newsletter {
-    background: var(--blue-gradient);
-    padding: 3rem 0;
-    margin-bottom: 3.5rem;
-}
-.footer-newsletter-inner {
+/* ── Newsletter CTA ────────────────────────────────────────────────────────
+   A FULL-BLEED navy signup band (not a contained box) above the footer columns.
+   Navy (#102A4A) runs edge-to-edge with a soft STATIC radial glow — nothing in
+   the background animates. Content is centred in a single column; the email +
+   Subscribe fuse into one pill. */
+.newsletter-cta {
     position: relative;
     overflow: hidden;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
+    isolation: isolate;
+    background: #102A4A;
+    padding: var(--section-y) 0;
+    margin-bottom: var(--section-y-sm);
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
-.footer-newsletter-glow {
+/* Soft, static glow behind the content (no keyframes, no movement). */
+.newsletter-cta-glow {
     position: absolute;
-    top: 50%;
-    inset-inline-end: -6%;
-    transform: translateY(-50%);
-    width: 420px; height: 420px;
-    max-width: 60%;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.28) 0%, transparent 62%);
+    inset: 0;
+    z-index: 0;
     pointer-events: none;
+    background:
+        radial-gradient(46% 62% at 50% 0%, rgba(var(--gold-rgb), 0.16), transparent 70%),
+        radial-gradient(60% 82% at 50% 122%, rgba(124, 196, 242, 0.10), transparent 72%);
 }
-.footer-newsletter-text { position: relative; z-index: 1; flex: 1 1 320px; }
-.footer-newsletter-text h3 { color: #fff; font-size: clamp(1.5rem, 3vw, 2rem); }
-.footer-newsletter-text p {
-    color: rgba(255, 255, 255, 0.9);
-    margin-top: 0.5rem;
-    max-width: 46ch;
-    line-height: 1.65;
-}
-.footer-newsletter-form {
+.newsletter-cta-inner {
     position: relative;
     z-index: 1;
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    flex: 1 1 360px;
-    max-width: 480px;
+    flex-direction: column;
+    align-items: center;
 }
-.footer-newsletter-label {
+
+/* Eyebrow */
+.newsletter-eyebrow {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--gold-light);
+    margin-bottom: 1rem;
+}
+
+/* Heading — large serif, with a gold accent bar beneath it. */
+.newsletter-title {
+    font-family: var(--font-display);
+    color: #fff;
+    font-weight: var(--fw-light);
+    line-height: 1.12;
+    letter-spacing: -0.018em;
+    font-size: 48px;
+    max-width: 20ch;
+}
+.newsletter-title-accent {
+    display: block;
+    width: 60px; height: 4px;
+    margin: 1.1rem auto 0;
+    border-radius: var(--radius-pill);
+    background: var(--gold-gradient);
+}
+
+/* Description */
+.newsletter-desc {
+    margin-top: 1.4rem;
+    max-width: 560px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 1.05rem;
+    line-height: 1.6;
+}
+
+/* Benefit badges — navy glass, gold icon, white text. */
+.newsletter-badges {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+}
+.newsletter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 1rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: var(--fw-medium);
+}
+.newsletter-badge svg { width: 17px; height: 17px; color: var(--gold-light); flex-shrink: 0; }
+
+/* Form — the email + Subscribe fuse into a single pill. */
+.newsletter-form {
+    margin-top: 2rem;
+    width: min(560px, 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+}
+.newsletter-label {
     position: absolute;
     width: 1px; height: 1px;
     padding: 0; margin: -1px;
@@ -56,42 +118,143 @@
     white-space: nowrap;
     border: 0;
 }
-.footer-newsletter-form input {
-    flex: 1 1 220px;
-    min-width: 0;
-    padding: 0.9rem 1.2rem;
+.newsletter-pill {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 6px;
     border-radius: var(--radius-pill);
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
-    background: rgba(255, 255, 255, 0.14);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.newsletter-pill:focus-within {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
+    background: rgba(255, 255, 255, 0.12);
+}
+.newsletter-input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 52px;
+    padding: 0 1.25rem;
+    background: transparent;
+    border: none;
     color: #fff;
     font-family: inherit;
     font-size: 1rem;
 }
-.footer-newsletter-form input::placeholder { color: rgba(255, 255, 255, 0.7); }
-.footer-newsletter-form input:focus {
-    outline: none;
-    border-color: #fff;
-    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
-}
-.footer-newsletter-form .btn-gold { flex: 0 0 auto; }
-.footer-newsletter-success {
-    position: relative;
-    z-index: 1;
+.newsletter-input::placeholder { color: rgba(255, 255, 255, 0.55); }
+.newsletter-input:focus { outline: none; }
+.newsletter-input:disabled { opacity: 0.6; }
+
+/* Solid gold Subscribe button — the site's filled-CTA treatment (à la .nav-cta):
+   gold gradient, navy ink, arrow slides on hover. */
+.newsletter-submit {
+    flex: 0 0 auto;
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    flex: 1 1 360px;
-    max-width: 480px;
-    color: #fff;
+    justify-content: center;
+    gap: 0.5rem;
+    height: 52px;
+    padding: 0 1.6rem;
+    border: none;
+    border-radius: var(--radius-pill);
+    background: var(--gold-gradient);
+    color: var(--btn-text-gold);
+    font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    font-size: 1.05rem;
+    font-size: 1rem;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 8px 20px -10px rgba(var(--gold-rgb), 0.55);
+    transition: filter 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease;
 }
-.footer-newsletter-success svg { width: 22px; height: 22px; color: var(--gold-light); }
+.newsletter-submit svg { width: 1.05em; height: 1.05em; transition: transform 0.3s var(--ease-out); }
+.newsletter-submit:hover { filter: brightness(1.05); box-shadow: 0 12px 26px -10px rgba(var(--gold-rgb), 0.7); }
+.newsletter-submit:hover svg { transform: translateX(4px); }
+.newsletter-submit:active { transform: translateY(1px); }
+.newsletter-submit:disabled { cursor: progress; filter: saturate(0.85) brightness(0.97); }
 
+/* Loading spinner inside the button. */
+.btn-spinner {
+    width: 1.05em; height: 1.05em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin { to { transform: rotate(360deg); } }
+
+/* Inline validation message. */
+.newsletter-error {
+    color: #FFD7A0;
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+}
+
+/* Success — fades in when it replaces the form. */
+.newsletter-success {
+    margin-top: 2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    max-width: 520px;
+    color: #fff;
+    font-size: 1.02rem;
+    line-height: 1.55;
+    animation: newsletter-fade 0.45s var(--ease-out) both;
+}
+.newsletter-success svg { width: 32px; height: 32px; color: var(--gold-light); flex-shrink: 0; }
+.newsletter-success b { font-weight: var(--fw-medium); }
+@keyframes newsletter-fade {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* Trust text */
+.newsletter-trust {
+    margin-top: 1.4rem;
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 0.85rem;
+}
+
+/* Tablet — vertical padding is token-driven (scales via responsive.css). */
+@media (max-width: 900px) {
+    .newsletter-title { font-size: 36px; }
+}
+/* Mobile — the pill unstacks into a full-width input + button; no h-scroll. */
 @media (max-width: 560px) {
-    .footer-newsletter-form .btn-gold { width: 100%; }
+    .newsletter-title { font-size: 28px; }
+    .newsletter-desc { font-size: 1rem; }
+    .newsletter-pill {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0;
+        background: transparent;
+        border: none;
+    }
+    .newsletter-pill:focus-within { box-shadow: none; }
+    .newsletter-input {
+        width: 100%;
+        height: 58px;
+        border-radius: var(--radius-pill);
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .newsletter-input:focus {
+        border-color: var(--gold);
+        box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
+    }
+    .newsletter-submit { width: 100%; height: 56px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .newsletter-success { animation: none; }
+    .newsletter-submit svg { transition: none; }
 }
 .footer-grid {
     display: grid;
@@ -115,7 +278,7 @@
 .footer-brand .footer-logo .logo-mark {
     display: grid; place-items: center;
     width: 42px; height: 42px;
-    border-radius: 13px;
+    border-radius: var(--radius-md);
     background: var(--blue-gradient);
     color: #fff;
 }
@@ -168,9 +331,30 @@
     margin-bottom: 1rem;
 }
 .footer-links { list-style: none; display: grid; gap: 0.55rem; }
-.footer-links a { color: var(--mid); font-weight: var(--fw-medium); display: inline-flex; align-items: center; gap: 0.3rem; }
+.footer-links a {
+    position: relative;
+    color: var(--mid); font-weight: var(--fw-medium);
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    width: fit-content;
+}
 .footer-links a svg { width: 14px; height: 14px; }
+/* Underline wipes in from the left on hover / keyboard focus. */
+.footer-links a::after {
+    content: "";
+    position: absolute;
+    left: 0; bottom: -2px;
+    width: 100%; height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.3s var(--ease-out);
+}
 .footer-links a:hover { color: var(--blue); }
+.footer-links a:hover::after,
+.footer-links a:focus-visible::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+    .footer-links a::after { transition: none; }
+}
 
 .footer-contact {
     margin-top: 1.5rem;

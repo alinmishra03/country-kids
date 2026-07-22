@@ -23,7 +23,7 @@
 .stats-blob.b1 {
     width: 360px; height: 360px;
     top: -90px; left: 4%;
-    background: radial-gradient(circle, rgba(200, 150, 62, 0.55), transparent 70%);
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.55), transparent 70%);
     animation: stat-blob-1 24s ease-in-out infinite;
 }
 .stats-blob.b2 {
@@ -35,7 +35,7 @@
 .stats-blob.b3 {
     width: 320px; height: 320px;
     top: -60px; right: 3%;
-    background: radial-gradient(circle, rgba(200, 150, 62, 0.4), transparent 70%);
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.4), transparent 70%);
     animation: stat-blob-3 27s ease-in-out infinite;
 }
 @keyframes stat-blob-1 { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(34px, 26px); } }
