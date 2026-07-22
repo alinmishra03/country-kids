@@ -35,6 +35,17 @@ export const scaleIn = {
     show: { opacity: 1, scale: 1, transition: { duration: 0.6, ease: EASE } },
 };
 
+/* Springy rise + scale — a professional "pop" for grid items / chips. */
+export const popIn = {
+    hidden: { opacity: 0, y: 22, scale: 0.9 },
+    show: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { duration: 0.55, ease: [0.34, 1.56, 0.64, 1] },
+    },
+};
+
 /* Image reveal — a soft clip + zoom-settle. */
 export const imageReveal = {
     hidden: { opacity: 0, scale: 1.08, clipPath: 'inset(12% 12% 12% 12% round 18px)' },
@@ -62,6 +73,7 @@ export const VARIANTS = {
     slideInLeft,
     slideInRight,
     scaleIn,
+    popIn,
     imageReveal,
     container: staggerContainer,
     item: staggerItem,

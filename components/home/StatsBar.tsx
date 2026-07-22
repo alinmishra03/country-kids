@@ -72,7 +72,9 @@ function StatValue({ value, start }: { value: string; start: boolean }) {
 
 export default function StatsBar() {
     const sectionRef = useRef<HTMLElement>(null);
-    const inView = useInView(sectionRef, { once: true, amount: 0.3 });
+    // once: false → the staggered entrance + count-up replay every time the
+    // section (re)enters the viewport, scrolling up or down.
+    const inView = useInView(sectionRef, { once: false, amount: 0.3 });
     const reduced = useReducedMotion();
 
     // Mouse parallax (spring-smoothed → no jitter), capped at ±10px.

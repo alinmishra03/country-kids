@@ -10,7 +10,8 @@
      as        — element/tag to render ('div' default; pass motion-friendly tags)
      delay     — extra delay (seconds) layered on the variant transition
      amount    — viewport intersection ratio before triggering (default 0.2)
-     once      — animate only the first time it enters (default true)
+     once      — true = animate only the first time it enters; false (default) =
+                 replay every time it re-enters, scrolling up or down
      stagger   — when true, uses the container variant and staggers children that
                  are themselves <Reveal variant="item"> (or motion elements)      */
 
@@ -23,8 +24,15 @@ export default function Reveal({
     as = 'div',
     delay = 0,
     amount = 0.2,
-    once = true,
+    /* false → the animation replays every time the element (re)enters the
+       viewport, scrolling up or down; true → only the first time. */
+    once = false,
     stagger = false,
+    /* Negative bottom margin shrinks the trigger zone at the bottom of the
+       viewport, so a reveal only fires once the element is genuinely on screen
+       (not the moment its first pixel crosses the fold). Follows Intersection
+       Observer rootMargin: "top right bottom left". */
+    margin = '0px 0px -15% 0px',
     className,
     style,
     ...rest
@@ -57,7 +65,7 @@ export default function Reveal({
             variants={v}
             initial="hidden"
             whileInView="show"
-            viewport={{ once, amount }}
+            viewport={{ once, amount, margin }}
             transition={transition}
             {...rest}
         >

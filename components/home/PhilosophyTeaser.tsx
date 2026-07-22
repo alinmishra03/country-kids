@@ -12,33 +12,35 @@ export default function PhilosophyTeaser() {
     return (
         <section className="section philosophy-teaser" id="philosophy">
             <div className="container philosophy-teaser-grid">
-                <Reveal className="philosophy-teaser-copy" stagger>
-                    <Reveal as="span" variant="item" className="section-eyebrow">Our Philosophy</Reveal>
-                    <Reveal as="h2" variant="item" className="section-title">
+                {/* Left copy — a directional slide-in cascade from the left. */}
+                <div className="philosophy-teaser-copy">
+                    <Reveal as="span" variant="slideInLeft" className="section-eyebrow">Our Philosophy</Reveal>
+                    <Reveal as="h2" variant="slideInLeft" delay={0.08} className="section-title">
                         Rooted in Country. <span>Flourishing together.</span>
                     </Reveal>
-                    <Reveal as="p" variant="item" className="philosophy-teaser-lead">
+                    <Reveal as="p" variant="slideInLeft" delay={0.16} className="philosophy-teaser-lead">
                         {PHILOSOPHY_INTRO.lead}
                     </Reveal>
-                    <Reveal as="blockquote" variant="item" className="philosophy-teaser-quote">
+                    <Reveal as="blockquote" variant="slideInLeft" delay={0.24} className="philosophy-teaser-quote">
                         <Icon name="quote" />
                         {PHILOSOPHY_INTRO.quote}
                     </Reveal>
-                    <Reveal variant="item">
+                    <Reveal variant="fadeUp" delay={0.32}>
                         <Link className="btn-primary" href="/philosophy">
                             Explore our philosophy <Icon name="arrow-right" />
                         </Link>
                     </Reveal>
-                </Reveal>
+                </div>
 
-                <Reveal className="values-grid" stagger amount={0.1}>
-                    {VALUES.map((v) => (
-                        <Reveal as="div" variant="item" className="value-chip" key={v.label}>
+                {/* Right list — a staggered springy pop-in, chip by chip. */}
+                <div className="values-grid">
+                    {VALUES.map((v, i) => (
+                        <Reveal as="div" variant="popIn" delay={i * 0.07} className="value-chip" key={v.label}>
                             <span className="value-chip-icon" aria-hidden="true"><Icon name={v.icon} /></span>
                             <span className="value-chip-label">{v.label}</span>
                         </Reveal>
                     ))}
-                </Reveal>
+                </div>
             </div>
         </section>
     );
