@@ -29,6 +29,7 @@ export default function useGsap(scopeRef, build, deps = []) {
 
         let ctx;
         let cancelled = false;
+        let cleanupRefresh = () => {};
 
         (async () => {
             const [{ gsap }, { ScrollTrigger }] = await Promise.all([
@@ -38,12 +39,29 @@ export default function useGsap(scopeRef, build, deps = []) {
             if (cancelled) return;
             gsap.registerPlugin(ScrollTrigger);
             ctx = gsap.context(() => build(gsap, ScrollTrigger), el);
-            // Recalculate positions once images/fonts have settled.
-            ScrollTrigger.refresh();
+
+            // Trigger positions can be stale: this hook (and GSAP itself) load
+            // async, images above the section stream in, and some sections mount
+            // client-only WebGL below the fold — every one of these shifts layout
+            // AFTER the initial measure, which can leave a `.from` reveal stuck at
+            // opacity:0 because its ScrollTrigger start never lines up. Re-measure
+            // once now and again after the page fully loads / settles.
+            const refresh = () => {
+                if (!cancelled) ScrollTrigger.refresh();
+            };
+            refresh();
+            const t = setTimeout(refresh, 600);
+            const loaded = document.readyState === 'complete';
+            if (!loaded) window.addEventListener('load', refresh);
+            cleanupRefresh = () => {
+                clearTimeout(t);
+                if (!loaded) window.removeEventListener('load', refresh);
+            };
         })();
 
         return () => {
             cancelled = true;
+            cleanupRefresh();
             if (ctx) ctx.revert();
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

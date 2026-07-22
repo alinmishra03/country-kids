@@ -39,14 +39,13 @@ export default function LearningSpaces() {
     const rootRef = useRef(null);
 
     useGsap(rootRef, (gsap: any) => {
-        gsap.from('.ls-head > *', {
-            y: 30,
-            opacity: 0,
-            duration: 0.7,
-            ease: 'power3.out',
-            stagger: 0.12,
-            scrollTrigger: { trigger: '.ls-head', start: 'top 82%' },
-        });
+        // NOTE: the header (`.ls-head`) is intentionally NOT animated here. Its
+        // children match the site-wide reveal selectors (`.section-head > *`,
+        // `.section-title`, `.section-subtitle`) and are already faded in by the
+        // CSS-based system in hooks/useAnimations (`.fx-reveal`/`.fx-in`). A GSAP
+        // `.from` on the same elements wrote inline `opacity:0`, which outranks the
+        // `.fx-in` class — so when the tween didn't complete the heading stayed
+        // invisible. One reveal system per element only.
         gsap.from('.ls-gallery', {
             opacity: 0,
             scale: 0.97,
