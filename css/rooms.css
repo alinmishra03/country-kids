@@ -1,0 +1,114 @@
+/* Room cards — shared by the home rooms preview and the /rooms page. A photo
+   with an animal-icon badge, then a body with name, age, animal and blurb. Each
+   card is tinted by an accent class (.accent-<key>) exposing --acc / --acc-pale. */
+
+.accent-blue   { --acc: var(--blue);   --acc-deep: var(--blue-deep);  --acc-pale: var(--blue-pale); }
+.accent-gold   { --acc: var(--gold-deep); --acc-deep: var(--gold-deep); --acc-pale: rgba(var(--gold-rgb), 0.14); }
+.accent-green  { --acc: var(--green);  --acc-deep: var(--green-deep); --acc-pale: var(--green-pale); }
+.accent-orange { --acc: var(--orange); --acc-deep: var(--orange-deep); --acc-pale: var(--orange-pale); }
+.accent-teal   { --acc: #1AA0A6;       --acc-deep: #12787D;          --acc-pale: rgba(26, 160, 166, 0.12); }
+
+.rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.75rem;
+    margin-top: 1rem;
+}
+
+.room-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease;
+    height: 100%;
+}
+.room-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-elevation);
+    border-color: color-mix(in srgb, var(--acc) 40%, transparent);
+}
+
+.room-media { position: relative; aspect-ratio: 16 / 11; overflow: hidden; }
+.room-media img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.room-card:hover .room-media img { transform: scale(1.06); }
+.room-media::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 45%, rgba(6, 22, 42, 0.35) 100%);
+}
+
+.room-icon {
+    position: absolute;
+    top: 1rem; inset-inline-start: 1rem;
+    z-index: 2;
+    display: grid; place-items: center;
+    width: 52px; height: 52px;
+    border-radius: 15px;
+    background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    color: var(--acc-deep);
+    box-shadow: var(--shadow-soft);
+}
+.room-icon svg { width: 26px; height: 26px; }
+.room-badge {
+    position: absolute;
+    top: 1rem; inset-inline-end: 1rem;
+    z-index: 2;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    color: var(--btn-text-gold);
+    background: var(--gold-gradient);
+    padding: 0.35rem 0.7rem;
+    border-radius: 999px;
+    box-shadow: 0 6px 14px -6px rgba(var(--gold-rgb), 0.6);
+}
+
+.room-body { padding: 1.5rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
+.room-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.room-heading h3 { font-size: 1.3rem; }
+.room-age {
+    flex-shrink: 0;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--acc-deep);
+    background: var(--acc-pale);
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.room-stage {
+    display: inline-block;
+    margin-top: 0.5rem;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    color: var(--mid);
+}
+.room-body p { margin-top: 0.75rem; color: var(--mid); font-size: 0.95rem; line-height: 1.65; flex: 1; }
+
+.room-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.1rem;
+    font-weight: 600;
+    color: var(--acc-deep);
+    font-size: 0.95rem;
+}
+.room-link svg { width: 17px; height: 17px; transition: transform 0.2s ease; }
+.room-link:hover svg { transform: translateX(4px); }
+
+@media (max-width: 1024px) {
+    .rooms-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+    .rooms-grid { grid-template-columns: 1fr; }
+}

@@ -8,47 +8,85 @@
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
-    padding: 2rem 1.6rem;
+    padding: 2rem 1.7rem;
     position: relative;
     overflow: hidden;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
 .program-card::before {
     content: "";
     position: absolute;
     top: 0; inset-inline: 0;
-    height: 6px;
-    background: var(--gold-gradient);
+    height: 5px;
+    background: var(--accent-grad, var(--blue-gradient));
+    opacity: 0;
+    transition: opacity 0.28s ease;
 }
 .program-card:hover {
     transform: translateY(-8px);
     box-shadow: var(--shadow-elevation);
+    border-color: transparent;
 }
+.program-card:hover::before { opacity: 1; }
+/* Full-bleed photo header — bleeds past the card padding to the rounded edges. */
+.program-media {
+    margin: -2rem -1.7rem 1.3rem;
+    height: 180px;
+    overflow: hidden;
+    background: var(--blue-pale);
+}
+.program-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.program-card:hover .program-media img { transform: scale(1.06); }
 .program-icon {
-    font-size: 2.6rem;
-    width: 68px; height: 68px;
+    /* Overlap the icon badge onto the photo above for a layered, premium look. */
+    margin-top: -50px;
+    position: relative;
+    z-index: 1;
+    border: 3px solid var(--surface-elevated);
+    box-shadow: var(--shadow-soft);
+    width: 66px; height: 66px;
     display: grid;
     place-items: center;
     border-radius: 20px;
-    background: var(--blue-pale);
-    margin-bottom: 1rem;
+    background: var(--accent-soft, var(--blue-pale));
+    color: var(--accent-strong, var(--blue));
+    margin-bottom: 1.15rem;
+    transition: transform 0.28s ease;
 }
-.program-card h3 { font-size: 1.35rem; }
+.program-icon svg { width: 32px; height: 32px; }
+.program-card:hover .program-icon { transform: scale(1.08) rotate(-3deg); }
+
+/* Rotate the accent colour across cards for a lively-but-consistent palette. */
+.program-card:nth-child(4n+1) { --accent-soft: var(--blue-pale);  --accent-strong: var(--blue);      --accent-grad: var(--blue-gradient); }
+.program-card:nth-child(4n+2) { --accent-soft: rgba(var(--gold-rgb),0.16);  --accent-strong: var(--gold-deep);  --accent-grad: var(--gold-gradient); }
+.program-card:nth-child(4n+3) { --accent-soft: var(--green-pale); --accent-strong: var(--green-deep); --accent-grad: linear-gradient(135deg,#5FC98C,#2E8353); }
+.program-card:nth-child(4n+4) { --accent-soft: var(--orange-pale); --accent-strong: var(--orange-deep); --accent-grad: linear-gradient(135deg,#F7A868,#D96E2A); }
+
+.program-card h3 { font-size: 1.3rem; }
 .program-age {
     display: inline-block;
-    margin: 0.4rem 0 0.8rem;
-    font-weight: 700;
-    font-size: 0.85rem;
-    color: var(--gold-deep);
-    background: rgba(var(--gold-rgb), 0.14);
-    padding: 0.25rem 0.7rem;
+    margin: 0.5rem 0 0.85rem;
+    font-weight: 500;
+    font-size: 0.82rem;
+    color: var(--accent-strong, var(--blue));
+    background: var(--accent-soft, var(--blue-pale));
+    padding: 0.28rem 0.75rem;
     border-radius: 999px;
 }
-.program-card p { color: var(--mid); font-size: 0.98rem; }
+.program-card p { color: var(--mid); font-size: 0.97rem; line-height: 1.6; }
 .program-card .program-link {
-    display: inline-block;
-    margin-top: 1rem;
-    font-weight: 700;
-    color: var(--blue);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: 1.15rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    color: var(--accent-strong, var(--blue));
 }
-.program-card .program-link::after { content: " →"; }
+.program-card .program-link span { transition: transform 0.2s ease; }
+.program-card:hover .program-link span { transform: translateX(4px); }

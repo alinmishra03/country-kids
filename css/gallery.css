@@ -1,19 +1,45 @@
 .gallery-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
+    gap: 1.1rem;
 }
 .gallery-tile {
+    position: relative;
     aspect-ratio: 1 / 1;
-    border-radius: var(--radius-md);
-    display: grid;
-    place-items: center;
-    font-size: 3rem;
-    background: var(--blue-pale);
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-subtle);
-    transition: transform 0.25s ease;
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
     cursor: pointer;
+    overflow: hidden;
+    margin: 0;
 }
-.gallery-tile:nth-child(3n) { background: rgba(var(--gold-rgb), 0.16); }
-.gallery-tile:nth-child(4n) { background: var(--surface-3); }
-.gallery-tile:hover { transform: scale(1.05) rotate(-2deg); }
+/* Photo fills the tile; caption sits on a gradient scrim for readability. */
+.gallery-tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+.gallery-tile-label {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 1.6rem 0.75rem 0.85rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #fff;
+    background: linear-gradient(180deg, transparent, rgba(6, 22, 42, 0.82));
+}
+.gallery-tile-label svg { width: 18px; height: 18px; color: var(--gold-light); }
+.gallery-tile:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevation);
+}
+.gallery-tile:hover .gallery-tile-img { transform: scale(1.08); }

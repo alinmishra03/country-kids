@@ -1,0 +1,102 @@
+/* Curriculum page (app/curriculum) — "Five Landscapes" card deck. A row of
+   series tabs switches the visible panel of practice cards. Each series carries
+   an accent (via .accent-* from rooms.css). */
+
+.curric-frameworks {
+    max-width: 780px;
+    margin: 0 auto 2.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--mid);
+    background: var(--surface-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.2rem;
+    line-height: 1.6;
+}
+
+.curric-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+}
+.curric-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-body);
+    font-size: 0.98rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: 999px;
+    padding: 0.65rem 1.3rem;
+    cursor: pointer;
+}
+.curric-tab svg { width: 20px; height: 20px; color: var(--acc-deep, var(--blue)); }
+.curric-tab:hover { border-color: color-mix(in srgb, var(--acc, var(--blue)) 45%, transparent); transform: translateY(-2px); }
+.curric-tab.is-active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--acc, var(--blue)) 0%, var(--acc-deep, var(--blue-deep)) 100%);
+    border-color: transparent;
+    box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--acc, var(--blue)) 70%, transparent);
+}
+.curric-tab.is-active svg { color: #fff; }
+
+.curric-panel-head {
+    text-align: center;
+    max-width: 640px;
+    margin: 0 auto 2.2rem;
+}
+.curric-panel-head .curric-tagline {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.4rem;
+    color: var(--acc-deep, var(--blue-deep));
+    margin-bottom: 0.6rem;
+}
+.curric-panel-head p { color: var(--mid); line-height: 1.7; }
+
+.curric-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+.curric-card {
+    position: relative;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 1.6rem 1.7rem;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease;
+}
+.curric-card::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0; top: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--acc, var(--blue)), var(--acc-deep, var(--blue-deep)));
+}
+.curric-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-elevation); }
+.curric-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+.curric-card p { color: var(--mid); font-size: 0.95rem; line-height: 1.65; }
+.curric-outcome {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--acc-deep, var(--blue-deep));
+    background: var(--acc-pale, var(--blue-pale));
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin-bottom: 0.9rem;
+}
+
+@media (max-width: 900px) {
+    .curric-cards { grid-template-columns: 1fr; }
+}

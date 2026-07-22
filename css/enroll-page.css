@@ -15,8 +15,16 @@
     align-items: flex-start;
     margin-bottom: 1rem;
 }
-.enroll-info .info-card .info-emoji { font-size: 1.8rem; }
-.enroll-info .info-card b { color: var(--blue-deep); display: block; }
+.enroll-info .info-card .info-icon {
+    flex: 0 0 auto;
+    display: grid; place-items: center;
+    width: 46px; height: 46px;
+    border-radius: 14px;
+    background: var(--blue-pale);
+    color: var(--blue);
+}
+.enroll-info .info-card .info-icon svg { width: 22px; height: 22px; }
+.enroll-info .info-card b { color: var(--blue-deep); display: block; margin-bottom: 0.15rem; }
 .enroll-info .info-card span { color: var(--mid); font-size: 0.95rem; }
 
 .enroll-form {
@@ -30,7 +38,7 @@
 .form-row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-row label {
     display: block;
-    font-weight: 700;
+    font-weight: 500;
     color: var(--blue-deep);
     margin-bottom: 0.4rem;
     font-size: 0.92rem;
@@ -56,14 +64,26 @@
 }
 .form-note { font-size: 0.85rem; color: var(--mid); margin-top: 1rem; }
 .form-success {
-    background: var(--blue-pale);
-    border: 1px solid var(--blue);
-    color: var(--blue-deep);
+    background: var(--green-pale);
+    border: 1px solid var(--green);
+    color: var(--text-primary);
     border-radius: var(--radius-md);
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
     text-align: center;
-    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
 }
+.form-success-icon {
+    display: grid; place-items: center;
+    width: 60px; height: 60px;
+    border-radius: 50%;
+    background: var(--green);
+    color: #fff;
+}
+.form-success-icon svg { width: 34px; height: 34px; }
+.form-success p { font-weight: 500; max-width: 42ch; }
 
 @media (max-width: 800px) {
     .enroll-wrap { grid-template-columns: 1fr; }

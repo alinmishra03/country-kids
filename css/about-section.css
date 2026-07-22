@@ -6,27 +6,36 @@
 }
 .about-media {
     position: relative;
-    border-radius: var(--radius-lg);
-    background: var(--blue-gradient);
-    min-height: 360px;
-    display: grid;
-    place-items: center;
+    border-radius: var(--radius-xl);
+    background: var(--blue-pale);
+    min-height: 380px;
     box-shadow: var(--shadow-elevation);
     overflow: hidden;
 }
-.about-media .about-emoji { font-size: 7rem; }
+/* Real photograph filling the media panel */
+.about-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 .about-media .about-float {
     position: absolute;
     background: var(--surface-elevated);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft);
-    padding: 0.8rem 1.1rem;
-    font-weight: 700;
+    border-radius: 999px;
+    box-shadow: var(--shadow-elevation);
+    padding: 0.6rem 1.05rem;
+    font-weight: 500;
+    font-size: 0.92rem;
     color: var(--blue-deep);
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
+.about-media .about-float svg { width: 18px; height: 18px; }
+.about-media .about-float.one svg { color: var(--orange-deep); }
+.about-media .about-float.two svg { color: #E5484D; }
 .about-float.one { top: 1.2rem; inset-inline-start: 1.2rem; }
 .about-float.two { bottom: 1.2rem; inset-inline-end: 1.2rem; }
 
@@ -43,18 +52,18 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
 }
 .about-list li .tick {
     display: grid;
     place-items: center;
-    width: 28px; height: 28px;
+    width: 30px; height: 30px;
     border-radius: 50%;
-    background: var(--blue-pale);
-    color: var(--blue);
+    background: var(--green-pale);
+    color: var(--green-deep);
     flex: 0 0 auto;
-    font-weight: 800;
 }
+.about-list li .tick svg { width: 18px; height: 18px; }
 .about-cta { margin-top: 1.8rem; }
 
 @media (max-width: 860px) {

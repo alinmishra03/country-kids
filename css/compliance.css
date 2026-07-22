@@ -1,0 +1,83 @@
+/* Compliance page (app/compliance) — the four assurance pillars (pillar-card
+   styles shared from home-sections.css) plus the 2025–2026 sector-updates
+   timeline and a Starting Blocks callout. */
+
+.compliance-note {
+    max-width: 720px;
+    margin: 2.5rem auto 0;
+    text-align: center;
+}
+.compliance-note .btn-outline { margin-top: 0.5rem; }
+
+/* Sector-updates timeline. */
+.timeline {
+    position: relative;
+    max-width: 820px;
+    margin: 0 auto;
+    padding-inline-start: 2rem;
+}
+.timeline::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 6px;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    width: 2px;
+    background: var(--border-subtle);
+}
+.timeline-item { position: relative; padding-bottom: 2.25rem; }
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -2rem;
+    top: 0.35rem;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--blue);
+    box-shadow: 0 0 0 4px var(--surface-1);
+}
+.timeline-when {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    background: var(--blue-pale);
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.6rem;
+}
+.timeline-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 1.6rem;
+    box-shadow: var(--shadow-soft);
+}
+.timeline-card h3 { font-size: 1.15rem; margin-bottom: 0.5rem; }
+.timeline-card p { color: var(--mid); font-size: 0.95rem; line-height: 1.65; }
+
+/* Starting Blocks callout. */
+.sblocks-callout {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 2.2rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-soft);
+}
+.sblocks-callout-text { flex: 1 1 340px; }
+.sblocks-callout h3 { font-size: 1.3rem; margin-bottom: 0.4rem; }
+.sblocks-callout p { color: var(--mid); font-size: 0.98rem; line-height: 1.6; }
+
+@media (max-width: 560px) {
+    .sblocks-callout { padding: 1.6rem; }
+}

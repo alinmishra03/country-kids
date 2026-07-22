@@ -1,0 +1,74 @@
+/* Closing call-to-action band (components/shared/CTASection.js). A deep brand
+   gradient panel with a soft radial glow, reused at the foot of most pages. */
+
+.cta-band { padding: 5.5rem 0; }
+.cta-band-inner {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-xl);
+    padding: 4rem 2rem;
+    text-align: center;
+    background: var(--blue-gradient);
+    box-shadow: var(--shadow-elevation);
+}
+.cta-band-inner::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 5px;
+    background: var(--gold-gradient);
+}
+.cta-band-glow {
+    position: absolute;
+    top: -40%;
+    inset-inline-start: 50%;
+    transform: translateX(-50%);
+    width: 620px;
+    height: 620px;
+    max-width: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.30) 0%, transparent 62%);
+    pointer-events: none;
+}
+.cta-band-content { position: relative; z-index: 1; }
+.cta-band-title {
+    color: #fff;
+    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    text-shadow: 0 2px 20px rgba(4, 16, 32, 0.35);
+}
+.cta-band-text {
+    max-width: 620px;
+    margin: 1.1rem auto 0;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 1.12rem;
+    line-height: 1.7;
+}
+.cta-band-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 1.1rem;
+    margin-top: 2.2rem;
+}
+.cta-band-phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 500;
+    font-size: 1.05rem;
+    color: #fff;
+    padding: 0.85rem 1.4rem;
+    border-radius: 999px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+}
+.cta-band-phone svg { width: 1.15em; height: 1.15em; }
+.cta-band-phone:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.7);
+}
+
+@media (max-width: 600px) {
+    .cta-band-inner { padding: 3rem 1.4rem; }
+}

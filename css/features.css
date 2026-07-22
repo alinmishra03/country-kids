@@ -5,21 +5,58 @@
 }
 .feature-item {
     text-align: center;
-    padding: 2rem 1.4rem;
+    padding: 2.2rem 1.5rem;
     border-radius: var(--radius-lg);
     background: var(--surface-elevated);
     border: 1px solid var(--border-subtle);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
 }
-.feature-item:hover { transform: translateY(-6px); box-shadow: var(--shadow-soft); }
-.feature-emoji {
-    font-size: 2.4rem;
-    width: 64px; height: 64px;
-    margin: 0 auto 1rem;
+.feature-item:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-elevation);
+    border-color: transparent;
+}
+
+/* Soft tinted icon chip with a coloured line icon (rotates accent per card). */
+.feature-icon {
+    width: 66px; height: 66px;
+    margin: 0 auto 1.15rem;
+    display: grid;
+    place-items: center;
+    border-radius: 20px;
+    background: var(--accent-soft, var(--blue-pale));
+    color: var(--accent-strong, var(--blue));
+    transition: transform 0.28s ease;
+}
+.feature-icon svg { width: 30px; height: 30px; }
+.feature-item:hover .feature-icon { transform: scale(1.08); }
+
+.feature-item:nth-child(4n+1) { --accent-soft: var(--blue-pale);           --accent-strong: var(--blue); }
+.feature-item:nth-child(4n+2) { --accent-soft: rgba(var(--gold-rgb),0.16);  --accent-strong: var(--gold-deep); }
+.feature-item:nth-child(4n+3) { --accent-soft: var(--green-pale);           --accent-strong: var(--green-deep); }
+.feature-item:nth-child(4n+4) { --accent-soft: var(--orange-pale);          --accent-strong: var(--orange-deep); }
+
+.feature-item h3 { font-size: 1.18rem; }
+.feature-item p { color: var(--mid); margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; }
+
+/* Initials avatar used for the teachers grid on the About page. */
+.team-avatar {
+    width: 66px; height: 66px;
+    margin: 0 auto 1.15rem;
     display: grid;
     place-items: center;
     border-radius: 50%;
-    background: var(--gold-gradient);
+    background: var(--accent-soft, var(--blue-pale));
+    color: var(--accent-strong, var(--blue));
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.35rem;
+    letter-spacing: 0.5px;
+    overflow: hidden;
 }
-.feature-item h3 { font-size: 1.2rem; }
-.feature-item p { color: var(--mid); margin-top: 0.5rem; font-size: 0.96rem; }
+/* Photo team avatars crop to the same circle and sit a touch larger. */
+img.team-avatar { width: 88px; height: 88px; object-fit: cover; box-shadow: var(--shadow-soft); }
+.feature-item:nth-child(4n+1) .team-avatar { background: var(--blue-pale);          color: var(--blue); }
+.feature-item:nth-child(4n+2) .team-avatar { background: rgba(var(--gold-rgb),0.16); color: var(--gold-deep); }
+.feature-item:nth-child(4n+3) .team-avatar { background: var(--green-pale);          color: var(--green-deep); }
+.feature-item:nth-child(4n+4) .team-avatar { background: var(--orange-pale);         color: var(--orange-deep); }

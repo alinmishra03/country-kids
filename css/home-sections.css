@@ -1,0 +1,200 @@
+/* Home section layouts: welcome/story teaser, philosophy teaser + values,
+   compliance pillars, and shared helpers (section-cta, trust-badges,
+   page-hero-badges, left-aligned section head). */
+
+/* ── Shared helpers ── */
+.section-cta { text-align: center; margin-top: 3rem; }
+.section-head-start { text-align: start; margin-inline: 0; }
+
+.trust-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-top: 2.5rem;
+}
+.trust-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+}
+.trust-badge svg { width: 16px; height: 16px; color: var(--green-deep); }
+
+/* Page-hero trust badges (interior pages) */
+.page-hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+}
+.page-hero-badge {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    padding: 0.45rem 0.95rem;
+    border-radius: 999px;
+}
+
+/* ── Welcome / story teaser ── */
+.welcome-grid {
+    display: grid;
+    grid-template-columns: 0.85fr 1.15fr;
+    gap: 3.5rem;
+    align-items: center;
+}
+.welcome-media {
+    position: relative;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-elevation);
+    aspect-ratio: 4 / 5;
+}
+.welcome-media img { width: 100%; height: 100%; object-fit: cover; }
+.welcome-media-badge {
+    position: absolute;
+    bottom: 1.1rem; inset-inline: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: color-mix(in srgb, var(--surface-elevated) 90%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.1rem;
+    box-shadow: var(--shadow-soft);
+}
+.welcome-media-badge svg { width: 30px; height: 30px; color: var(--gold-deep); flex-shrink: 0; }
+.welcome-media-badge span { display: flex; flex-direction: column; font-size: 0.85rem; color: var(--mid); line-height: 1.3; }
+.welcome-media-badge b { color: var(--accent-ink); font-family: var(--font-display); font-size: 1rem; }
+
+.welcome-copy .section-eyebrow { margin-bottom: 1rem; }
+.welcome-copy .section-title { text-align: start; }
+.welcome-lead { margin-top: 1.1rem; font-size: 1.15rem; color: var(--text-primary); font-weight: 500; line-height: 1.6; }
+.welcome-text { margin-top: 1rem; color: var(--mid); line-height: 1.75; }
+.welcome-quote {
+    margin: 1.5rem 0;
+    padding: 1.1rem 1.4rem;
+    border-inline-start: 4px solid var(--gold);
+    background: var(--surface-2);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--accent-ink);
+    font-style: italic;
+}
+.welcome-copy .btn-primary { margin-top: 0.5rem; }
+
+/* ── Philosophy teaser ── */
+.philosophy-teaser-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 3.5rem;
+    align-items: center;
+}
+.philosophy-teaser-copy .section-eyebrow { margin-bottom: 1rem; }
+.philosophy-teaser-copy .section-title { text-align: start; }
+.philosophy-teaser-lead { margin-top: 1.1rem; color: var(--mid); font-size: 1.1rem; line-height: 1.7; }
+.philosophy-teaser-quote {
+    position: relative;
+    margin: 1.6rem 0;
+    padding: 1.3rem 1.5rem 1.3rem 3.2rem;
+    background: var(--green-pale);
+    border-radius: var(--radius-md);
+    font-family: var(--font-display);
+    font-size: 1.12rem;
+    line-height: 1.6;
+    color: var(--accent-ink);
+}
+.philosophy-teaser-quote svg {
+    position: absolute;
+    top: 1.2rem; inset-inline-start: 1.2rem;
+    width: 24px; height: 24px;
+    color: var(--green-deep);
+    opacity: 0.7;
+}
+
+.values-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.9rem;
+}
+.value-chip {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 0.95rem 1.1rem;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.value-chip:hover { transform: translateY(-4px); box-shadow: var(--shadow-elevation); }
+.value-chip:last-child:nth-child(odd) { grid-column: 1 / -1; }
+.value-chip-icon {
+    display: grid; place-items: center;
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    flex-shrink: 0;
+}
+.value-chip-icon svg { width: 22px; height: 22px; }
+.value-chip-label { font-weight: 500; color: var(--text-primary); font-size: 0.95rem; }
+
+/* ── Compliance pillars ── */
+.pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+}
+.pillar-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.8rem 1.5rem;
+    box-shadow: var(--shadow-soft);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    text-align: center;
+}
+.pillar-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-elevation); }
+.pillar-icon {
+    display: grid; place-items: center;
+    width: 64px; height: 64px;
+    margin: 0 auto 1.1rem;
+    border-radius: 18px;
+    background: var(--blue-gradient);
+    color: #fff;
+    box-shadow: 0 12px 26px -12px rgba(var(--accent-rgb), 0.6);
+}
+.pillar-icon svg { width: 30px; height: 30px; }
+.pillar-card h3 { font-size: 1.12rem; margin-bottom: 0.5rem; }
+.pillar-card p { color: var(--mid); font-size: 0.9rem; line-height: 1.6; }
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+    .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 900px) {
+    .welcome-grid,
+    .philosophy-teaser-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .welcome-media { aspect-ratio: 16 / 10; max-height: 460px; }
+}
+@media (max-width: 520px) {
+    .values-grid { grid-template-columns: 1fr; }
+    .pillars-grid { grid-template-columns: 1fr; }
+}

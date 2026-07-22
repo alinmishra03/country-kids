@@ -11,13 +11,16 @@
     html { font-size: 15px; }
     .hero-main-cta { flex-direction: column; align-items: stretch; }
     .hero-main-cta .btn-primary,
+    .hero-main-cta .btn-gold,
     .hero-main-cta .btn-outline { width: 100%; }
-    .about-media { min-height: 280px; }
-    .about-media .about-emoji { font-size: 5rem; }
+    .about-media { min-height: 260px; }
 }
 
 @media (max-width: 420px) {
     .contact-strip .contact-actions { flex-direction: column; }
     .contact-strip .btn-primary,
+    .contact-strip .btn-gold,
     .contact-strip .btn-outline { width: 100%; }
+    .hero-badges { gap: 0.5rem; }
+    .hero-badge { font-size: 0.82rem; padding: 0.4rem 0.8rem; }
 }

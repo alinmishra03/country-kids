@@ -27,8 +27,7 @@
 
 [data-theme="dark"] .gallery-tile { border-color: var(--border-subtle); }
 
-[data-theme="dark"] .program-icon,
-[data-theme="dark"] .about-media .about-float,
-[data-theme="dark"] .testimonial-avatar {
-    background: var(--blue-pale);
-}
+/* Program icons, feature chips, gallery tiles and team avatars derive their
+   surface from the per-card --accent-soft tokens (which already have dark
+   variants), so no blanket dark override is needed here — doing so would flatten
+   the accent-colour variety. The initials avatar keeps its blue gradient. */

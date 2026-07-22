@@ -7,6 +7,7 @@
 @import url("../css/nav.css");
 @import url("../css/pages.css");
 @import url("../css/hero.css");
+@import url("../css/grid-motion.css");
 @import url("../css/section-commons.css");
 @import url("../css/stats-bar.css");
 @import url("../css/programs-grid.css");
@@ -16,6 +17,17 @@
 @import url("../css/gallery.css");
 @import url("../css/contact-strip.css");
 @import url("../css/enroll-page.css");
+/* ── Country Kids premium sections ── */
+@import url("../css/rooms.css");
+@import url("../css/home-sections.css");
+@import url("../css/cta-band.css");
+@import url("../css/story.css");
+@import url("../css/philosophy.css");
+@import url("../css/curriculum.css");
+@import url("../css/compliance.css");
+@import url("../css/fees.css");
+@import url("../css/families.css");
+@import url("../css/contact-page.css");
 @import url("../css/footer.css");
 /* Animations — additive motion layer, loaded after component styles. */
 @import url("../css/animations.css");

@@ -24,6 +24,23 @@
     --gold-gradient: linear-gradient(90deg, #FFCB57 0%, #F5B429 55%, #E09A11 100%);
     --gold-solid: #F5B429;
 
+    /* Soft Green (nature / growth) */
+    --green: #43A96B;
+    --green-deep: #2E8353;
+    --green-pale: #E4F5EB;
+    --green-rgb: 67, 169, 107;
+
+    /* Soft Orange (warmth / play) */
+    --orange: #F0894A;
+    --orange-deep: #D96E2A;
+    --orange-pale: #FCEBDE;
+    --orange-rgb: 240, 137, 74;
+
+    /* Typography — an elegant modern serif for headings paired with a clean,
+       readable sans for text. Only light/medium weights are used (no bold). */
+    --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --font-body: 'Inter', 'Segoe UI', system-ui, sans-serif;
+
     /* Premium Gradients */
     --hero-gradient: linear-gradient(135deg, #EAF3FC 0%, #D4E7F9 100%);
 
@@ -63,10 +80,12 @@
     --surface-2: var(--dark2);
     --surface-3: var(--dark3);
     --surface-elevated: #FFFFFF;
-    --border-subtle: rgba(19, 58, 99, 0.12);
-    --shadow-elevation: 0 20px 50px rgba(20, 80, 143, 0.12);
-    --shadow-soft: 0 10px 30px rgba(20, 80, 143, 0.10);
+    --border-subtle: rgba(19, 58, 99, 0.10);
+    /* Layered, soft premium shadows */
+    --shadow-elevation: 0 24px 60px -18px rgba(20, 80, 143, 0.28), 0 8px 24px -12px rgba(20, 80, 143, 0.12);
+    --shadow-soft: 0 12px 32px -14px rgba(20, 80, 143, 0.20), 0 4px 12px -8px rgba(20, 80, 143, 0.10);
 
+    --radius-xl: 28px;
     --radius-lg: 22px;
     --radius-md: 16px;
     --radius-sm: 10px;
@@ -104,6 +123,16 @@
     --gold-light: #FFD873;
     --gold-gradient: linear-gradient(90deg, #FFD873 0%, #F5C147 55%, #E8A82A 100%);
 
+    --green: #5BC488;
+    --green-deep: #7AD3A0;
+    --green-pale: #123727;
+    --green-rgb: 91, 196, 136;
+
+    --orange: #F5A365;
+    --orange-deep: #F7B583;
+    --orange-pale: #3A2415;
+    --orange-rgb: 245, 163, 101;
+
     --hero-gradient: linear-gradient(135deg, #0C1B2E 0%, #16304B 100%);
 
     --black: var(--bg-light);
@@ -130,8 +159,8 @@
     --surface-3: #16304B;
     --surface-elevated: #12263C;
     --border-subtle: rgba(231, 239, 248, 0.10);
-    --shadow-elevation: 0 20px 50px rgba(0, 0, 0, 0.55);
-    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.45);
+    --shadow-elevation: 0 24px 60px -18px rgba(0, 0, 0, 0.60), 0 8px 24px -12px rgba(0, 0, 0, 0.45);
+    --shadow-soft: 0 12px 32px -14px rgba(0, 0, 0, 0.50), 0 4px 12px -8px rgba(0, 0, 0, 0.40);
 
     color-scheme: dark;
 }
@@ -150,21 +179,32 @@ html {
 }
 
 body {
-    font-family: 'Nunito', 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
     background: var(--black);
     color: var(--off-white);
     overflow-x: hidden;
-    line-height: 1.6;
+    line-height: 1.7;
+    font-weight: 400;
+    letter-spacing: 0.05px;
     transition: var(--theme-transition);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 h1, h2, h3, h4 {
-    font-family: 'Baloo 2', 'Nunito', sans-serif;
+    font-family: var(--font-display);
     color: var(--accent-ink);
-    line-height: 1.15;
-    font-weight: 700;
+    line-height: 1.2;
+    font-weight: 500;
+    letter-spacing: 0;
 }
+/* Large display headings read best a touch lighter and tighter. */
+h1 { font-weight: 400; letter-spacing: -0.01em; }
+h2 { font-weight: 400; }
+/* Never render heavy default-bold text — keep emphasis at medium. */
+b, strong { font-weight: 500; }
+p { text-wrap: pretty; }
+h1, h2, h3 { text-wrap: balance; }
 
 a { color: inherit; text-decoration: none; }
 
@@ -205,35 +245,41 @@ textarea,
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-family: 'Baloo 2', 'Nunito', sans-serif;
-    font-weight: 700;
+    font-family: var(--font-body);
+    font-weight: 500;
     font-size: 1rem;
     padding: 0.85rem 1.8rem;
     border-radius: 999px;
     cursor: pointer;
     border: 2px solid transparent;
     letter-spacing: 0.2px;
+    will-change: transform;
 }
+.btn-primary svg,
+.btn-outline svg,
+.btn-gold svg { width: 1.15em; height: 1.15em; }
 
 .btn-primary {
     background: var(--blue-gradient);
     color: var(--btn-text);
-    box-shadow: 0 8px 22px rgba(var(--accent-rgb), 0.35);
+    box-shadow: 0 10px 24px -8px rgba(var(--accent-rgb), 0.55);
 }
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(var(--accent-rgb), 0.45);
+    box-shadow: 0 16px 32px -10px rgba(var(--accent-rgb), 0.65);
 }
+.btn-primary:active { transform: translateY(0); box-shadow: 0 6px 16px -8px rgba(var(--accent-rgb), 0.55); }
 
 .btn-gold {
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
-    box-shadow: 0 8px 22px rgba(var(--gold-rgb), 0.40);
+    box-shadow: 0 10px 24px -8px rgba(var(--gold-rgb), 0.55);
 }
 .btn-gold:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 28px rgba(var(--gold-rgb), 0.55);
+    box-shadow: 0 16px 32px -10px rgba(var(--gold-rgb), 0.70);
 }
+.btn-gold:active { transform: translateY(0); box-shadow: 0 6px 16px -8px rgba(var(--gold-rgb), 0.55); }
 
 .btn-outline {
     background: transparent;
@@ -245,6 +291,7 @@ textarea,
     color: var(--btn-text);
     transform: translateY(-2px);
 }
+.btn-outline:active { transform: translateY(0); }
 
 .container {
     width: min(1200px, 92%);

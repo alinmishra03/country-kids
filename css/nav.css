@@ -10,8 +10,11 @@
     transition: background 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
 }
 #navbar.scrolled {
-    background: var(--surface-elevated);
-    box-shadow: 0 6px 24px rgba(20, 80, 143, 0.10);
+    background: color-mix(in srgb, var(--surface-elevated) 88%, transparent);
+    backdrop-filter: saturate(150%) blur(12px);
+    -webkit-backdrop-filter: saturate(150%) blur(12px);
+    box-shadow: 0 6px 24px -10px rgba(20, 80, 143, 0.22);
+    border-bottom: 1px solid var(--border-subtle);
     height: 68px;
 }
 .nav-inner {
@@ -24,48 +27,71 @@
 .nav-logo {
     display: flex;
     align-items: center;
-    gap: 0.55rem;
-    font-family: 'Baloo 2', sans-serif;
-    font-weight: 800;
-    font-size: 1.35rem;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 1.3rem;
     color: var(--blue-deep);
+    flex-shrink: 0;
 }
 .nav-logo .logo-mark {
     display: grid;
     place-items: center;
     width: 42px; height: 42px;
-    border-radius: 12px;
-    background: var(--gold-gradient);
-    font-size: 1.4rem;
+    border-radius: 13px;
+    background: var(--blue-gradient);
+    color: #fff;
+    box-shadow: 0 6px 16px -6px rgba(var(--accent-rgb), 0.6);
+    flex-shrink: 0;
 }
-.nav-logo .logo-mark ~ span b { color: var(--gold-deep); }
+.nav-logo .logo-mark svg { width: 24px; height: 24px; }
+.logo-text { display: inline-flex; flex-direction: column; line-height: 1.02; }
+.logo-text b { color: var(--gold-deep); font-weight: 600; }
+.logo-text em {
+    font-family: var(--font-body);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-top: 2px;
+}
 
 .nav-links {
     list-style: none;
     display: flex;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.1rem;
     margin-inline-start: auto;
 }
 .nav-links > li > a,
+.nav-links .dropdown-label,
 .nav-links .dropdown-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    font-size: 0.98rem;
+    gap: 0.3rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 0.92rem;
     color: var(--text-primary);
     background: none;
     border: none;
     cursor: pointer;
-    padding: 0.55rem 0.85rem;
+    padding: 0.5rem 0.7rem;
     border-radius: 999px;
+    white-space: nowrap;
 }
+/* Split "label link + caret button" for dropdown items */
+.dropdown-split { display: inline-flex; align-items: center; border-radius: 999px; }
+.dropdown-split .dropdown-label { padding-inline-end: 0.35rem; }
+.dropdown-split .dropdown-toggle { padding-inline: 0.35rem 0.6rem; }
 .nav-links > li > a:hover,
+.nav-links .dropdown-label:hover,
 .nav-links .dropdown-toggle:hover,
+.has-dropdown:hover .dropdown-split,
 .nav-links .nav-link-active > a,
-.nav-links .nav-link-active > .dropdown-toggle,
+.nav-links .nav-link-active .dropdown-split,
 a.nav-link-active {
     color: var(--blue);
     background: var(--blue-pale);
@@ -104,7 +130,7 @@ a.nav-link-active {
     display: block;
     padding: 0.6rem 0.85rem;
     border-radius: var(--radius-sm);
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-primary);
     font-size: 0.94rem;
 }
@@ -114,8 +140,8 @@ a.nav-link-active {
     margin-inline-start: 0.5rem;
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
-    font-family: 'Baloo 2', sans-serif;
-    font-weight: 700;
+    font-family: var(--font-body);
+    font-weight: 500;
     padding: 0.6rem 1.4rem;
     border-radius: 999px;
     box-shadow: 0 6px 18px rgba(var(--gold-rgb), 0.4);
@@ -169,17 +195,22 @@ a.nav-link-active {
 .mobile-menu.open { transform: translateX(0); }
 .mobile-close {
     position: absolute; top: 1rem; inset-inline-end: 1rem;
-    background: none; border: none; font-size: 1.6rem; cursor: pointer;
+    display: grid; place-items: center;
+    width: 44px; height: 44px;
+    background: var(--surface-2); border: 1px solid var(--border-subtle);
+    border-radius: 50%; cursor: pointer;
     color: var(--text-primary);
 }
+.mobile-close svg { width: 22px; height: 22px; }
+.mobile-close:hover { background: var(--blue-pale); color: var(--blue); }
 .mobile-scroll { margin-top: 3rem; display: flex; flex-direction: column; gap: 0.25rem; }
 .m-link, .m-group-toggle {
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
+    font-family: var(--font-body);
+    font-weight: 500;
     font-size: 1.1rem;
     color: var(--text-primary);
     background: none;
@@ -189,26 +220,54 @@ a.nav-link-active {
     cursor: pointer;
     text-align: start;
 }
+.m-group-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border-subtle);
+}
+.m-group-link {
+    flex: 1;
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    padding: 0.85rem 0.5rem;
+}
+.m-group-head .m-group-toggle {
+    width: auto;
+    border-bottom: none;
+    padding: 0.85rem 0.5rem;
+    flex: 0 0 auto;
+}
 .m-group-body {
     display: none;
     flex-direction: column;
     padding-inline-start: 1rem;
 }
 .m-group.open .m-group-body { display: flex; }
-.m-group-body a { padding: 0.6rem 0.5rem; color: var(--mid); font-weight: 600; }
+.m-group-body a { padding: 0.6rem 0.5rem; color: var(--mid); font-weight: 500; }
 .mobile-cta {
     margin-top: 1.25rem;
     text-align: center;
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
-    font-weight: 700;
+    font-weight: 500;
     padding: 0.85rem;
     border-radius: 999px;
 }
 .mobile-toggles-row { margin-top: 1.5rem; display: flex; justify-content: center; }
 body.menu-open { overflow: hidden; }
 
-@media (max-width: 980px) {
+/* Tighten spacing on mid-desktop so all eight items fit before collapsing. */
+@media (max-width: 1200px) {
+    .nav-links > li > a,
+    .nav-links .dropdown-label,
+    .nav-links .dropdown-toggle { font-size: 0.88rem; padding-inline: 0.55rem; }
+    .logo-text em { display: none; }
+}
+
+@media (max-width: 1080px) {
     .nav-links, .nav-cta, .theme-toggle-desktop { display: none; }
     .hamburger { display: flex; }
     .theme-toggle-header-mobile { display: grid; margin-inline-start: auto; }
