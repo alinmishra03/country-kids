@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Icon from '@/components/shared/Icon';
 import { img, PHOTOS } from '@/lib/images';
-
+//backup
 const TICKS = [
     'Certified early-childhood educators',
     'Low child-to-teacher ratios',
