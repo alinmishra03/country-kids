@@ -1,0 +1,193 @@
+/* ScrollStack — pinned, stacking scroll cards (components/animations/ScrollStack).
+   Two layers here: the generic component styles, then the .rooms-stack skin that
+   turns a <RoomCard> into a wide, full-bleed stack card for the home rooms
+   section. Card geometry is deliberately tall — a card only pins if it is taller
+   than half the viewport (see pinEnd in ScrollStack.jsx). */
+
+/* ---- component ---------------------------------------------------------- */
+
+.scroll-stack-scroller {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: visible;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: scroll-position;
+}
+
+/* Window-scroll mode: the page is the scroller, so the wrapper must not create
+   its own scroll context or clamp its height. */
+.scroll-stack-scroller.scroll-stack-window {
+    height: auto;
+    overflow: visible;
+    overscroll-behavior: auto;
+    scroll-behavior: auto;
+    will-change: auto;
+}
+
+.scroll-stack-inner {
+    padding: 20vh 5rem 50rem;
+    min-height: 100vh;
+}
+
+.scroll-stack-window .scroll-stack-inner {
+    padding: 4vh 0 22vh;
+    min-height: 0;
+}
+
+.scroll-stack-card-wrapper { position: relative; }
+
+.scroll-stack-card {
+    transform-origin: top center;
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    height: 20rem;
+    width: 100%;
+    margin: 30px 0;
+    padding: 3rem;
+    border-radius: 40px;
+    box-sizing: border-box;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    position: relative;
+}
+
+.scroll-stack-end {
+    width: 100%;
+    height: 1px;
+}
+
+/* Lenis drives window scrolling itself — native smooth scrolling fights it and
+   breaks anchor jumps. Lenis stamps these classes on <html>. */
+html.lenis,
+html.lenis body {
+    height: auto;
+}
+.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+}
+.lenis.lenis-stopped { overflow: hidden; }
+
+/* ---- rooms skin --------------------------------------------------------- */
+
+/* The stack must not escape its section. Cards are moved with transforms, which
+   don't take up layout space, so the section has to reserve that space itself —
+   see the runway below — and clip is the backstop if a rounding overshoot ever
+   pushes past it. `clip` (not `hidden`) so no scroll container is created. */
+.rooms-section {
+    position: relative;
+    overflow: clip;
+}
+
+/* Trailing runway. When the last card unpins, every card is left translated to
+   `pinEnd + stackPosition + itemStackDistance * i`, i.e. the whole stack sits
+   near the bottom of the list. The space needed below the last card is
+   therefore: card height + stackPosition + itemStackDistance * (n - 1) − 50vh
+   (the half-viewport in ScrollStack's pinEnd). For 7 cards at 34rem:
+   34rem + 18vh + 156px − 50vh ≈ 44rem − 32vh, rounded up here for margin. Too
+   little and the stack overlaps whatever follows the section. Keep this in step
+   with the card height below. */
+.rooms-stack .scroll-stack-inner {
+    padding: 4vh 0 max(6rem, calc(46rem - 32vh));
+}
+
+/* Keep the CTA below the runway rather than under a released card. */
+.rooms-section .section-cta {
+    position: relative;
+    z-index: 1;
+}
+
+/* Every card is exactly the same height — this is load-bearing, not cosmetic.
+   Each card in the stack sits `itemStackDistance` LOWER than the one behind it
+   and at a slightly LARGER scale, so with uniform heights the frontmost card's
+   bottom edge is always the lowest and nothing can peek out beneath it. Let the
+   heights vary (height:auto) and a taller card behind the stack hangs below the
+   top one, which is exactly the artefact this replaces. */
+.rooms-stack .scroll-stack-card {
+    height: 34rem;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border-radius: var(--radius-lg, 28px);
+    overflow: hidden;
+    box-shadow: 0 30px 70px -40px rgba(6, 22, 42, 0.45), 0 0 0 1px var(--border, rgba(6, 22, 42, 0.08));
+    background: var(--surface-elevated);
+}
+
+/* The card inside the stack item drops its own surface/shadow/hover-lift — the
+   stack item owns those — and lays out photo-left / copy-right. */
+.rooms-stack .room-card {
+    height: 100%;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 46% 1fr;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
+    transform: none;
+}
+.rooms-stack .room-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: transparent;
+}
+
+/* Reserve the photo's box up front. Without a fixed height the image pops the
+   card taller when it finally decodes, which shifts every cached offset and
+   makes the stack jump mid-scroll. */
+.rooms-stack .room-media {
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 0;
+    contain: paint;
+}
+.rooms-stack .room-card:hover .room-media img { transform: none; }
+
+.rooms-stack .room-body {
+    padding: clamp(2rem, 4vw, 3.25rem);
+    justify-content: center;
+    gap: 0.5rem;
+}
+.rooms-stack .room-heading { align-items: center; }
+.rooms-stack .room-heading h3 { font-size: clamp(1.6rem, 3vw, 2.35rem); }
+
+/* Cards are a fixed height, so the longest blurb must not push the layout past
+   it. Clamp rather than overflow — full copy lives on the room's own page. */
+.rooms-stack .room-body p {
+    font-size: 1.02rem;
+    line-height: 1.75;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    line-clamp: 7;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .rooms-stack .scroll-stack-card { height: 30rem; }
+    .rooms-stack .room-card { grid-template-columns: 1fr; grid-template-rows: 15rem 1fr; }
+    .rooms-stack .room-media { aspect-ratio: auto; }
+    .rooms-stack .room-body p { -webkit-line-clamp: 3; line-clamp: 3; }
+    /* Shorter cards need a correspondingly shorter runway. */
+    .rooms-stack .scroll-stack-inner { padding-bottom: max(5rem, calc(42rem - 32vh)); }
+}
+
+/* Reduced motion: the section falls back to the plain .rooms-grid in JS, but
+   guard the styles too in case a stack is already mounted. */
+@media (prefers-reduced-motion: reduce) {
+    .rooms-stack .scroll-stack-card {
+        transform: none !important;
+        filter: none !important;
+    }
+}

@@ -19,6 +19,8 @@
 @import url("../css/enroll-page.css");
 /* ── Country Kids premium sections ── */
 @import url("../css/rooms.css");
+/* ScrollStack must follow rooms.css — the .rooms-stack skin overrides .room-card. */
+@import url("../css/scroll-stack.css");
 @import url("../css/home-sections.css");
 @import url("../css/learning-spaces.css");
 @import url("../css/cta-band.css");
