@@ -114,11 +114,11 @@ export default function SiteFooter() {
                 <div className="footer-grid">
                     <div className="footer-brand">
                         <div className="footer-logo">
-                            <span className="logo-mark" aria-hidden="true"><Icon name="sprout" /></span>
-                            <span className="logo-text">
-                                {SITE.name}<b> </b>
-                                <em>{SITE.legalName}</em>
-                            </span>
+                            <span
+                                className="logo-img footer-logo-img"
+                                role="img"
+                                aria-label={`${SITE.name} — ${SITE.legalName}`}
+                            />
                         </div>
                         <p className="footer-desc">
                             A not-for-profit early learning organisation in {SITE.suburb}, {SITE.state}.

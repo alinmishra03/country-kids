@@ -267,17 +267,7 @@ export default function SiteHeader() {
         setOpenDropdown((cur) => (cur === key ? null : key));
     };
 
-    const Logo = (
-        <>
-            <span className="logo-mark" aria-hidden="true">
-                <Icon name="sprout" />
-            </span>
-            <span className="logo-text">
-                Country<b>Kids</b>
-                <em>Learning Centre</em>
-            </span>
-        </>
-    );
+    const Logo = <span className="logo-img nav-logo-img" aria-hidden="true" />;
 
     return (
         <>

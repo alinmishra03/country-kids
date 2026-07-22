@@ -45,20 +45,17 @@
     font-size: 1.3rem;
     flex-shrink: 0;
 }
-.nav-logo .logo-mark {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 13px;
-    background: var(--blue-gradient);
-    color: #fff;
-    box-shadow: 0 6px 16px -6px rgba(var(--accent-rgb), 0.6);
+/* Logo image (masked white PNG). White over the dark hero at the top of the
+   page; switches to the theme ink colour once the bar goes solid on scroll. */
+.nav-logo-img {
+    height: 46px;
+    aspect-ratio: 870 / 563;
     flex-shrink: 0;
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    background-color: #fff;
+    transition: background-color 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.nav-logo:hover .logo-mark { transform: rotate(-8deg) scale(1.05); }
-.nav-logo .logo-mark svg { width: 24px; height: 24px; }
+#navbar.scrolled .nav-logo-img { background-color: var(--text-primary); }
+.nav-logo:hover .nav-logo-img { transform: scale(1.04); }
 .logo-text {
     display: inline-flex;
     flex-direction: column;

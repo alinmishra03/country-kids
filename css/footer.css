@@ -108,6 +108,10 @@
     color: var(--blue-deep);
     margin-bottom: 0.75rem;
 }
+.footer-brand .footer-logo .footer-logo-img {
+    height: 54px;
+    aspect-ratio: 870 / 563;
+}
 .footer-brand .footer-logo .logo-mark {
     display: grid; place-items: center;
     width: 42px; height: 42px;

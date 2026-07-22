@@ -351,6 +351,18 @@ textarea,
 .btn-outline:active,
 .btn-gold:active { transform: translateY(1px); }
 
+/* ─── LOGO ───
+   Single white PNG (public/images/countrykids.png) rendered through a CSS mask,
+   so the mark takes an exact solid colour that adapts to the theme/surface it
+   sits on. `--text-primary` is navy in light mode and near-white in dark mode,
+   which is correct for both the (light) scrolled nav and the footer. */
+.logo-img {
+    display: block;
+    background-color: var(--text-primary);
+    -webkit-mask: url("/images/countrykids.png") center / contain no-repeat;
+    mask: url("/images/countrykids.png") center / contain no-repeat;
+}
+
 /* The shared shell. Every full-width band aligns its content to this so the nav
    logo, section headings and card grids all sit on the same left/right edge. */
 .container {
