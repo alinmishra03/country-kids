@@ -11,7 +11,7 @@
     background:
         radial-gradient(1100px 640px at 72% -10%, rgba(46, 129, 214, 0.52), transparent 62%),
         radial-gradient(820px 520px at 6% 112%, rgba(245, 180, 41, 0.22), transparent 60%),
-        #08203e;
+        #05204A;
 }
 
 .gm-grid {
@@ -56,7 +56,7 @@
 }
 
 /* Photo card — image fills the tile under a soft dark scrim for text contrast. */
-.gm-img { padding: 0; background: #0a2038; border-color: rgba(255, 255, 255, 0.18); }
+.gm-img { padding: 0; background: #0A0A14; border-color: rgba(255, 255, 255, 0.18); }
 .gm-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .gm-img-scrim {
     position: absolute;

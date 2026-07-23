@@ -1,40 +1,58 @@
 :root {
-    /* ─── LIGHT THEME (SKY BLUE & GOLDEN) ───
-       Background: #F3F8FD | Text: #133A63
-       Primary brand color is BLUE; accent is GOLDEN. */
+    /* ─── LIGHT THEME — CREAM / NAVY / SAGE ───────────────────────────────
+       Background #FFFDD0 (cream) · Cards #FFFFFF · Secondary bands #D8BCAB
+       Primary brand #05204A · Accent #6C969D · Hover #464D77
+
+       The token NAMES are historical (blue / gold / green / orange) and are
+       referenced by every component stylesheet, so they are kept as-is and
+       remapped onto the new palette rather than renamed:
+         --blue*   → the navy primary
+         --gold*   → the sage accent   (was the gold accent)
+         --green*  → sage, deeper      (collapsed into the accent family)
+         --orange* → the beige/clay    (collapsed into the secondary family)
+       Collapsing the two extra hues into the palette is deliberate: a minimal,
+       luxury surface reads as one system, not five. */
+
+    /* ── Raw palette ── */
+    --band-cream: #FFFDD0;
+    --band-white: #FFFFFF;
+    --band-beige: #D8BCAB;
+    --brand-navy: #05204A;
+    --brand-accent: #6C969D;
+    --brand-hover: #464D77;
 
     /* Core Palette — Light Mode */
-    --bg-light: #F9F9FB;             /* Crisp white */
-    --bg-dark: #F9F9FB;             /* Consistent light background */
-    --text-primary: #0B1B2B;        /* Deep blue (navy) */
-    --text-on-dark: #0B1B2B;        /* Legacy support */
-    --border-gray: #D9DDE3;
+    --bg-light: #FFFDD0;            /* Cream page field */
+    --bg-dark: #FFFDD0;
+    --text-primary: #05204A;        /* Navy — 15:1 on cream */
+    --text-on-dark: #05204A;
+    --border-gray: #E2DCC0;
 
-    /* Brand Blues (deep navy is the primary) */
-    --blue: #0B1B2B;                /* Primary blue — deep navy */
-    --blue-deep: #0B1B2B;           /* Headings, hovers */
-    --blue-light: #34597C;
-    --blue-pale: #EAEEF3;           /* Tinted panels */
-    --blue-gradient: linear-gradient(135deg, #163A5C 0%, #0B1B2B 100%);
+    /* Brand Navy (the primary) */
+    --blue: #05204A;
+    --blue-deep: #05204A;
+    --blue-light: #464D77;          /* Hover indigo */
+    --blue-pale: rgba(5, 32, 74, 0.07);  /* Translucent so it reads on any band */
+    --blue-gradient: linear-gradient(135deg, #0A2E63 0%, #05204A 100%);
 
-    /* Golden Accent (warm gold) */
-    --gold: #C8963E;                /* Warm gold */
-    --gold-deep: #A87A2C;
-    --gold-light: #E0B45E;
-    --gold-gradient: linear-gradient(90deg, #E0B45E 0%, #C8963E 55%, #A87A2C 100%);
-    --gold-solid: #C8963E;
+    /* Sage Accent (was gold) */
+    --gold: #6C969D;
+    --gold-deep: #3F6268;           /* AA-safe accent text on cream — 6.2:1 */
+    --gold-light: #9DBEC3;
+    --gold-gradient: linear-gradient(90deg, #8AB2B8 0%, #6C969D 55%, #4F757B 100%);
+    --gold-solid: #6C969D;
 
-    /* Soft Green (nature / growth) */
-    --green: #43A96B;
-    --green-deep: #2E8353;
-    --green-pale: #E4F5EB;
-    --green-rgb: 67, 169, 107;
+    /* Sage, deeper (was green) */
+    --green: #6C969D;
+    --green-deep: #3F6268;
+    --green-pale: rgba(108, 150, 157, 0.14);
+    --green-rgb: 108, 150, 157;
 
-    /* Soft Orange (warmth / play) */
-    --orange: #F0894A;
-    --orange-deep: #D96E2A;
-    --orange-pale: #FCEBDE;
-    --orange-rgb: 240, 137, 74;
+    /* Clay / beige (was orange) */
+    --orange: #C49A82;
+    --orange-deep: #9C6F55;
+    --orange-pale: rgba(216, 188, 171, 0.34);
+    --orange-rgb: 196, 154, 130;
 
     /* Typography — an elegant modern serif for headings paired with a clean,
        geometric-humanist sans for text. Only light/regular/medium weights are
@@ -48,36 +66,37 @@
     --fw-medium: 500;
 
     /* Premium Gradients */
-    --hero-gradient: linear-gradient(135deg, #EDEFF3 0%, #E1E5EC 100%);
+    --hero-gradient: linear-gradient(135deg, #FFFDD0 0%, #F7EFDA 100%);
 
     /* Remapped surface tokens */
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #F1F2F5;
-    --dark3: #E8EAEF;
+    --dark2: #D8BCAB;               /* Secondary band — beige */
+    --dark3: #FFFFFF;               /* Tertiary band — white */
 
     /* Text Scale */
     --off-white: var(--text-primary);
     --light: var(--text-primary);
-    --mid: #4C5A6B;                 /* Muted secondary text */
-    --slate: #4C5A6B;
+    --mid: #4A5A75;                 /* Muted secondary text — 7.4:1 on cream */
+    --slate: #4A5A75;
     --white: #FFFFFF;
 
     /* Semantic Tokens */
-    --accent-ink: var(--text-primary);   /* Titles/labels are deep navy */
+    --accent-ink: var(--text-primary);
     --accent-blue: var(--blue);
     --accent-gold: var(--gold);
     --btn-text: #FFFFFF;                  /* White text on navy buttons */
-    --btn-text-gold: #0B1B2B;             /* Navy text on gold buttons */
-    --accent-rgb: 11, 27, 43;             /* --blue (navy) as rgb */
-    --gold-rgb: 200, 150, 62;
+    --btn-text-gold: #FFFFFF;             /* Filled accent also takes white */
+    --accent-rgb: 5, 32, 74;              /* --blue (navy) as rgb */
+    --gold-rgb: 108, 150, 157;            /* --gold (sage) as rgb */
+    --hover-rgb: 70, 77, 119;             /* --brand-hover as rgb */
 
     /* AA-safe blue for text/fills */
     --accent-text: var(--blue-deep);
     --accent-bg: var(--blue);
     --accent-bg-gradient: var(--blue-gradient);
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 249, 249, 251;
+    --bg-primary-rgb: 255, 253, 208;
 
     --nav-h: 80px;
 
@@ -86,47 +105,60 @@
     --surface-2: var(--dark2);
     --surface-3: var(--dark3);
     --surface-elevated: #FFFFFF;
-    --border-subtle: rgba(11, 27, 43, 0.08);
-    --border-card: rgba(11, 27, 43, 0.07);
-    /* Layered, soft premium shadows. Three stops each — a hairline contact
-       shadow, a mid diffuse layer and a wide ambient layer — so cards read as
-       lifted rather than outlined. */
+    --border-subtle: rgba(5, 32, 74, 0.09);
+    --border-card: rgba(5, 32, 74, 0.07);
+    /* Layered, soft premium shadows. Four stops each — a hairline contact
+       shadow, two diffuse layers and a wide ambient layer — so cards read as
+       floating on the cream field rather than outlined on it. Kept low-alpha:
+       on a warm background, heavy shadows go muddy. */
     --shadow-elevation:
-        0 1px 2px rgba(11, 27, 43, 0.04),
-        0 10px 24px -14px rgba(11, 27, 43, 0.14),
-        0 30px 60px -26px rgba(11, 27, 43, 0.22);
+        0 1px 2px rgba(5, 32, 74, 0.04),
+        0 8px 20px -12px rgba(5, 32, 74, 0.10),
+        0 24px 48px -22px rgba(5, 32, 74, 0.16),
+        0 48px 88px -44px rgba(5, 32, 74, 0.22);
     --shadow-soft:
-        0 1px 2px rgba(11, 27, 43, 0.04),
-        0 4px 10px -6px rgba(11, 27, 43, 0.07),
-        0 14px 30px -20px rgba(11, 27, 43, 0.14);
+        0 1px 2px rgba(5, 32, 74, 0.03),
+        0 6px 16px -10px rgba(5, 32, 74, 0.08),
+        0 18px 40px -26px rgba(5, 32, 74, 0.14);
+    /* Hover elevation — wider and softer, never darker. */
+    --shadow-hover:
+        0 2px 4px rgba(5, 32, 74, 0.05),
+        0 16px 32px -16px rgba(5, 32, 74, 0.14),
+        0 40px 72px -30px rgba(5, 32, 74, 0.22),
+        0 72px 120px -60px rgba(5, 32, 74, 0.26);
 
-    --radius-xl: 24px;
-    --radius-lg: 18px;
-    --radius-md: 14px;
-    --radius-sm: 10px;
+    /* Large, generous radii — the single biggest tell of the 2026 look. */
+    --radius-xl: 34px;
+    --radius-lg: 26px;
+    --radius-md: 20px;
+    --radius-sm: 14px;
     --radius-pill: 999px;
 
     /* ── Card system ──
        One set of values every card surface on the site derives from, so radius,
        padding, borders, shadows and hover feel identical everywhere. */
-    --card-pad: 1.75rem;
-    --card-pad-sm: 1.5rem;
-    --card-gap: 1.5rem;
-    --card-lift: -6px;
+    --card-pad: 2rem;
+    --card-pad-sm: 1.6rem;
+    --card-gap: 1.75rem;
+    --card-lift: -10px;
+    --card-scale: 1.02;
     --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
     --card-transition:
-        transform 0.3s var(--ease-out),
-        box-shadow 0.3s ease,
-        border-color 0.3s ease;
+        transform 0.55s var(--ease-out),
+        box-shadow 0.55s var(--ease-out),
+        border-color 0.4s ease,
+        background-color 0.4s ease;
 
     /* ── Layout rhythm ──
        Shared shell width + vertical section scale so every band on every page
-       lines up on the same gutters and breathes the same amount. */
-    --shell-max: 1200px;
-    --shell-w: 92%;
-    --section-y: 5.5rem;
-    --section-y-sm: 4.5rem;
-    --section-head-gap: 3rem;
+       lines up on the same gutters and breathes the same amount. Sections are
+       deliberately tall — whitespace is doing most of the "premium" work. */
+    --shell-max: 1240px;
+    --shell-w: 90%;
+    --section-y: clamp(5rem, 9vw, 8.5rem);
+    --section-y-sm: clamp(4rem, 7vw, 6.5rem);
+    --section-head-gap: clamp(2.75rem, 5vw, 4.25rem);
 
     --theme-transition:
         background-color 0.35s ease,
@@ -136,77 +168,87 @@
     color-scheme: light;
 }
 
-/* ─── DARK THEME TOKENS ───
+/* ─── DARK THEME TOKENS ───────────────────────────────────────────────────
    Activated by [data-theme="dark"] on <html>. Light mode above is untouched.
-   Contrast checked against base bg #0C1B2E:
-     • #E7EFF8 primary text        ~15 : 1
-     • #A9C0D8 secondary text      ~7  : 1
-     • #64A6E8 blue text           ~6  : 1
-     • #133A63 on #F5B429 gold     ~7  : 1 (navy on gold button) */
+     Background #02020A · Surface #111827 · Cards #1A1A22
+     Primary #05204A · Accent #6C969D · Hover #464D77 · Text white
+
+   Note the navy primary is very dark against a near-black field, so on dark it
+   is used as a FILL only (buttons, bands) and always carries a hairline border
+   plus white text; anything that needs to read as text switches to the light
+   tints below. */
 [data-theme="dark"] {
-    --bg-light: #0F172A;
-    --bg-dark: #0F172A;
-    --text-primary: #E7EFF8;
-    --text-on-dark: #E7EFF8;
-    --border-gray: #2A374A;
+    --bg-light: #02020A;
+    --bg-dark: #02020A;
+    --text-primary: #FFFFFF;
+    --text-on-dark: #FFFFFF;
+    --border-gray: #262A38;
 
-    --blue: #7CC4F2;
-    --blue-deep: #9AD2F5;
-    --blue-light: #A6D8F7;
-    --blue-pale: #16273F;
-    --blue-gradient: linear-gradient(135deg, #2C6CB0 0%, #184C82 100%);
+    /* Light navy tints for TEXT; the solid navy stays available as --brand-navy. */
+    --blue: #AFC3E4;
+    --blue-deep: #CBD9F1;
+    --blue-light: #8E96C4;
+    --blue-pale: rgba(255, 255, 255, 0.06);
+    --blue-gradient: linear-gradient(135deg, #0A2E63 0%, #05204A 100%);
 
-    --gold: #E6B34B;
-    --gold-deep: #D69E38;
-    --gold-light: #F2C766;
-    --gold-gradient: linear-gradient(90deg, #F2C766 0%, #E6B34B 55%, #D69E38 100%);
-    --gold-rgb: 230, 179, 75;
+    --gold: #8FBFC7;
+    --gold-deep: #6C969D;
+    --gold-light: #B4D6DC;
+    --gold-gradient: linear-gradient(90deg, #B4D6DC 0%, #8FBFC7 55%, #6C969D 100%);
+    --gold-rgb: 143, 191, 199;
 
-    --green: #5BC488;
-    --green-deep: #7AD3A0;
-    --green-pale: #123727;
-    --green-rgb: 91, 196, 136;
+    --green: #8FBFC7;
+    --green-deep: #B4D6DC;
+    --green-pale: rgba(143, 191, 199, 0.14);
+    --green-rgb: 143, 191, 199;
 
-    --orange: #F5A365;
-    --orange-deep: #F7B583;
-    --orange-pale: #3A2415;
-    --orange-rgb: 245, 163, 101;
+    --orange: #D8BCAB;
+    --orange-deep: #E8D2C4;
+    --orange-pale: rgba(216, 188, 171, 0.14);
+    --orange-rgb: 216, 188, 171;
 
-    --hero-gradient: linear-gradient(135deg, #0F172A 0%, #16304B 100%);
+    --hero-gradient: linear-gradient(135deg, #02020A 0%, #111827 100%);
 
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #16233A;
-    --dark3: #1C2E49;
+    --dark2: #111827;               /* Secondary band — surface */
+    --dark3: #1A1A22;               /* Tertiary band — card tone */
 
     --off-white: var(--text-primary);
-    --light: #A9C0D8;
-    --mid: #A9C0D8;
-    --slate: #A9C0D8;
+    --light: rgba(255, 255, 255, 0.72);
+    --mid: rgba(255, 255, 255, 0.68);
+    --slate: rgba(255, 255, 255, 0.68);
 
     --accent-ink: var(--text-primary);
-    --accent-text: #7CC4F2;
-    --accent-bg: #2C6CB0;
+    --accent-text: #8FBFC7;
+    --accent-bg: #05204A;
     --accent-bg-gradient: var(--blue-gradient);
 
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 15, 23, 42;
-    --accent-rgb: 124, 196, 242;
+    --bg-primary-rgb: 2, 2, 10;
+    --accent-rgb: 175, 195, 228;
+    --hover-rgb: 142, 150, 196;
 
-    --surface-1: #0F172A;
-    --surface-2: #16233A;
-    --surface-3: #1C2E49;
-    --surface-elevated: #16233A;
-    --border-subtle: rgba(231, 239, 248, 0.10);
-    --border-card: rgba(231, 239, 248, 0.09);
+    --surface-1: #02020A;
+    --surface-2: #111827;
+    --surface-3: #1A1A22;
+    --surface-elevated: #1A1A22;
+    --border-subtle: rgba(255, 255, 255, 0.10);
+    --border-card: rgba(255, 255, 255, 0.08);
     --shadow-elevation:
-        0 1px 2px rgba(0, 0, 0, 0.30),
-        0 10px 24px -14px rgba(0, 0, 0, 0.55),
-        0 30px 60px -26px rgba(0, 0, 0, 0.65);
+        0 1px 2px rgba(0, 0, 0, 0.5),
+        0 10px 24px -14px rgba(0, 0, 0, 0.7),
+        0 30px 60px -26px rgba(0, 0, 0, 0.8),
+        0 60px 110px -55px rgba(0, 0, 0, 0.9);
     --shadow-soft:
-        0 1px 2px rgba(0, 0, 0, 0.28),
-        0 4px 10px -6px rgba(0, 0, 0, 0.38),
-        0 14px 30px -20px rgba(0, 0, 0, 0.50);
+        0 1px 2px rgba(0, 0, 0, 0.45),
+        0 6px 16px -10px rgba(0, 0, 0, 0.55),
+        0 18px 40px -26px rgba(0, 0, 0, 0.7);
+    --shadow-hover:
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 16px 32px -16px rgba(0, 0, 0, 0.7),
+        0 40px 72px -30px rgba(0, 0, 0, 0.8),
+        0 72px 120px -60px rgba(0, 0, 0, 0.9);
 
     color-scheme: dark;
 }
@@ -241,14 +283,16 @@ body {
 h1, h2, h3, h4 {
     font-family: var(--font-display);
     color: var(--accent-ink);
-    line-height: 1.25;
+    line-height: 1.22;
     font-weight: var(--fw-medium);
     letter-spacing: 0;
 }
-/* Large display headings read best a touch lighter and tighter. */
-h1 { font-weight: var(--fw-light); line-height: 1.14; letter-spacing: -0.018em; }
-h2 { font-weight: var(--fw-regular); line-height: 1.18; letter-spacing: -0.012em; }
-h3, h4 { letter-spacing: -0.005em; }
+/* Large display headings read best lighter, tighter and with real optical
+   tracking — the serif carries the luxury, so it is given room to. */
+h1 { font-weight: var(--fw-light); line-height: 1.08; letter-spacing: -0.028em; }
+h2 { font-weight: var(--fw-light); line-height: 1.12; letter-spacing: -0.022em; }
+h3 { font-weight: var(--fw-regular); line-height: 1.24; letter-spacing: -0.012em; }
+h4 { letter-spacing: -0.006em; }
 /* Never render heavy default-bold text — keep emphasis at medium. */
 b, strong { font-weight: var(--fw-medium); }
 p { text-wrap: pretty; }
@@ -280,19 +324,33 @@ textarea,
         transform 0.2s ease-in-out;
 }
 
+/* Navy on cream rather than white on sage — sage only reaches 2.9:1 with white. */
 ::selection {
-    background: var(--gold);
-    color: var(--btn-text-gold);
+    background: var(--brand-navy);
+    color: var(--band-cream);
 }
 
-/* ─── SHARED BUTTONS ───
-   One unified premium button, matching the Family Stories CTA (.fs-btn): a gold
-   outlined pill that fills with the gold gradient on hover while the text turns
-   white and the arrow slides. All three legacy variants map to the same look so
-   every button on the site is consistent. */
+/* ─── SHARED BUTTONS ─────────────────────────────────────────────────────
+   Two variants, one shape.
+
+     PRIMARY   (.btn-primary, .btn-gold) — solid navy pill, white text. On hover
+               it lifts, glows in the indigo hover colour, and the arrow slides.
+     SECONDARY (.btn-outline)            — transparent with a navy hairline
+               border; on hover the navy fills in from the left and the text
+               flips to white.
+
+   .btn-gold is a legacy class name used throughout the markup for the lead
+   action, so it maps to PRIMARY rather than being renamed.
+
+   Both are transform/opacity-only on hover and carry the magnetic offset that
+   useMagnetic() writes into --mx / --my, so the pointer-follow and the hover
+   lift compose in a single transform instead of fighting each other. */
 .btn-primary,
 .btn-outline,
 .btn-gold {
+    --mx: 0px;
+    --my: 0px;
+    --lift: 0px;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -300,56 +358,106 @@ textarea,
     gap: 0.6rem;
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    font-size: 1rem;
-    padding: 0.9rem 2rem;
+    font-size: 0.98rem;
+    padding: 1.05rem 2.2rem;
     border-radius: var(--radius-pill);
     cursor: pointer;
-    border: 1.5px solid var(--gold);
-    background: transparent;
-    color: var(--gold-deep);
     letter-spacing: 0.2px;
     overflow: hidden;
     isolation: isolate;
-    transition: color 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+    will-change: transform;
+    transform: translate3d(var(--mx), calc(var(--my) + var(--lift)), 0);
+    transition:
+        transform 0.45s var(--ease-out),
+        color 0.4s ease,
+        box-shadow 0.45s var(--ease-out),
+        border-color 0.4s ease;
 }
-/* gold-gradient fill that wipes in from the left on hover */
+
+/* ── Primary — solid navy ── */
+.btn-primary,
+.btn-gold {
+    border: 1.5px solid var(--brand-navy);
+    background: var(--brand-navy);
+    color: var(--btn-text);
+}
+/* Indigo wash that wipes in from the left, so the fill has somewhere to go. */
 .btn-primary::before,
-.btn-outline::before,
 .btn-gold::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
-    background: var(--gold-gradient);
+    background: linear-gradient(100deg, var(--brand-hover) 0%, #3A4066 100%);
     transform: scaleX(0);
     transform-origin: left center;
-    transition: transform 0.4s cubic-bezier(0.6, 0.01, 0.2, 1);
+    transition: transform 0.55s cubic-bezier(0.6, 0.01, 0.2, 1);
 }
+.btn-primary:hover,
+.btn-gold:hover {
+    --lift: -4px;
+    color: #fff;
+    border-color: var(--brand-hover);
+    box-shadow:
+        0 18px 40px -18px rgba(var(--hover-rgb), 0.65),
+        0 0 0 6px rgba(var(--hover-rgb), 0.10);
+}
+.btn-primary:hover::before,
+.btn-gold:hover::before { transform: scaleX(1); }
+
+/* ── Secondary — transparent, navy border, fills navy ── */
+.btn-outline {
+    border: 1.5px solid rgba(var(--accent-rgb), 0.38);
+    background: transparent;
+    color: var(--blue-deep);
+}
+.btn-outline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--brand-navy);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s cubic-bezier(0.6, 0.01, 0.2, 1);
+}
+.btn-outline:hover {
+    --lift: -4px;
+    color: #fff;
+    border-color: var(--brand-navy);
+    box-shadow:
+        0 18px 40px -18px rgba(var(--accent-rgb), 0.5),
+        0 0 0 6px rgba(var(--accent-rgb), 0.08);
+}
+.btn-outline:hover::before { transform: scaleX(1); }
+/* On dark the navy fill is nearly the page colour, so the outline fills with
+   the indigo hover instead and keeps a visible edge. */
+[data-theme="dark"] .btn-outline { border-color: rgba(255, 255, 255, 0.24); color: var(--text-primary); }
+[data-theme="dark"] .btn-outline::before { background: var(--brand-hover); }
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn-gold { border-color: rgba(255, 255, 255, 0.16); }
+
+/* ── Arrow ── */
 .btn-primary svg,
 .btn-outline svg,
 .btn-gold svg {
-    width: 1.1em;
-    height: 1.1em;
-    transition: transform 0.4s cubic-bezier(0.6, 0.01, 0.2, 1);
+    width: 1.05em;
+    height: 1.05em;
+    transition: transform 0.45s cubic-bezier(0.6, 0.01, 0.2, 1);
 }
-
-.btn-primary:hover,
-.btn-outline:hover,
-.btn-gold:hover {
-    color: #fff;
-    box-shadow: 0 18px 40px -18px rgba(var(--gold-rgb), 0.7);
-}
-.btn-primary:hover::before,
-.btn-outline:hover::before,
-.btn-gold:hover::before { transform: scaleX(1); }
-
 .btn-primary:hover svg,
 .btn-outline:hover svg,
 .btn-gold:hover svg { transform: translateX(5px); }
 
 .btn-primary:active,
 .btn-outline:active,
-.btn-gold:active { transform: translateY(1px); }
+.btn-gold:active { --lift: 0px; }
+
+@media (prefers-reduced-motion: reduce) {
+    .btn-primary,
+    .btn-outline,
+    .btn-gold { transform: none; transition: color 0.2s ease, background-color 0.2s ease; }
+}
 
 /* ─── LOGO ───
    Single white PNG (public/images/countrykids.png) rendered through a CSS mask,
@@ -368,4 +476,75 @@ textarea,
 .container {
     width: min(var(--shell-max), var(--shell-w));
     margin-inline: auto;
+}
+
+/* ─── MEDIA ──────────────────────────────────────────────────────────────
+   One treatment for every photo on the site: generously rounded, clipped, and
+   scaling gently inside its frame on hover. The transform lives on the <img>
+   and the clip on the wrapper, so the zoom never bleeds past the corner radius
+   and never reflows anything around it.
+
+   Applied by wrapper class rather than to bare <img> so logos, icons and the
+   masked brand mark are left alone. */
+.media,
+.about-media,
+.gallery-tile,
+.room-card-media,
+.ls-card-media,
+.story-media,
+.pvm-media,
+.fs-media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    isolation: isolate;
+    /* Reserve the box before the image decodes — no CLS. */
+    background: var(--surface-2);
+}
+.media img,
+.about-media img,
+.gallery-tile img,
+.room-card-media img,
+.ls-card-media img,
+.story-media img,
+.pvm-media img,
+.fs-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    will-change: transform;
+    transform: translateZ(0) scale(1);
+    transition: transform 0.9s var(--ease-soft), opacity 0.6s ease;
+}
+.media:hover img,
+.about-media:hover img,
+.gallery-tile:hover img,
+.room-card-media:hover img,
+.ls-card-media:hover img,
+.story-media:hover img,
+.pvm-media:hover img,
+.fs-media:hover img,
+.card:hover .media img,
+.room-card:hover .room-card-media img { transform: translateZ(0) scale(1.07); }
+
+/* (Smooth image fade-in is already handled by .img-fade / .img-loaded in
+   css/animations.css, applied by useAnimations — not duplicated here.) */
+
+@media (prefers-reduced-motion: reduce) {
+    .media img,
+    .about-media img,
+    .gallery-tile img,
+    .room-card-media img,
+    .ls-card-media img,
+    .story-media img,
+    .pvm-media img,
+    .fs-media img { transition: none; }
+    .media:hover img,
+    .about-media:hover img,
+    .gallery-tile:hover img,
+    .room-card-media:hover img,
+    .ls-card-media:hover img,
+    .story-media:hover img,
+    .pvm-media:hover img,
+    .fs-media:hover img { transform: none; }
 }

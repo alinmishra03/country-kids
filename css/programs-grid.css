@@ -56,8 +56,8 @@
 /* Rotate the accent colour across cards for a lively-but-consistent palette. */
 .program-card:nth-child(4n+1) { --accent-soft: var(--blue-pale);  --accent-strong: var(--blue);      --accent-grad: var(--blue-gradient); }
 .program-card:nth-child(4n+2) { --accent-soft: rgba(var(--gold-rgb),0.16);  --accent-strong: var(--gold-deep);  --accent-grad: var(--gold-gradient); }
-.program-card:nth-child(4n+3) { --accent-soft: var(--green-pale); --accent-strong: var(--green-deep); --accent-grad: linear-gradient(135deg,#5FC98C,#2E8353); }
-.program-card:nth-child(4n+4) { --accent-soft: var(--orange-pale); --accent-strong: var(--orange-deep); --accent-grad: linear-gradient(135deg,#F7A868,#D96E2A); }
+.program-card:nth-child(4n+3) { --accent-soft: var(--green-pale); --accent-strong: var(--green-deep); --accent-grad: linear-gradient(135deg,#8AB2B8,#3F6268); }
+.program-card:nth-child(4n+4) { --accent-soft: var(--orange-pale); --accent-strong: var(--orange-deep); --accent-grad: linear-gradient(135deg,#D8BCAB,#9C6F55); }
 
 .program-card h3 { font-size: 1.3rem; }
 .program-age {

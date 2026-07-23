@@ -5,9 +5,12 @@
    "background") is deliberately untouched: same component, same full-bleed
    layer, same camera/fit/rotation/interaction. Everything else is the frame:
 
-     · left ~52%  — badge → headline → stacked CTAs → stat cards
-     · right ~48% — the sphere's stage, with the trust chips as a right rail
-     · floating glass cards pinned to the outer right edge, clear of the globe
+     · three desktop bands — copy (0–29%) | centred sphere (29–71%) | rail (71%+)
+     · left band  — badge → headline → stacked CTAs → stat cards; it always ENDS
+                    before the sphere layer begins, so no text ever sits on the
+                    globe. Narrow, which is the cost of centring the sphere.
+     · right band — one rail flush to the section's right edge: reviews card,
+                    trust chips, learning card, all the same width and edge
      · bottom-left scroll cue that scrolls to the next section
      · decorative dots / gold hairlines / soft orbs filling the negative space
 
@@ -19,10 +22,15 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import Icon from '@/components/shared/Icon';
 import SphereGallery from '@/components/home/SphereGallery';
+import useMagnetic from '@/hooks/useMagnetic';
 
-/* Headline, wrapped as three deliberate lines. Only "belongs." takes the gold. */
+/* Headline, wrapped as four short lines. Only "belongs." takes the gold.
+   The lines are deliberately kept short so the longest one ("child belongs.")
+   still fits the copy column at the largest type size — the headline can never
+   run past the column and onto the sphere. */
 const TITLE_LINES = [
-    ['Rooted', 'in', 'Country.'],
+    ['Rooted', 'in'],
+    ['Country.'],
     ['Where', 'every'],
     ['child', 'belongs.'],
 ];
@@ -44,6 +52,10 @@ const STATS = [
 
 export default function Hero() {
     const sectionRef = useRef<HTMLElement>(null);
+
+    /* Pointer-follow on the two CTAs. Writes --mx/--my, which the shared button
+       transform composes with its hover lift — see css/base.css. */
+    useMagnetic(sectionRef);
 
     /* Scroll cue → the section immediately after the hero, whatever it is. */
     const scrollToNext = () => {
@@ -98,10 +110,10 @@ export default function Hero() {
                     </h1>
 
                     <div className="hero-main-cta">
-                        <Link className="btn-gold" href="/enroll">
-                            Book a Free Tour
+                        <Link className="btn-gold" href="/enroll" data-magnetic>
+                            Book a Free Tour <Icon name="arrow-right" />
                         </Link>
-                        <Link className="btn-outline" href="/rooms">
+                        <Link className="btn-outline" href="/rooms" data-magnetic>
                             Explore Our Rooms <Icon name="arrow-right" />
                         </Link>
                     </div>
@@ -116,9 +128,10 @@ export default function Hero() {
                     </div>
                 </div>
 
-                {/* The sphere's stage. Holds the right column open and carries the
-                    trust chips as a right-aligned rail; when the grid collapses on
-                    tablet/phone the chips fall straight in under the buttons. */}
+                {/* The sphere's stage. On desktop it just holds the right column
+                    open — the chips inside are lifted out to the absolute right
+                    rail. When the grid collapses on tablet/phone they drop back
+                    into flow, straight under the buttons. */}
                 <div className="hero-stage">
                     <div className="hero-badges">
                         {CHIPS.map((c) => (
@@ -134,9 +147,11 @@ export default function Hero() {
                 </div>
             </div>
 
-            {/* ── Floating glass cards — pinned to the outer edges, clear of the globe.
-                The wrapper owns the entrance + bob animation; the card inside owns the
-                hover lift, so the two never fight over `transform`. ── */}
+            {/* ── Floating glass cards — top and bottom of the same right rail as the
+                trust chips (same width, same right edge, see --hero-rail-* in
+                hero.css). The wrapper owns the entrance + bob animation; the card
+                inside owns the hover lift, so the two never fight over
+                `transform`. ── */}
             <div className="hero-float hero-float--reviews">
                 <div className="hero-float-card">
                     <span className="hero-card-stars" aria-hidden="true">

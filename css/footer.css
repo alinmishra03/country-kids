@@ -13,7 +13,7 @@
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    background: #102A4A;
+    background: var(--brand-navy);
     padding: var(--section-y) 0;
     margin-bottom: var(--section-y-sm);
     text-align: center;
@@ -189,7 +189,7 @@
 
 /* Inline validation message. */
 .newsletter-error {
-    color: #FFD7A0;
+    color: var(--gold-light);
     font-size: 0.9rem;
     font-weight: var(--fw-medium);
 }

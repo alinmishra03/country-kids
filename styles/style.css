@@ -35,6 +35,10 @@
 @import url("../css/footer.css");
 /* Decorative layer — reusable organic blobs, dots, circles, wave dividers. */
 @import url("../css/decor.css");
+/* Surface rhythm — the alternating cream / white / beige band map. Must load
+   after every component stylesheet (so it wins over their local backgrounds)
+   and before theme-dark.css. */
+@import url("../css/surfaces.css");
 /* Animations — additive motion layer, loaded after component styles. */
 @import url("../css/animations.css");
 /* Dark theme — MUST be the absolute last import so [data-theme="dark"] wins. */

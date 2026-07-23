@@ -1,0 +1,103 @@
+/* ─── SURFACE RHYTHM ─────────────────────────────────────────────────────
+   Every band on the site gets an explicit background so no two adjacent
+   sections ever share one, and the page reads as a stack of distinct surfaces
+   rather than one long field.
+
+   Three tones, plus the navy brand bands:
+
+       cream  var(--band-cream)  #FFFDD0   the page field
+       white  var(--band-white)  #FFFFFF   the "lift" band — cards sit flat on it
+       beige  var(--band-beige)  #D8BCAB   the warm band — cards pop off it
+       navy   var(--brand-navy)  #05204A   stats, closing CTA, footer
+
+   Loads AFTER section-commons.css (which defines the generic .section-alt) and
+   BEFORE theme-dark.css, so these win over the generic rule and the dark
+   overrides still win over these.
+
+   In dark mode the same three roles map onto background / surface / card tones,
+   so the alternation survives the theme switch instead of flattening to black. */
+
+.band-cream { background: var(--band-cream); }
+.band-white { background: var(--band-white); }
+.band-beige { background: var(--band-beige); }
+
+[data-theme="dark"] .band-cream { background: var(--bg-dark); }
+[data-theme="dark"] .band-white { background: var(--surface-3); }
+[data-theme="dark"] .band-beige { background: var(--surface-2); }
+
+/* ── Home page, in DOM order ──
+   hero cream · stats navy · learning white · welcome cream · rooms beige ·
+   philosophy white · compliance cream · gallery white · testimonials beige ·
+   CTA navy · footer navy */
+.hero                              { background: var(--band-cream); }
+.stats-bar                         { background: var(--band-beige); }
+.section.learning-spaces           { background: var(--band-white); }
+.section.welcome                   { background: var(--band-cream); }
+.section.rooms-section             { background: var(--band-beige); }
+.section.philosophy-teaser         { background: var(--band-white); }
+.section.compliance-strip          { background: var(--band-cream); }
+.section.gallery-section           { background: var(--band-white); }
+.section.testimonials-section      { background: var(--band-beige); }
+
+[data-theme="dark"] .hero                         { background: var(--bg-dark); }
+[data-theme="dark"] .stats-bar                    { background: var(--surface-2); }
+[data-theme="dark"] .section.learning-spaces      { background: var(--surface-3); }
+[data-theme="dark"] .section.welcome              { background: var(--bg-dark); }
+[data-theme="dark"] .section.rooms-section        { background: var(--surface-2); }
+[data-theme="dark"] .section.philosophy-teaser    { background: var(--surface-3); }
+[data-theme="dark"] .section.compliance-strip     { background: var(--bg-dark); }
+[data-theme="dark"] .section.gallery-section      { background: var(--surface-3); }
+[data-theme="dark"] .section.testimonials-section { background: var(--surface-2); }
+
+/* ── Inner pages ──
+   Sub-pages compose from the generic .section / .section-alt pair rather than
+   named sections, so they alternate positionally: plain sections take cream and
+   white in turn, and anything explicitly marked .section-alt takes beige. The
+   nth-of-type walk is scoped to the .page shell so nested sections (cards,
+   sliders) are never caught by it.
+
+   The home page is EXCLUDED (:not(#page-home)) rather than relying on
+   specificity: the positional selector scores 0,4,0 and would otherwise beat
+   every named rule above it. */
+.page:not(#page-home) > .section:not(.section-alt):nth-of-type(odd)  { background: var(--band-cream); }
+.page:not(#page-home) > .section:not(.section-alt):nth-of-type(even) { background: var(--band-white); }
+.page:not(#page-home) > .section.section-alt                         { background: var(--band-beige); }
+
+[data-theme="dark"] .page:not(#page-home) > .section:not(.section-alt):nth-of-type(odd)  { background: var(--bg-dark); }
+[data-theme="dark"] .page:not(#page-home) > .section:not(.section-alt):nth-of-type(even) { background: var(--surface-3); }
+[data-theme="dark"] .page:not(#page-home) > .section.section-alt                         { background: var(--surface-2); }
+
+/* ── Seam softening ──
+   Where a cream band meets a white one the edge is only a few points of
+   luminance apart and can look like a rendering artefact. A hairline in the
+   border colour resolves it into a deliberate join. */
+.section + .section { border-top: 1px solid rgba(5, 32, 74, 0.045); }
+[data-theme="dark"] .section + .section { border-top-color: rgba(255, 255, 255, 0.05); }
+.section.rooms-section,
+.section.testimonials-section,
+.page > .section.section-alt { border-top-color: transparent; }
+
+/* ─── SURFACE-AWARE CARDS ────────────────────────────────────────────────
+   A white card is invisible on a white band. On the white bands the card tone
+   steps to the cream so it still reads as a distinct object; on cream and beige
+   it stays white. Colour only — radius, shadow and hover are unchanged. */
+.band-white .card,
+.section.learning-spaces .card,
+.section.philosophy-teaser .card,
+.section.gallery-section .card,
+.section.learning-spaces .pvm-card,
+.section.philosophy-teaser .pvm-card,
+.section.learning-spaces .feature-item,
+.section.philosophy-teaser .feature-item {
+    background: var(--band-cream);
+}
+[data-theme="dark"] .band-white .card,
+[data-theme="dark"] .section.learning-spaces .card,
+[data-theme="dark"] .section.philosophy-teaser .card,
+[data-theme="dark"] .section.gallery-section .card,
+[data-theme="dark"] .section.learning-spaces .pvm-card,
+[data-theme="dark"] .section.philosophy-teaser .pvm-card,
+[data-theme="dark"] .section.learning-spaces .feature-item,
+[data-theme="dark"] .section.philosophy-teaser .feature-item {
+    background: var(--surface-2);
+}

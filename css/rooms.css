@@ -6,7 +6,7 @@
 .accent-gold   { --acc: var(--gold-deep); --acc-deep: var(--gold-deep); --acc-pale: rgba(var(--gold-rgb), 0.14); }
 .accent-green  { --acc: var(--green);  --acc-deep: var(--green-deep); --acc-pale: var(--green-pale); }
 .accent-orange { --acc: var(--orange); --acc-deep: var(--orange-deep); --acc-pale: var(--orange-pale); }
-.accent-teal   { --acc: #1AA0A6;       --acc-deep: #12787D;          --acc-pale: rgba(26, 160, 166, 0.12); }
+.accent-teal   { --acc: #6C969D;       --acc-deep: #3F6268;          --acc-pale: rgba(108, 150, 157, 0.14); }
 
 .rooms-grid {
     display: grid;

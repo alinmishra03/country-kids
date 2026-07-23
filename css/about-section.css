@@ -35,7 +35,7 @@
 }
 .about-media .about-float svg { width: 18px; height: 18px; }
 .about-media .about-float.one svg { color: var(--orange-deep); }
-.about-media .about-float.two svg { color: #E5484D; }
+.about-media .about-float.two svg { color: var(--gold-deep); }
 .about-float.one { top: 1.2rem; inset-inline-start: 1.2rem; }
 .about-float.two { bottom: 1.2rem; inset-inline-end: 1.2rem; }
 

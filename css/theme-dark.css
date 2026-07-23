@@ -16,7 +16,7 @@
 [data-theme="dark"] .stats-bar,
 [data-theme="dark"] .contact-strip {
     /* keep the blue gradient but deepen it so text contrast holds */
-    background: linear-gradient(135deg, #123457 0%, #0B2138 100%);
+    background: linear-gradient(135deg, #111827 0%, #05204A 100%);
 }
 
 /* Gold-FILLED navigation CTAs still need dark text for contrast. (The content
@@ -24,7 +24,7 @@
    override here.) */
 [data-theme="dark"] .nav-cta,
 [data-theme="dark"] .mobile-cta {
-    color: #10233A;
+    color: #FFFFFF;
 }
 
 [data-theme="dark"] .gallery-tile { border-color: var(--border-subtle); }

@@ -4,28 +4,92 @@ section { position: relative; }
 .section { padding: var(--section-y) 0; }
 .section-alt { background: var(--surface-2); }
 
-.section-head { text-align: center; max-width: 720px; margin: 0 auto var(--section-head-gap); }
+.section-head {
+    text-align: center;
+    /* ~12-column measure — headings and deck never run the full shell width. */
+    max-width: 62ch;
+    margin: 0 auto var(--section-head-gap);
+}
 .section-eyebrow {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    letter-spacing: 1.4px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     line-height: 1.5;
-    color: var(--blue);
+    color: var(--gold-deep);
     background: var(--blue-pale);
-    padding: 0.4rem 0.95rem;
+    border: 1px solid var(--border-subtle);
+    padding: 0.5rem 1.05rem;
     border-radius: var(--radius-pill);
-    margin-bottom: 1rem;
+    margin-bottom: 1.35rem;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
-.section-title { font-size: clamp(2rem, 4vw, 2.75rem); }
-.section-title span { color: var(--blue); }
+/* Small sage dot leading the eyebrow — a quiet brand tell that costs no markup. */
+.section-eyebrow::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex: none;
+}
+.section-title {
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+    margin-inline: auto;
+}
+/* The highlighted word in a title takes the sage accent and a soft underline
+   that draws itself in when the heading scrolls into view. The reveal is keyed
+   to the EXISTING reveal classes (.fx-in from useAnimations, .fade-in from
+   useFadeUps) so it rides the animations already on the page rather than adding
+   a second observer. It also defaults to drawn-in, so a head that is never
+   tagged by a hook still renders correctly. */
+.section-title span {
+    position: relative;
+    color: var(--gold-deep);
+    white-space: nowrap;
+}
+.section-title span::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.04em;
+    height: 0.075em;
+    border-radius: 999px;
+    background: var(--gold-gradient);
+    opacity: 0.45;
+    transform-origin: left center;
+    transition: transform 1.1s var(--ease-out) 0.15s;
+}
+/* Only sections that actually animate start the underline retracted. */
+.fx-reveal .section-title span::after,
+.fade-up .section-title span::after,
+.fx-reveal.section-head .section-title span::after,
+.fade-up.section-head .section-title span::after { transform: scaleX(0); }
+.fx-reveal.fx-in .section-title span::after,
+.fade-up.fade-in .section-title span::after,
+.fx-in .section-title span::after,
+.fade-in .section-title span::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+    .section-title span::after { transform: scaleX(1) !important; transition: none; }
+}
+/* The nowrap keeps the underline on one unbroken run; on narrow screens that
+   would force horizontal overflow, so the word is allowed to wrap instead. */
+@media (max-width: 640px) {
+    .section-title span { white-space: normal; }
+}
 .section-subtitle {
-    margin-top: 1rem;
+    margin: 1.15rem auto 0;
     color: var(--mid);
-    font-size: 1.08rem;
-    line-height: 1.7;
+    font-size: 1.06rem;
+    line-height: 1.8;
+    max-width: 56ch;
 }
 
 /* Inline accent link (phone / email / address inside body copy). Shared so the
@@ -77,16 +141,59 @@ section { position: relative; }
 .estimator-controls,
 .contact-hours,
 .sblocks-callout {
+    position: relative;
     background: var(--surface-elevated);
     border: 1px solid var(--border-card);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
     padding: var(--card-pad);
     transition: var(--card-transition);
+    will-change: transform;
 }
 
-/* Interactive cards share a single lift + elevation so hover reads the same on
-   every page. The border warms slightly to keep the edge from vanishing. */
+/* A light catch down the top of every card. It is what stops a white card on a
+   cream field from reading as a flat rectangle, and it is the cheapest way to
+   get the "glass" quality without a backdrop-filter on every card.
+
+   Painted as a background-image LAYER rather than an ::before overlay: an
+   absolutely-positioned pseudo would sit in the positioned-descendant paint
+   layer, i.e. on top of the card's own text. As a background layer it is
+   guaranteed to stay behind the content. */
+.card,
+.program-card,
+.feature-item,
+.room-card,
+.testimonial-card,
+.pillar-card,
+.curric-card,
+.fee-step,
+.story-pillar,
+.pvm-card {
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.55) 0%,
+        rgba(255, 255, 255, 0) 42%
+    );
+}
+[data-theme="dark"] .card,
+[data-theme="dark"] .program-card,
+[data-theme="dark"] .feature-item,
+[data-theme="dark"] .room-card,
+[data-theme="dark"] .testimonial-card,
+[data-theme="dark"] .pillar-card,
+[data-theme="dark"] .curric-card,
+[data-theme="dark"] .fee-step,
+[data-theme="dark"] .story-pillar,
+[data-theme="dark"] .pvm-card {
+    background-image: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(255, 255, 255, 0) 42%
+    );
+}
+
+/* Interactive cards share a single lift + scale + elevation so hover reads the
+   same on every page. Transform and box-shadow only — nothing reflows. */
 .card:hover,
 .program-card:hover,
 .feature-item:hover,
@@ -97,14 +204,17 @@ section { position: relative; }
 .fee-step:hover,
 .story-pillar:hover,
 .pvm-card:hover {
-    transform: translateY(var(--card-lift));
-    /* Elevation + a subtle gold gradient-border highlight (design-language). */
-    box-shadow: var(--shadow-elevation), 0 0 0 1.5px rgba(var(--gold-rgb), 0.28);
-    border-color: var(--border-subtle);
+    transform: translate3d(0, var(--card-lift), 0) scale(var(--card-scale));
+    /* Elevation + a subtle sage gradient-border highlight (design language). */
+    box-shadow: var(--shadow-hover), 0 0 0 1.5px rgba(var(--gold-rgb), 0.3);
+    border-color: transparent;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .card, .program-card, .feature-item, .room-card, .testimonial-card,
     .pillar-card, .value-chip, .curric-card, .fee-step, .timeline-card,
     .story-pillar, .pvm-card { transition: none; }
+    .card:hover, .program-card:hover, .feature-item:hover, .room-card:hover,
+    .pillar-card:hover, .value-chip:hover, .curric-card:hover, .fee-step:hover,
+    .story-pillar:hover, .pvm-card:hover { transform: none; }
 }
