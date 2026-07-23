@@ -6,7 +6,7 @@
 .stats-bar {
     position: relative;
     overflow: hidden;
-    background: var(--band-beige); /* warm band (light); dark override in css/theme-dark.css */
+    background: var(--band-beige); /* navy band (light); dark override in css/theme-dark.css */
     padding: var(--section-y-sm) 0;
     isolation: isolate;
 }

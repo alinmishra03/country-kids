@@ -1,6 +1,6 @@
 :root {
     /* ─── LIGHT THEME — CREAM / NAVY / SAGE ───────────────────────────────
-       Background #FFFDD0 (cream) · Cards #FFFFFF · Secondary bands #D8BCAB
+       Background #FFFDD0 (cream) · Cards #FFFFFF · Secondary bands #05204A (navy)
        Primary brand #05204A · Accent #6C969D · Hover #464D77
 
        The token NAMES are historical (blue / gold / green / orange) and are
@@ -16,7 +16,11 @@
     /* ── Raw palette ── */
     --band-cream: #FFFDD0;
     --band-white: #FFFFFF;
-    --band-beige: #D8BCAB;
+    /* The secondary band is navy, not beige. Kept under the --band-beige name
+       because every band selector in css/surfaces.css already reads from it;
+       renaming would touch a dozen call sites for no behavioural gain. Text
+       sitting directly on this band is inverted to white in surfaces.css. */
+    --band-beige: #05204A;
     --brand-navy: #05204A;
     --brand-accent: #6C969D;
     --brand-hover: #464D77;
@@ -71,7 +75,12 @@
     /* Remapped surface tokens */
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #D8BCAB;               /* Secondary band — beige */
+    /* NOT the secondary band (that is --band-beige, now navy). This is the
+       subtle tinted-panel tone: the footer body, pull-quotes, the curriculum
+       note and the acknowledgement panel all sit on it with DARK text, so it
+       has to stay light — navy here would make five more places unreadable.
+       Retinted off the cream so no beige is left anywhere on the site. */
+    --dark2: #F6F2DC;               /* Tinted panel — warm neutral */
     --dark3: #FFFFFF;               /* Tertiary band — white */
 
     /* Text Scale */

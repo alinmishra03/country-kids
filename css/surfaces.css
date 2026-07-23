@@ -7,8 +7,8 @@
 
        cream  var(--band-cream)  #FFFDD0   the page field
        white  var(--band-white)  #FFFFFF   the "lift" band — cards sit flat on it
-       beige  var(--band-beige)  #D8BCAB   the warm band — cards pop off it
-       navy   var(--brand-navy)  #05204A   stats, closing CTA, footer
+       navy   var(--band-beige)  #05204A   the dark band — white cards pop off it
+       navy   var(--brand-navy)  #05204A   closing CTA, footer
 
    Loads AFTER section-commons.css (which defines the generic .section-alt) and
    BEFORE theme-dark.css, so these win over the generic rule and the dark
@@ -80,6 +80,79 @@
 .section.rooms-section,
 .section.testimonials-section,
 .page > .section.section-alt { border-top-color: transparent; }
+
+/* ─── TEXT ON THE NAVY BAND ──────────────────────────────────────────────
+   The secondary band is navy (#05204A) and the site's default text colour is
+   also navy, so anything sitting DIRECTLY on this band would be navy-on-navy
+   and invisible. These rules invert only that band-level typography.
+
+   Scoped deliberately tight: it targets section headers and band-level copy,
+   never card interiors. Cards on this band keep their own light surfaces and
+   their navy text, which is the whole point of a dark band. */
+.stats-bar,
+.section.rooms-section,
+.section.fs,
+.section.testimonials-section,
+.band-beige,
+.page:not(#page-home) > .section.section-alt {
+    --hero-ink: #FFFFFF;
+}
+.stats-bar > .container > .section-head,
+.section.rooms-section > .container > .section-head,
+.section.fs > .container > .fs-head,
+.section.testimonials-section > .container > .section-head,
+.band-beige > .container > .section-head,
+.page:not(#page-home) > .section.section-alt > .container > .section-head {
+    color: #FFFFFF;
+}
+.stats-bar .section-title,
+.section.rooms-section .section-title,
+.section.testimonials-section .section-title,
+.band-beige .section-title,
+.page:not(#page-home) > .section.section-alt > .container > .section-head .section-title,
+.section.fs .fs-title {
+    color: #FFFFFF;
+}
+.stats-bar .section-subtitle,
+.section.rooms-section .section-subtitle,
+.section.testimonials-section .section-subtitle,
+.band-beige .section-subtitle,
+.page:not(#page-home) > .section.section-alt > .container > .section-head .section-subtitle {
+    color: rgba(255, 255, 255, 0.74);
+}
+/* The accent word and its underline step up to the light sage so they still
+   read as the accent rather than disappearing into the navy. */
+.stats-bar .section-title span,
+.section.rooms-section .section-title span,
+.section.testimonials-section .section-title span,
+.band-beige .section-title span,
+.page:not(#page-home) > .section.section-alt .section-title span,
+.section.fs .fs-title-accent {
+    color: var(--gold-light);
+}
+/* The eyebrow pill's tint is a 7% navy wash — invisible on navy. */
+.stats-bar .section-eyebrow,
+.section.rooms-section .section-eyebrow,
+.section.testimonials-section .section-eyebrow,
+.band-beige .section-eyebrow,
+.page:not(#page-home) > .section.section-alt .section-eyebrow,
+.section.fs .fs-badge {
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+/* The secondary CTA under these sections needs a light edge, not a navy one. */
+.section.rooms-section > .container > .section-cta .btn-outline,
+.section.fs .btn-outline,
+.page:not(#page-home) > .section.section-alt > .container > .section-cta .btn-outline {
+    border-color: rgba(255, 255, 255, 0.34);
+    color: #FFFFFF;
+}
+.section.rooms-section > .container > .section-cta .btn-outline::before,
+.section.fs .btn-outline::before,
+.page:not(#page-home) > .section.section-alt > .container > .section-cta .btn-outline::before {
+    background: var(--brand-hover);
+}
 
 /* ─── SURFACE-AWARE CARDS ────────────────────────────────────────────────
    A white card is invisible on a white band. On the white bands the card tone

@@ -83,16 +83,13 @@ export default function Hero() {
             {/* Reading scrim: dark under the copy column, clear over the sphere. */}
             <div className="hero-scrim" aria-hidden="true" />
 
-            {/* Negative-space decoration: dot field, gold hairlines, soft orbs. */}
+            {/* Negative-space decoration: two soft blurred orbs, nothing else.
+                The dot field, hairline rule and drifting sparks were removed —
+                they added visual noise and four infinite animations for no
+                compositional gain. */}
             <div className="hero-decor" aria-hidden="true">
-                <span className="hero-dots" />
-                <span className="hero-rule hero-rule--top" />
                 <span className="hero-orb hero-orb--gold" />
                 <span className="hero-orb hero-orb--blue" />
-                <span className="hero-spark" style={{ ['--i']: 0 } as any} />
-                <span className="hero-spark" style={{ ['--i']: 1 } as any} />
-                <span className="hero-spark" style={{ ['--i']: 2 } as any} />
-                <span className="hero-spark" style={{ ['--i']: 3 } as any} />
             </div>
 
             <div className="hero-inner">
