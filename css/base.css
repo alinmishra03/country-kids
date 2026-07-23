@@ -478,73 +478,27 @@ textarea,
     margin-inline: auto;
 }
 
+
 /* ─── MEDIA ──────────────────────────────────────────────────────────────
-   One treatment for every photo on the site: generously rounded, clipped, and
-   scaling gently inside its frame on hover. The transform lives on the <img>
-   and the clip on the wrapper, so the zoom never bleeds past the corner radius
-   and never reflows anything around it.
+   The real image wrappers on this site are .about-media, .room-media,
+   .welcome-media, .program-media and .gallery-marquee-media, and every one of
+   them ALREADY sets its own overflow, aspect-ratio, object-fit and hover zoom
+   in its component stylesheet. So this block deliberately does not restate any
+   of that — it only supplies the one thing the new design system changes:
+   corner radius, matched to the larger card radius.
 
-   Applied by wrapper class rather than to bare <img> so logos, icons and the
-   masked brand mark are left alone. */
-.media,
-.about-media,
-.gallery-tile,
-.room-card-media,
-.ls-card-media,
-.story-media,
-.pvm-media,
-.fs-media {
-    position: relative;
-    overflow: hidden;
+   .program-media bleeds to the top edge of its card (negative margins), so it
+   takes the radius on its TOP corners only; rounding all four would float it
+   inside the card. */
+.room-media,
+.gallery-marquee-media {
     border-radius: var(--radius-lg);
-    isolation: isolate;
-    /* Reserve the box before the image decodes — no CLS. */
-    background: var(--surface-2);
 }
-.media img,
-.about-media img,
-.gallery-tile img,
-.room-card-media img,
-.ls-card-media img,
-.story-media img,
-.pvm-media img,
-.fs-media img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    will-change: transform;
-    transform: translateZ(0) scale(1);
-    transition: transform 0.9s var(--ease-soft), opacity 0.6s ease;
+.program-media {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
-.media:hover img,
-.about-media:hover img,
-.gallery-tile:hover img,
-.room-card-media:hover img,
-.ls-card-media:hover img,
-.story-media:hover img,
-.pvm-media:hover img,
-.fs-media:hover img,
-.card:hover .media img,
-.room-card:hover .room-card-media img { transform: translateZ(0) scale(1.07); }
-
-/* (Smooth image fade-in is already handled by .img-fade / .img-loaded in
-   css/animations.css, applied by useAnimations — not duplicated here.) */
-
-@media (prefers-reduced-motion: reduce) {
-    .media img,
-    .about-media img,
-    .gallery-tile img,
-    .room-card-media img,
-    .ls-card-media img,
-    .story-media img,
-    .pvm-media img,
-    .fs-media img { transition: none; }
-    .media:hover img,
-    .about-media:hover img,
-    .gallery-tile:hover img,
-    .room-card-media:hover img,
-    .ls-card-media:hover img,
-    .story-media:hover img,
-    .pvm-media:hover img,
-    .fs-media:hover img { transform: none; }
+/* A card that clips its own corners keeps any full-bleed media inside them. */
+.room-card,
+.program-card {
+    overflow: hidden;
 }

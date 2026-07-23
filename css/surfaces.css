@@ -37,7 +37,10 @@
 .section.philosophy-teaser         { background: var(--band-white); }
 .section.compliance-strip          { background: var(--band-cream); }
 .section.gallery-section           { background: var(--band-white); }
-.section.testimonials-section      { background: var(--band-beige); }
+/* Testimonials renders as `.section fs` on the home page, not
+   `.section testimonials-section` — both are matched so the band lands. */
+.section.testimonials-section,
+.section.fs                        { background: var(--band-beige); }
 
 [data-theme="dark"] .hero                         { background: var(--bg-dark); }
 [data-theme="dark"] .stats-bar                    { background: var(--surface-2); }
@@ -47,7 +50,8 @@
 [data-theme="dark"] .section.philosophy-teaser    { background: var(--surface-3); }
 [data-theme="dark"] .section.compliance-strip     { background: var(--bg-dark); }
 [data-theme="dark"] .section.gallery-section      { background: var(--surface-3); }
-[data-theme="dark"] .section.testimonials-section { background: var(--surface-2); }
+[data-theme="dark"] .section.testimonials-section,
+[data-theme="dark"] .section.fs                   { background: var(--surface-2); }
 
 /* ── Inner pages ──
    Sub-pages compose from the generic .section / .section-alt pair rather than
