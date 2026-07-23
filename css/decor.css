@@ -1,0 +1,111 @@
+/* ─── DECORATIVE LAYER ─────────────────────────────────────────────────────
+   Styles for the reusable organic decorations (components/shared/Decor.tsx).
+   Everything here is decorative, non-interactive, palette-only, and sits behind
+   content. Position helpers (.decor-tr etc.) place a decoration in a corner of a
+   position:relative parent. */
+
+/* ── Organic blob ── */
+.decor-blob {
+    position: absolute;
+    display: block;
+    width: clamp(200px, 24vw, 340px);
+    aspect-ratio: 1;
+    border-radius: 63% 37% 54% 46% / 55% 48% 52% 45%;
+    filter: blur(30px);
+    opacity: 0.5;
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+    animation: decor-float 15s ease-in-out infinite;
+}
+.decor-blob--gold {
+    background: radial-gradient(circle at 40% 40%, rgba(var(--gold-rgb), 0.5), transparent 70%);
+}
+.decor-blob--navy {
+    background: radial-gradient(circle at 40% 40%, rgba(var(--accent-rgb), 0.38), transparent 70%);
+}
+.decor-blob--green {
+    background: radial-gradient(circle at 40% 40%, rgba(var(--green-rgb), 0.4), transparent 70%);
+}
+@keyframes decor-float {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    50% { transform: translate(16px, -20px) rotate(8deg); }
+}
+
+/* ── Faded dot grid ── */
+.decor-dots {
+    position: absolute;
+    z-index: 0;
+    pointer-events: none;
+    width: clamp(120px, 16vw, 200px);
+    aspect-ratio: 1;
+    background-image: radial-gradient(rgba(var(--accent-rgb), 0.18) 2px, transparent 2px);
+    background-size: 20px 20px;
+    opacity: 0.7;
+    -webkit-mask-image: radial-gradient(circle, #000 38%, transparent 72%);
+    mask-image: radial-gradient(circle, #000 38%, transparent 72%);
+}
+
+/* ── Floating circles ── */
+.decor-circles {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+.decor-circles span {
+    position: absolute;
+    border-radius: 50%;
+    border: 1.5px solid rgba(var(--gold-rgb), 0.35);
+    will-change: transform;
+}
+.decor-circles span:nth-child(1) {
+    width: 78px; height: 78px;
+    left: 8%; top: 14%;
+    animation: decor-bob 9s ease-in-out infinite;
+}
+.decor-circles span:nth-child(2) {
+    width: 38px; height: 38px;
+    right: 14%; top: 22%;
+    border: none;
+    background: rgba(var(--gold-rgb), 0.14);
+    animation: decor-bob 7s ease-in-out infinite reverse;
+}
+.decor-circles span:nth-child(3) {
+    width: 120px; height: 120px;
+    right: 6%; bottom: 10%;
+    animation: decor-bob 12s ease-in-out infinite;
+}
+@keyframes decor-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-16px); }
+}
+
+/* ── Wave divider ── */
+.decor-wave {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.decor-wave--bottom { bottom: -1px; }
+.decor-wave--top { top: -1px; transform: rotate(180deg); }
+.decor-wave svg {
+    display: block;
+    width: 100%;
+    height: clamp(48px, 7vw, 110px);
+}
+
+/* ── Corner placement helpers ── */
+.decor-tl { top: -6%; left: -4%; }
+.decor-tr { top: -6%; right: -4%; }
+.decor-bl { bottom: -6%; left: -4%; }
+.decor-br { bottom: -6%; right: -4%; }
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+    .decor-blob,
+    .decor-circles span { animation: none; }
+}

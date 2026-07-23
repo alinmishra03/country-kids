@@ -6,12 +6,16 @@
 import Link from 'next/link';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
+import { Blob, FloatingDots } from '@/components/shared/Decor';
 import { img, PHOTOS } from '@/lib/images';
 import { STORY_INTRO } from '@/lib/story-data';
 
 export default function WelcomeSection() {
     return (
         <section className="section welcome" id="welcome">
+            <Blob variant="gold" className="decor-tr" />
+            <Blob variant="navy" className="decor-bl" />
+            <FloatingDots className="welcome-dots" />
             <div className="container welcome-grid">
                 <Reveal className="welcome-media" variant="imageReveal">
                     <img

@@ -57,6 +57,22 @@ export const imageReveal = {
     },
 };
 
+/* Blur reveal — a soft focus-in as the element rises. */
+export const blurReveal = {
+    hidden: { opacity: 0, y: 18, filter: 'blur(12px)' },
+    show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.8, ease: EASE } },
+};
+
+/* Mask reveal — a clip-path wipe upward (elegant for headings + media). */
+export const maskReveal = {
+    hidden: { opacity: 0, clipPath: 'inset(100% 0% 0% 0%)' },
+    show: {
+        opacity: 1,
+        clipPath: 'inset(0% 0% 0% 0%)',
+        transition: { duration: 0.8, ease: EASE },
+    },
+};
+
 /* Stagger container + item — spread <Reveal variant="item"> children inside a
    <Reveal variant="container">. */
 export const staggerContainer = {
@@ -72,9 +88,14 @@ export const VARIANTS = {
     slideUp,
     slideInLeft,
     slideInRight,
+    /* Friendly aliases matching the design-language naming. */
+    fadeLeft: slideInLeft,
+    fadeRight: slideInRight,
     scaleIn,
     popIn,
     imageReveal,
+    blurReveal,
+    maskReveal,
     container: staggerContainer,
     item: staggerItem,
 };

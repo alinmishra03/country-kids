@@ -7,6 +7,7 @@
 @import url("../css/nav.css");
 @import url("../css/pages.css");
 @import url("../css/hero.css");
+@import url("../css/sphere-gallery.css");
 @import url("../css/grid-motion.css");
 @import url("../css/section-commons.css");
 @import url("../css/stats-bar.css");
@@ -32,6 +33,8 @@
 @import url("../css/families.css");
 @import url("../css/contact-page.css");
 @import url("../css/footer.css");
+/* Decorative layer — reusable organic blobs, dots, circles, wave dividers. */
+@import url("../css/decor.css");
 /* Animations — additive motion layer, loaded after component styles. */
 @import url("../css/animations.css");
 /* Dark theme — MUST be the absolute last import so [data-theme="dark"] wins. */

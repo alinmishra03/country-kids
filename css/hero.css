@@ -1,162 +1,738 @@
 /* ─── HERO ───────────────────────────────────────────────────────────────
-   Image-free GridMotion animated background under a dark readability overlay,
-   with a CENTERED "spotlight" composition: eyebrow → title → subtitle → badges →
-   CTAs. Text sits in light colours over the dark grid in BOTH themes, so hero copy
-   is scoped to light values here rather than the global navy tokens. */
+   Editorial, asymmetric landing composition built around the interactive 3D room
+   sphere. The sphere itself (SphereGallery / SphereScene, styled in
+   css/sphere-gallery.css) is untouched — it keeps its own full-bleed layer, size,
+   camera fit and motion. Everything in this file is the frame around it.
+
+   Layer order (all decoration is pointer-transparent so drag/hover still reach
+   the canvas; only the copy blocks, floating cards and scroll cue take events):
+
+       0  .hero-bg            gradient field, glow behind the sphere, vignette
+       1  .hero-sphere-layer  the sphere — DO NOT restyle
+       2  .hero-scrim         reading scrim: solid left, clear right
+       2  .hero-decor         dot field, gold hairlines, orbs, sparks
+       3  .hero-inner         48 / 52 grid — copy column + reserved sphere stage
+       4  .hero-float         floating glass cards, outer edges
+       4  .hero-scroll        bottom-left scroll cue
+
+   THEMING — the hero is LIGHT in light mode and deep navy in dark mode. Every
+   surface below reads from the hero-scoped tokens declared on .hero, so the dark
+   variant is a single override block (see "Dark theme" further down) instead of
+   a second copy of the stylesheet. */
 
 .hero {
+    /* ── Light-mode tokens (default) ── */
+    --hero-ink: var(--blue-deep);                       /* headline / strong text */
+    --hero-ink-2: rgba(11, 27, 43, 0.78);               /* chip + card text        */
+    --hero-ink-3: rgba(11, 27, 43, 0.52);               /* labels, scroll cue      */
+    --hero-gold: var(--gold-deep);                      /* accent that holds AA    */
+    --hero-glass-a: rgba(255, 255, 255, 0.78);          /* glass gradient — top    */
+    --hero-glass-b: rgba(255, 255, 255, 0.42);          /* glass gradient — bottom */
+    --hero-glass-border: rgba(11, 27, 43, 0.1);
+    --hero-glass-shadow: 0 18px 38px -24px rgba(11, 27, 43, 0.4);
+    --hero-glass-shadow-lg: 0 26px 56px -28px rgba(11, 27, 43, 0.45);
+    --hero-hairline: rgba(11, 27, 43, 0.1);
+    --hero-dot: rgba(11, 27, 43, 0.45);
+    /* Soft same-colour halo — keeps the tail of the headline legible where it
+       reaches past the scrim, without dimming the sphere behind it. */
+    --hero-title-shadow: 0 2px 24px rgba(248, 250, 253, 0.92);
+
     position: relative;
     min-height: 100vh;
     min-height: 100svh;
     display: flex;
     align-items: center;
-    padding: calc(var(--nav-h) + 3rem) 0 5rem;
+    padding: calc(var(--nav-h) + clamp(1rem, 3.5vh, 2.5rem)) 0 clamp(4.5rem, 10vh, 7rem);
     overflow: hidden;
     isolation: isolate;
-    /* Dark base so the scroll parallax on .hero-media can never expose a light gap. */
-    background: #071a34;
+    background: #F7F9FC;
 }
 
-/* ── Background media layer (holds GridMotion + overlay) ── */
-.hero-media { position: absolute; inset: 0; z-index: 0; overflow: hidden; }
+/* ── Background field ──
+   A soft warm light behind the sphere, a cool wash top-right, a tinted pool
+   bottom-left and a gentle vignette. Static — all motion belongs to the sphere. */
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+        radial-gradient(52% 58% at 63% 48%, rgba(var(--gold-rgb), 0.16) 0%, transparent 64%),
+        radial-gradient(120% 120% at 82% 2%, rgba(196, 214, 231, 0.55) 0%, rgba(196, 214, 231, 0) 48%),
+        radial-gradient(70% 70% at 6% 92%, rgba(203, 218, 232, 0.6) 0%, transparent 62%),
+        linear-gradient(180deg, #FBFCFE 0%, #EDF1F6 100%);
+}
+/* Vignette */
+.hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(118% 96% at 52% 46%, transparent 52%, rgba(11, 27, 43, 0.06) 100%);
+}
 
-/* Readability overlay between the GridMotion background and the hero text —
-   a light black wash + soft navy vignette + a touch of blur, tuned so the (now
-   more visible) grid reads while the copy stays high-contrast. */
-.hero-overlay {
+/* ── Sphere layer (position/size owned by the sphere — leave alone) ── */
+.hero-sphere-layer {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background:
-        linear-gradient(180deg, rgba(6, 22, 42, 0.12) 0%, rgba(6, 22, 42, 0.28) 55%, rgba(6, 22, 42, 0.58) 100%),
-        rgba(0, 0, 0, 0.38);
-    -webkit-backdrop-filter: blur(1.5px);
-    backdrop-filter: blur(1.5px);
 }
 
-/* ── Content (centered column) ── */
-.hero-content {
-    position: relative;
+/* ── Reading scrim ──
+   Deliberately narrow: solid only across the band the copy actually occupies,
+   then off completely by ~60% so the sphere is seen at full contrast — no veil
+   over the globe. The headline carries its own soft halo (--hero-title-shadow)
+   for the few words that reach past the solid zone. */
+.hero-scrim {
+    position: absolute;
+    inset: 0;
     z-index: 2;
-    width: min(880px, 92%);
+    pointer-events: none;
+    background:
+        linear-gradient(97deg,
+            rgba(248, 250, 253, 0.97) 0%,
+            rgba(248, 250, 253, 0.95) 33%,
+            rgba(248, 250, 253, 0.6) 45%,
+            rgba(248, 250, 253, 0.16) 55%,
+            rgba(248, 250, 253, 0) 64%),
+        linear-gradient(180deg,
+            rgba(248, 250, 253, 0.34) 0%,
+            rgba(248, 250, 253, 0) 18%,
+            rgba(248, 250, 253, 0) 74%,
+            rgba(248, 250, 253, 0.4) 100%);
+}
+
+/* ── Decorative layer ───────────────────────────────────────────────────
+   Fills the negative space at very low contrast: a faded dot field behind the
+   copy, a gold hairline, two blurred orbs and four drifting sparks. */
+.hero-decor {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-dots {
+    position: absolute;
+    top: 16%;
+    left: -2%;
+    width: 30%;
+    height: 46%;
+    background-image: radial-gradient(var(--hero-dot) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: radial-gradient(60% 60% at 30% 40%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(60% 60% at 30% 40%, #000 0%, transparent 72%);
+    opacity: 0.28;
+}
+
+/* Thin gold accent rule. */
+.hero-rule {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(var(--gold-rgb), 0.55), transparent);
+}
+.hero-rule--top {
+    top: calc(var(--nav-h) + 3.5vh);
+    left: 0;
+    width: min(26%, 320px);
+    opacity: 0.7;
+}
+
+/* Blurred colour orbs. */
+.hero-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+}
+.hero-orb--gold {
+    width: clamp(220px, 26vw, 380px);
+    aspect-ratio: 1;
+    left: -8%;
+    top: 8%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.2), transparent 68%);
+}
+.hero-orb--blue {
+    width: clamp(260px, 30vw, 460px);
+    aspect-ratio: 1;
+    left: -12%;
+    bottom: -14%;
+    background: radial-gradient(circle, rgba(84, 132, 173, 0.28), transparent 68%);
+}
+
+/* Drifting sparks. */
+.hero-spark {
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgba(var(--gold-rgb), 0.85);
+    box-shadow: 0 0 12px 2px rgba(var(--gold-rgb), 0.35);
+    opacity: 0.45;
+    animation: hero-drift calc(11s + var(--i) * 2.2s) ease-in-out infinite;
+    animation-delay: calc(var(--i) * -3.1s);
+}
+.hero-spark:nth-child(5) { left: 7%; top: 30%; }
+.hero-spark:nth-child(6) { left: 31%; top: 74%; width: 4px; height: 4px; }
+.hero-spark:nth-child(7) { left: 4%; top: 62%; width: 3px; height: 3px; }
+.hero-spark:nth-child(8) { left: 22%; top: 18%; width: 4px; height: 4px; }
+
+@keyframes hero-drift {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(6px, -22px, 0); }
+}
+
+/* ── Asymmetric grid: 52% copy / 48% sphere stage ──
+   The row is pointer-transparent so the sphere behind stays draggable; the copy
+   blocks re-enable events for links, buttons and text selection. */
+.hero-inner {
+    position: relative;
+    z-index: 3;
+    width: min(1240px, 92%);
     margin-inline: auto;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 56fr) minmax(0, 44fr);
     align-items: center;
-    text-align: center;
+    gap: clamp(1.5rem, 3.5vw, 3rem);
+    pointer-events: none;
+    text-align: left;
 }
 
-/* Staggered fade-up entrance — same feel as before, retargeted to the centered
-   column so every block rises in sequence. */
-.hero-content > * {
-    animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both;
+/* Everything in the copy column is flush left at every breakpoint. */
+.hero-copy {
+    max-width: 700px;
+    margin-inline: 0;
+    text-align: left;
 }
-.hero-content > .hero-eyebrow { animation-delay: 0.05s; }
-.hero-content > .hero-title { animation-delay: 0.16s; }
-.hero-content > .hero-subtitle { animation-delay: 0.28s; }
-.hero-content > .hero-badges { animation-delay: 0.40s; }
-.hero-content > .hero-main-cta { animation-delay: 0.52s; }
-@keyframes hero-rise {
-    from { opacity: 0; transform: translateY(22px); }
-    to   { opacity: 1; transform: translateY(0); }
+.hero-eyebrow,
+.hero-title,
+.hero-main-cta,
+.hero-badges,
+.hero-stats {
+    pointer-events: auto;
 }
 
+/* The sphere's stage: holds the right column open and carries the trust chips
+   as a right-aligned rail beside the globe. On phones it becomes the window the
+   globe reads through, with the chips sitting at its top. */
+.hero-stage {
+    min-height: clamp(360px, 46vh, 560px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* ── Badge ── */
 .hero-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    color: #fff;
-    background: rgba(255, 255, 255, 0.14);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    color: var(--hero-ink-2);
+    background: var(--hero-glass-a);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     padding: 0.5rem 1.1rem;
     border-radius: var(--radius-pill);
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    font-size: 0.88rem;
-    letter-spacing: 0.2px;
-    margin-bottom: 1.5rem;
+    border: 1px solid var(--hero-glass-border);
+    font-size: 0.82rem;
+    letter-spacing: 0.3px;
+    margin-bottom: clamp(1.1rem, 2.6vh, 1.85rem);
 }
-.hero-eyebrow-icon { width: 18px; height: 18px; color: var(--gold-light); }
+.hero-eyebrow-icon { width: 18px; height: 18px; color: var(--hero-gold); }
 
+/* ── Headline ──
+   The size ceiling is set so the longest line ("Rooted in Country.") always fits
+   inside the copy column — the headline can never run under the sphere. */
 .hero-title {
-    font-size: clamp(2.5rem, 6vw, 4.6rem);
-    letter-spacing: -0.02em;
-    color: #fff;
-    text-shadow: 0 2px 24px rgba(4, 16, 32, 0.5);
+    font-size: clamp(2.9rem, 5.8vw, 5.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--hero-ink);
+    text-shadow: var(--hero-title-shadow);
+    text-align: left;
 }
-.hero-title span { color: var(--blue-light); }
-.hero-title .gold { color: var(--gold-light); }
-
-/* Kept deliberately short (two lines at most on desktop) so the eyebrow → title →
-   subtitle → badges → CTA column stays visually balanced. */
-.hero-subtitle {
-    margin: 1.25rem auto 0;
-    font-size: clamp(1.05rem, 1.5vw, 1.22rem);
-    line-height: 1.65;
-    color: rgba(255, 255, 255, 0.92);
-    max-width: 560px;
-    text-shadow: 0 1px 12px rgba(4, 16, 32, 0.45);
+.hero-line { display: block; text-align: left; }
+.hero-word {
+    display: inline-block;
+    margin-inline-end: 0.24em;
+    will-change: transform, opacity, filter;
 }
+.hero-word.gold { color: var(--hero-gold); }
 
-.hero-badges {
-    width: 100%;
+/* ── CTAs ──
+   Stacked one under the other, left-aligned and matched in width so their edges
+   line up. They never reach into the sphere's column. */
+.hero-main-cta {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.7rem;
-    margin-top: 1.8rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    margin-top: clamp(1.8rem, 4vh, 2.75rem);
 }
-.hero-badge {
+.hero-main-cta .btn-gold,
+.hero-main-cta .btn-outline {
+    width: 100%;
+    max-width: 17rem;
+}
+/* Both hero CTAs use the shared premium button (.btn-gold / .btn-outline map to
+   the same gold-outline-fills-on-hover treatment in base.css). The hero only
+   adds a lift + halo on hover so they read as the section's focal action. */
+.hero-main-cta .btn-gold,
+.hero-main-cta .btn-outline {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
-    background: rgba(255, 255, 255, 0.14);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    color: #fff;
-    font-weight: var(--fw-medium);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-pill);
-    font-size: 0.88rem;
-    letter-spacing: 0.2px;
-    border: 1px solid rgba(255, 255, 255, 0.26);
+    justify-content: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition:
+        transform 0.35s var(--ease-out),
+        box-shadow 0.35s var(--ease-out),
+        background 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out),
+        color 0.35s var(--ease-out);
 }
-.hero-badge svg { width: 17px; height: 17px; color: var(--gold-light); }
+.hero-main-cta .btn-gold:hover,
+.hero-main-cta .btn-outline:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 44px -20px rgba(var(--gold-rgb), 0.75);
+}
+.hero-main-cta .btn-outline:hover { border-color: var(--gold); }
+/* Arrow slides on hover. */
+.hero-main-cta .btn-outline svg { transition: transform 0.35s var(--ease-out); }
+.hero-main-cta .btn-outline:hover svg { transform: translateX(4px); }
 
-.hero-main-cta {
+/* ── Trust cards — the right-hand rail beside the sphere ──
+   Identical glass-card treatment to the floating cards (see .hero-card below),
+   stacked and matched in width so the rail reads as one set. */
+.hero-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
     width: 100%;
+    max-width: 17.5rem;
+    margin-left: auto;
+}
+
+/* ── Stat cards ── */
+.hero-stats {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 2.2rem;
+    gap: 0.7rem;
+    margin-top: clamp(1.8rem, 4vh, 2.6rem);
+    padding-top: clamp(1.3rem, 3vh, 1.9rem);
+    border-top: 1px solid var(--hero-hairline);
+    max-width: 520px;
 }
-/* Ghost outline variant tuned for the dark backdrop. */
-.hero-btn-ghost {
-    color: #fff;
-    border-color: rgba(255, 255, 255, 0.7);
-    background: rgba(255, 255, 255, 0.06);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+.hero-stat {
+    flex: 1 1 0;
+    min-width: 118px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.8rem 0.95rem;
+    border-radius: var(--radius-md);
+    background: linear-gradient(158deg, var(--hero-glass-a) 0%, var(--hero-glass-b) 100%);
+    border: 1px solid var(--hero-glass-border);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--hero-glass-shadow);
+    transition:
+        transform 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out),
+        box-shadow 0.35s var(--ease-out);
 }
-.hero-btn-ghost:hover {
-    background: #fff;
+.hero-stat:hover {
+    transform: translateY(-4px);
+    border-color: rgba(var(--gold-rgb), 0.42);
+    box-shadow: 0 22px 44px -22px rgba(var(--gold-rgb), 0.55);
+}
+.hero-stat-value {
+    font-family: var(--font-display);
+    font-size: 1.42rem;
+    font-weight: var(--fw-medium);
+    line-height: 1.1;
+    color: var(--hero-ink);
+}
+.hero-stat-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--hero-ink-3);
+}
+
+/* ── Floating glass cards ───────────────────────────────────────────────
+   Pinned to the outer right edge, outside the globe's silhouette on desktop
+   aspect ratios, so they fill the corner space without covering the sphere.
+   The wrapper owns the entrance + bob; the card owns the hover lift, so the two
+   never fight over `transform`. */
+.hero-float {
+    position: absolute;
+    z-index: 4;
+}
+
+/* ── The shared glass card ──
+   One surface used by BOTH the floating cards and the trust rail, so the two
+   groups read as the same component. */
+.hero-float-card,
+.hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(150deg, var(--hero-glass-a) 0%, var(--hero-glass-b) 100%);
+    border: 1px solid var(--hero-glass-border);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    box-shadow: var(--hero-glass-shadow-lg);
+    transition:
+        transform 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out),
+        box-shadow 0.35s var(--ease-out);
+}
+.hero-float-card:hover,
+.hero-badge:hover {
+    transform: translate3d(0, -5px, 0);
+    border-color: rgba(var(--gold-rgb), 0.45);
+    box-shadow: 0 30px 60px -26px rgba(var(--gold-rgb), 0.45);
+}
+.hero-card-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+    min-width: 0;
+}
+.hero-card-text strong {
+    font-size: 0.88rem;
+    font-weight: var(--fw-medium);
+    color: var(--hero-ink);
+    letter-spacing: 0.1px;
+}
+.hero-card-text small {
+    font-size: 0.72rem;
+    color: var(--hero-ink-3);
+}
+.hero-card-stars { display: inline-flex; gap: 1px; }
+.hero-card-stars svg { width: 13px; height: 13px; color: var(--hero-gold); }
+.hero-card-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    border-radius: var(--radius-sm);
+    background: rgba(var(--gold-rgb), 0.16);
+    border: 1px solid rgba(var(--gold-rgb), 0.32);
+}
+.hero-card-icon svg { width: 17px; height: 17px; color: var(--hero-gold); }
+
+.hero-float--reviews {
+    top: clamp(7.5rem, 22vh, 13rem);
+    right: clamp(0.75rem, 2vw, 2.6rem);
+}
+.hero-float--learning {
+    bottom: clamp(6rem, 20vh, 11rem);
+    right: clamp(1.75rem, 4.5vw, 5rem);
+}
+
+/* ── Scroll cue (bottom-left, aligned to the container edge) ── */
+.hero-scroll {
+    position: absolute;
+    z-index: 4;
+    left: calc(50% - min(620px, 46%));
+    bottom: clamp(1.25rem, 3.6vh, 2.5rem);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--hero-ink-3);
+    font-family: var(--font-body);
+    font-size: 0.68rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    transition: color 0.35s var(--ease-out);
+}
+.hero-scroll:hover { color: var(--hero-gold); }
+.hero-scroll-track {
+    position: relative;
+    width: 1px;
+    height: 46px;
+    margin-left: 2px;
+    background: linear-gradient(180deg, var(--hero-hairline), transparent);
+    overflow: hidden;
+}
+.hero-scroll-track span {
+    position: absolute;
+    left: -2px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--hero-gold);
+    box-shadow: 0 0 10px 2px rgba(var(--gold-rgb), 0.55);
+    animation: hero-scroll-dot 2.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes hero-scroll-dot {
+    0%   { transform: translateY(-6px); opacity: 0; }
+    25%  { opacity: 1; }
+    75%  { opacity: 1; }
+    100% { transform: translateY(46px); opacity: 0; }
+}
+
+/* ─── Dark theme ─────────────────────────────────────────────────────────
+   Same composition, deep-navy field. Only the tokens and the two painted
+   layers (.hero-bg / .hero-scrim) change. */
+[data-theme="dark"] .hero {
+    --hero-ink: #fff;
+    --hero-ink-2: rgba(255, 255, 255, 0.9);
+    --hero-ink-3: rgba(255, 255, 255, 0.58);
+    --hero-gold: var(--gold-light);
+    --hero-glass-a: rgba(255, 255, 255, 0.1);
+    --hero-glass-b: rgba(255, 255, 255, 0.03);
+    --hero-glass-border: rgba(255, 255, 255, 0.14);
+    --hero-glass-shadow: 0 16px 34px -22px rgba(0, 0, 0, 0.9);
+    --hero-glass-shadow-lg: 0 26px 56px -28px rgba(0, 0, 0, 0.95);
+    --hero-hairline: rgba(255, 255, 255, 0.12);
+    --hero-dot: rgba(255, 255, 255, 0.3);
+    --hero-title-shadow: 0 2px 26px rgba(4, 16, 32, 0.85);
+
+    background: #0B1B2B;
+}
+[data-theme="dark"] .hero-bg {
+    background:
+        radial-gradient(52% 58% at 63% 48%, rgba(var(--gold-rgb), 0.17) 0%, transparent 64%),
+        radial-gradient(120% 120% at 82% 2%, #123F55 0%, rgba(18, 63, 85, 0) 48%),
+        radial-gradient(70% 70% at 6% 92%, rgba(19, 66, 92, 0.42) 0%, transparent 62%),
+        linear-gradient(180deg, #0B1B2B 0%, #0A1826 100%);
+}
+[data-theme="dark"] .hero-bg::after {
+    background: radial-gradient(118% 96% at 52% 46%, transparent 52%, rgba(4, 12, 22, 0.45) 100%);
+}
+[data-theme="dark"] .hero-scrim {
+    background:
+        linear-gradient(97deg,
+            rgba(9, 22, 36, 0.97) 0%,
+            rgba(9, 22, 36, 0.95) 33%,
+            rgba(9, 22, 36, 0.6) 45%,
+            rgba(9, 22, 36, 0.16) 55%,
+            rgba(9, 22, 36, 0) 64%),
+        linear-gradient(180deg,
+            rgba(9, 22, 36, 0.36) 0%,
+            rgba(9, 22, 36, 0) 18%,
+            rgba(9, 22, 36, 0) 74%,
+            rgba(9, 22, 36, 0.44) 100%);
+}
+[data-theme="dark"] .hero-orb--blue {
+    background: radial-gradient(circle, rgba(45, 104, 143, 0.34), transparent 68%);
+}
+
+/* The navigation is transparent over the hero and paints its content white,
+   which only works over the dark variant. In LIGHT mode the hero is light, so
+   the unscrolled nav flips to navy — scoped to that exact state, and reverting
+   the moment the nav scrolls into its own solid surface. */
+[data-theme="light"] #navbar:not(.scrolled) .logo-text,
+[data-theme="light"] #navbar:not(.scrolled) .pill-label,
+[data-theme="light"] #navbar:not(.scrolled) .pill-caret-btn {
     color: var(--blue-deep);
-    border-color: #fff;
+}
+[data-theme="light"] #navbar:not(.scrolled) .logo-text em { color: var(--mid); }
+[data-theme="light"] #navbar:not(.scrolled) .logo-text b { color: var(--gold-deep); }
+[data-theme="light"] #navbar:not(.scrolled) .nav-logo-img,
+[data-theme="light"] #navbar:not(.scrolled) .hamburger span {
+    background-color: var(--blue-deep);
+}
+[data-theme="light"] #navbar:not(.scrolled) .theme-toggle {
+    background: rgba(11, 27, 43, 0.06);
+    border-color: rgba(11, 27, 43, 0.14);
+    color: var(--blue-deep);
 }
 
-/* ── Responsive ── */
-@media (max-width: 960px) {
-    .hero { min-height: 88vh; min-height: 88svh; }
+/* ─── Entrance animation ─────────────────────────────────────────────────
+   Content only — the sphere runs its own load-in and is never touched here.
+   0.6s fade-up, ~0.08s between groups. */
+.hero-eyebrow { animation: hero-rise 0.6s var(--ease-out) both; animation-delay: 0.08s; }
+.hero-word {
+    animation: hero-word 0.6s var(--ease-out) both;
+    animation-delay: calc(0.16s + var(--d) * 0.045s);
 }
+.hero-main-cta { animation: hero-rise 0.6s var(--ease-out) both; animation-delay: 0.48s; }
+.hero-badges   { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 0.56s; }
+.hero-badges .hero-badge { animation: hero-rise 0.6s var(--ease-out) both; }
+.hero-badges .hero-badge:nth-child(1) { animation-delay: 0.56s; }
+.hero-badges .hero-badge:nth-child(2) { animation-delay: 0.64s; }
+.hero-badges .hero-badge:nth-child(3) { animation-delay: 0.72s; }
+.hero-stats { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 0.74s; }
+.hero-stat  { animation: hero-rise 0.6s var(--ease-out) both; }
+.hero-stat:nth-child(1) { animation-delay: 0.74s; }
+.hero-stat:nth-child(2) { animation-delay: 0.82s; }
+.hero-stat:nth-child(3) { animation-delay: 0.90s; }
+
+/* Floating cards: fade up, then settle into a slow bob (the later animation in
+   the list owns the transform once the entrance has filled). */
+.hero-float--reviews {
+    animation:
+        hero-rise 0.6s var(--ease-out) 0.96s both,
+        hero-bob 8s ease-in-out 1.56s infinite;
+}
+.hero-float--learning {
+    animation:
+        hero-rise 0.6s var(--ease-out) 1.04s both,
+        hero-bob 9.5s ease-in-out 1.64s infinite;
+}
+.hero-scroll { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 1.12s; }
+
+@keyframes hero-rise {
+    from { opacity: 0; transform: translate3d(0, 20px, 0); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+@keyframes hero-word {
+    from { opacity: 0; transform: translate3d(0, 16px, 0); filter: blur(7px); }
+    to   { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
+}
+@keyframes hero-fade {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+@keyframes hero-bob {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    50%      { transform: translate3d(0, -9px, 0); }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────── */
+
+/* Short laptops: drop the stat rail rather than let the column overflow. */
+@media (max-height: 760px) and (min-width: 1025px) {
+    .hero-stats { display: none; }
+    .hero-title { font-size: clamp(2.4rem, 4.4vw, 3.7rem); }
+}
+
+/* Below 1200px the outer corners get tight — the floating cards would start to
+   sit on the globe, so they step down and then out. */
+@media (max-width: 1200px) {
+    .hero-float--reviews { top: clamp(6.5rem, 18vh, 10rem); right: 0.75rem; }
+    .hero-float--learning { display: none; }
+}
+
+/* Tablet: content on top (still left-aligned), sphere reading through the
+   reserved stage below. */
+@media (max-width: 1024px) {
+    .hero-float { display: none; }
+    .hero-inner {
+        grid-template-columns: minmax(0, 1fr);
+        justify-items: start;
+        gap: clamp(1.25rem, 3vh, 2rem);
+    }
+    .hero-copy { max-width: 720px; }
+    .hero-title { font-size: clamp(2.7rem, 7.2vw, 4rem); }
+    /* The rail turns into a left-aligned row of the same cards, above the
+       sphere window. */
+    .hero-stage {
+        min-height: clamp(300px, 38vh, 440px);
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
+        width: 100%;
+    }
+    .hero-badges {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: stretch;
+        max-width: none;
+        margin-left: 0;
+        margin-top: 0.35rem;
+    }
+    .hero-badge { flex: 1 1 15rem; max-width: 20rem; }
+    .hero-dots,
+    .hero-rule--top { display: none; }
+    /* Vertical wash: the copy now sits across the full width. */
+    .hero-scrim {
+        background:
+            linear-gradient(180deg,
+                rgba(248, 250, 253, 0.97) 0%,
+                rgba(248, 250, 253, 0.93) 40%,
+                rgba(248, 250, 253, 0.6) 64%,
+                rgba(248, 250, 253, 0.5) 84%,
+                rgba(248, 250, 253, 0.72) 100%);
+    }
+    [data-theme="dark"] .hero-scrim {
+        background:
+            linear-gradient(180deg,
+                rgba(9, 22, 36, 0.95) 0%,
+                rgba(9, 22, 36, 0.9) 40%,
+                rgba(9, 22, 36, 0.56) 64%,
+                rgba(9, 22, 36, 0.46) 84%,
+                rgba(9, 22, 36, 0.72) 100%);
+    }
+}
+
+/* Phone: one left-aligned stack — badge, heading, buttons, chips — sized to
+   clear a single viewport, with the globe reading through the window below it.
+   The stat rail is dropped here; the chips carry the proof on small screens. */
+@media (max-width: 768px) {
+    .hero {
+        padding: calc(var(--nav-h) + 0.75rem) 0 1.75rem;
+    }
+    .hero-inner { gap: 0.9rem; }
+    .hero-eyebrow { margin-bottom: 1rem; }
+    .hero-title { font-size: clamp(2.3rem, 9.2vw, 3.2rem); line-height: 1.06; }
+    .hero-main-cta { gap: 0.65rem; margin-top: 1.4rem; }
+    .hero-main-cta .btn-gold,
+    .hero-main-cta .btn-outline { max-width: 20rem; }
+    /* Cards stack full-width and shrink a notch so the whole hero still fits. */
+    .hero-badges {
+        flex-direction: column;
+        gap: 0.5rem;
+        max-width: 22rem;
+        margin-top: 0.2rem;
+    }
+    .hero-badge { flex: none; max-width: none; padding: 0.55rem 0.8rem; gap: 0.6rem; }
+    .hero-card-icon { width: 30px; height: 30px; }
+    .hero-card-icon svg { width: 15px; height: 15px; }
+    .hero-card-text strong { font-size: 0.82rem; }
+    .hero-card-text small { font-size: 0.68rem; }
+    .hero-stats { display: none; }
+    .hero-stage { min-height: clamp(190px, 26vh, 280px); }
+    /* The cue's label + track cost ~70px of a phone screen — the stack wins. */
+    .hero-scroll { display: none; }
+    .hero-orb--gold { left: -30%; }
+    .hero-orb--blue { left: -34%; }
+}
+
+/* Narrow phones: the stacked CTAs share one width and stay edge-aligned. */
 @media (max-width: 640px) {
-    .hero { padding: calc(var(--nav-h) + 2rem) 0 4.5rem; min-height: 92vh; min-height: 92svh; }
-    .hero-subtitle { max-width: 100%; }
+    .hero-main-cta { width: 100%; max-width: 22rem; }
+    .hero-main-cta .btn-gold,
+    .hero-main-cta .btn-outline { max-width: none; }
+    .hero-eyebrow { font-size: 0.74rem; padding: 0.4rem 0.85rem; }
 }
 
-/* Respect users who prefer reduced motion — kill the non-essential motion. */
+/* Very short phones: trade the sphere window down rather than clip the copy. */
+@media (max-width: 768px) and (max-height: 700px) {
+    .hero-stage { min-height: clamp(140px, 18vh, 190px); }
+    .hero-title { font-size: clamp(2rem, 8.2vw, 2.6rem); }
+}
+
+/* ── Respect reduced motion — reveal everything instantly, still the decor. ── */
 @media (prefers-reduced-motion: reduce) {
-    .hero-content > * { animation: none !important; opacity: 1; transform: none; }
+    .hero-eyebrow,
+    .hero-word,
+    .hero-main-cta,
+    .hero-badges,
+    .hero-badges .hero-badge,
+    .hero-stats,
+    .hero-stat,
+    .hero-float,
+    .hero-scroll,
+    .hero-spark,
+    .hero-scroll-track span {
+        animation: none !important;
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
 }
