@@ -6,6 +6,7 @@
    left-aligned header. */
 
 import Reveal from '@/components/shared/Reveal';
+import TextReveal from '@/components/shared/TextReveal';
 
 export default function SectionHeader({
     kicker,
@@ -25,9 +26,11 @@ export default function SectionHeader({
                     {kicker}
                 </Reveal>
             ) : null}
-            <Reveal as="h2" variant="item" className="section-title">
+            {/* The one heading on every section of every page — upgrading it
+                here gives the whole site the masked word reveal in one place. */}
+            <TextReveal as="h2" className="section-title">
                 {title}
-            </Reveal>
+            </TextReveal>
             {lead ? (
                 <Reveal as="p" variant="item" className="section-subtitle">
                     {lead}

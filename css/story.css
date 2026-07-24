@@ -8,6 +8,10 @@
 .story-chapter + .story-chapter { margin-top: 3.5rem; }
 
 /* Vertical rail linking the chapters, with a gold node per chapter. */
+/* The rail draws itself downward as the chapter scrolls through the viewport.
+   A pseudo-element cannot be tweened directly, so app/about/page.tsx scrubs the
+   --rail custom property on .story-chapter and this scales from it. Defaults to
+   1 (fully drawn), so with JS off or motion reduced the rail is simply there. */
 .story-chapter::before {
     content: "";
     position: absolute;
@@ -16,6 +20,8 @@
     bottom: -3.5rem;
     width: 2px;
     background: var(--border-subtle);
+    transform: scaleY(var(--rail, 1));
+    transform-origin: top center;
 }
 .story-chapter:last-child::before { display: none; }
 .story-chapter::after {

@@ -84,7 +84,7 @@
     height: 44px;
     border-radius: 50%;
     border: 1px solid rgba(255, 255, 255, 0.16);
-    border-top-color: #9DBEC3;
+    border-top-color: var(--gold-light);
     animation: hero-loader-spin 1.1s linear infinite;
 }
 
@@ -100,7 +100,7 @@
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: linear-gradient(90deg, #6C969D, #B4D6DC);
+    background: var(--gold-gradient);
     transform-origin: left center;
     transform: scaleX(0);
     transition: transform 0.35s var(--ease-out);

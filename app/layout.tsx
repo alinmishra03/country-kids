@@ -14,6 +14,7 @@ import { TranslationProvider } from '@/components/providers/TranslationProvider'
 import SiteHeader from '@/components/layout/SiteHeader';
 import SiteFooter from '@/components/layout/SiteFooter';
 import PageTransition from '@/components/layout/PageTransition';
+import SmoothScroll from '@/components/providers/SmoothScroll';
 
 export const metadata = {
     title: 'Country Kids Learning Centre — Rooted in Country, Flourishing Together',
@@ -25,25 +26,31 @@ export const metadata = {
 export const viewport = {
     width: 'device-width',
     initialScale: 1,
-    themeColor: '#0B1B2B',
+    /* Matches the dark theme's page field, so the mobile browser chrome blends
+       with the site instead of showing the old blue. */
+    themeColor: '#05060A',
 };
 
 /* Runs before paint to prevent a flash of the wrong theme (FOUC). Default =
-   LIGHT for every first-time visitor; only an explicit toggle (saved to
-   localStorage under 'ckTheme') flips to dark on later visits. */
+   DARK for every first-time visitor; only an explicit toggle (saved to
+   localStorage under 'ckTheme') flips to light on later visits.
+
+   Note the inverted test: anything other than an explicit stored 'light' means
+   dark, so a missing or corrupt value falls back to the default rather than to
+   the toggled state. */
 const THEME_INIT = `(function () {
     try {
         var stored = localStorage.getItem('ckTheme');
-        var theme = stored === 'dark' ? 'dark' : 'light';
+        var theme = stored === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
     } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute('data-theme', 'dark');
     }
 })();`;
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" data-theme="light" suppressHydrationWarning>
+        <html lang="en" data-theme="dark" suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -55,10 +62,28 @@ export default function RootLayout({ children }) {
                     rel="stylesheet"
                 />
                 <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+                {/* Safety net. The reveal components ship their hidden state in
+                    the server HTML (a word translated below its mask, an image
+                    clipped away), which JS then animates in. With scripting off
+                    that state would never be undone and the headings would stay
+                    invisible — the text is in the DOM for crawlers either way,
+                    but a human with JS disabled would see empty headings. */}
+                <noscript>
+                    <style
+                        dangerouslySetInnerHTML={{
+                            __html:
+                                '.tr-word{transform:none!important}' +
+                                '.pm{clip-path:none!important}' +
+                                '.pm-inner{transform:none!important}',
+                        }}
+                    />
+                </noscript>
             </head>
             <body>
                 <ThemeProvider>
                     <TranslationProvider>
+                        {/* Renders nothing — owns the Lenis + ScrollTrigger loop. */}
+                        <SmoothScroll />
                         <PageTransition />
                         <SiteHeader />
                         {children}

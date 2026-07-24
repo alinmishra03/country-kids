@@ -186,64 +186,86 @@
    is used as a FILL only (buttons, bands) and always carries a hairline border
    plus white text; anything that needs to read as text switches to the light
    tints below. */
+/* ─── DARK THEME — BLACK / NAVY / GOLD ───────────────────────────────────
+   The DEFAULT theme (see the pre-paint script in app/layout.tsx). Light mode
+   is what a visitor gets after toggling.
+
+     Page field   #05060A  near-black
+     Surface      #0A1730  navy
+     Cards        #0E1F3D  navy, one step up
+     Accent       #E3BC63  gold
+
+   The token NAMES stay historical — --gold* is the accent family, which was
+   sage in light mode and is GOLD here; --blue* is the navy family. Every
+   component stylesheet already reads from these, so retinting the palette here
+   retints the whole site without touching a single component.
+
+   Contrast notes: solid navy is far too dark to read as text on a near-black
+   field, so the blue tokens and --accent-text resolve to light navy/steel
+   TINTS and the solid stays available as --brand-navy for fills. Gold at
+   #E3BC63 clears AA on both the black field and the navy surfaces. */
 [data-theme="dark"] {
-    --bg-light: #02020A;
-    --bg-dark: #02020A;
-    --text-primary: #FFFFFF;
-    --text-on-dark: #FFFFFF;
-    --border-gray: #262A38;
+    --bg-light: #05060A;
+    --bg-dark: #05060A;
+    --text-primary: #F5F1E6;        /* Warm off-white — pure white is harsh on navy */
+    --text-on-dark: #F5F1E6;
+    --border-gray: #1B2C4A;
 
-    /* Light navy tints for TEXT; the solid navy stays available as --brand-navy. */
-    --blue: #AFC3E4;
-    --blue-deep: #CBD9F1;
-    --blue-light: #8E96C4;
-    --blue-pale: rgba(255, 255, 255, 0.06);
-    --blue-gradient: linear-gradient(135deg, #0A2E63 0%, #05204A 100%);
+    /* Navy family. Light TINTS for text; --brand-navy stays solid for fills. */
+    --blue: #9FB8DE;
+    --blue-deep: #C3D4EE;
+    --blue-light: #7E9AC8;
+    --blue-pale: rgba(159, 184, 222, 0.10);
+    --blue-gradient: linear-gradient(135deg, #12325C 0%, #0A1730 100%);
 
-    --gold: #8FBFC7;
-    --gold-deep: #6C969D;
-    --gold-light: #B4D6DC;
-    --gold-gradient: linear-gradient(90deg, #B4D6DC 0%, #8FBFC7 55%, #6C969D 100%);
-    --gold-rgb: 143, 191, 199;
+    /* Gold accent. */
+    --gold: #E3BC63;
+    --gold-deep: #F0D28A;           /* Lighter, for accent TEXT on dark */
+    --gold-light: #F5E0A8;
+    --gold-solid: #E3BC63;
+    --gold-gradient: linear-gradient(90deg, #F5E0A8 0%, #E3BC63 55%, #C9A227 100%);
+    --gold-rgb: 227, 188, 99;
 
-    --green: #8FBFC7;
-    --green-deep: #B4D6DC;
-    --green-pale: rgba(143, 191, 199, 0.14);
-    --green-rgb: 143, 191, 199;
+    /* Collapsed into the accent family, same as light mode. */
+    --green: #E3BC63;
+    --green-deep: #F0D28A;
+    --green-pale: rgba(227, 188, 99, 0.12);
+    --green-rgb: 227, 188, 99;
 
-    --orange: #D8BCAB;
-    --orange-deep: #E8D2C4;
-    --orange-pale: rgba(216, 188, 171, 0.14);
-    --orange-rgb: 216, 188, 171;
+    /* Warm secondary — a deeper bronze so it reads as a sibling of the gold. */
+    --orange: #C79B57;
+    --orange-deep: #E0BC80;
+    --orange-pale: rgba(199, 155, 87, 0.14);
+    --orange-rgb: 199, 155, 87;
 
-    --hero-gradient: linear-gradient(135deg, #02020A 0%, #111827 100%);
+    --hero-gradient: linear-gradient(135deg, #05060A 0%, #0A1730 100%);
 
     --black: var(--bg-light);
     --dark: var(--bg-dark);
-    --dark2: #111827;               /* Secondary band — surface */
-    --dark3: #1A1A22;               /* Tertiary band — card tone */
+    --dark2: #0A1730;               /* Secondary band — navy surface */
+    --dark3: #0E1F3D;               /* Tertiary band — navy card tone */
 
     --off-white: var(--text-primary);
-    --light: rgba(255, 255, 255, 0.72);
-    --mid: rgba(255, 255, 255, 0.68);
-    --slate: rgba(255, 255, 255, 0.68);
+    --light: rgba(245, 241, 230, 0.74);
+    --mid: rgba(245, 241, 230, 0.70);
+    --slate: rgba(245, 241, 230, 0.70);
 
     --accent-ink: var(--text-primary);
-    --accent-text: #8FBFC7;
-    --accent-bg: #05204A;
+    --accent-text: #F0D28A;
+    --accent-bg: #0A1730;
     --accent-bg-gradient: var(--blue-gradient);
 
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 2, 2, 10;
-    --accent-rgb: 175, 195, 228;
-    --hover-rgb: 142, 150, 196;
+    --bg-primary-rgb: 5, 6, 10;
+    --accent-rgb: 159, 184, 222;
+    --hover-rgb: 227, 188, 99;
 
-    --surface-1: #02020A;
-    --surface-2: #111827;
-    --surface-3: #1A1A22;
-    --surface-elevated: #1A1A22;
-    --border-subtle: rgba(255, 255, 255, 0.10);
-    --border-card: rgba(255, 255, 255, 0.08);
+    --surface-1: #05060A;
+    --surface-2: #0A1730;
+    --surface-3: #0E1F3D;
+    --surface-elevated: #0E1F3D;
+    --border-subtle: rgba(227, 188, 99, 0.14);
+    --border-card: rgba(227, 188, 99, 0.10);
     --shadow-elevation:
         0 1px 2px rgba(0, 0, 0, 0.5),
         0 10px 24px -14px rgba(0, 0, 0, 0.7),

@@ -31,19 +31,19 @@ export default function Lights({ shadows }: { shadows: boolean }) {
             />
 
             {/* Cool counter-light, keeps the shadow side from dying. */}
-            <directionalLight position={[7, -3, 4]} intensity={0.4} color="#8FA6D8" />
+            <directionalLight position={[7, -3, 4]} intensity={0.4} color="#93A9D6" />
 
             {/* Warm rim from behind, separates the globe from the background. */}
-            <pointLight position={[0, 1.5, -7]} intensity={22} distance={18} color="#6C969D" />
+            <pointLight position={[0, 1.5, -7]} intensity={22} distance={18} color="#C9A227" />
 
             <Environment resolution={256} frames={1}>
-                {/* Large sage key panel. */}
+                {/* Large gold key panel. */}
                 <Lightformer
                     form="rect"
                     intensity={2.6}
                     position={[-5, 4, 5]}
                     scale={[8, 8, 1]}
-                    color="#9DBEC3"
+                    color="#F0D28A"
                     target={[0, 0, 0]}
                 />
                 {/* Indigo fill on the opposite side. */}

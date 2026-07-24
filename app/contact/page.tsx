@@ -62,7 +62,9 @@ export default function ContactPage() {
                     </Reveal>
 
                     <div className="contact-lower">
-                        <div className="contact-hours">
+                        {/* Hours slide in from the left, each row stepping in
+                            after the last, so the week reads as it arrives. */}
+                        <Reveal className="contact-hours" variant="fadeLeft">
                             <h3><Icon name="calendar" /> Opening Hours</h3>
                             {HOURS.map((h) => (
                                 <div className={`hours-row${h.open ? '' : ' is-closed'}`} key={h.day}>
@@ -70,8 +72,12 @@ export default function ContactPage() {
                                     <span className="hours-time">{h.time}</span>
                                 </div>
                             ))}
-                        </div>
-                        <div className="contact-map">
+                        </Reveal>
+
+                        {/* The map wipes open behind a clip-path rather than
+                            fading — an iframe fade shows the tiles loading, a
+                            clip reveal shows a finished map appearing. */}
+                        <Reveal className="contact-map" variant="maskReveal" once>
                             <iframe
                                 src={MAP_SRC}
                                 title="Country Kids Learning Centre — 3 Nexus Street, Ravenhall VIC 3023"
@@ -79,7 +85,7 @@ export default function ContactPage() {
                                 referrerPolicy="no-referrer-when-downgrade"
                                 allowFullScreen
                             />
-                        </div>
+                        </Reveal>
                     </div>
                 </div>
             </section>

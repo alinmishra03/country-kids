@@ -76,7 +76,7 @@ export default function Globe({
                 color: new THREE.Color('#12315e'),
                 /* Unlit at rest; Card lerps the intensity up on the active card
                    so its border brightens with it. */
-                emissive: new THREE.Color('#9DBEC3'),
+                emissive: new THREE.Color('#E3BC63'),
                 emissiveIntensity: 0,
                 roughness: 0.22,
                 metalness: 0.65,

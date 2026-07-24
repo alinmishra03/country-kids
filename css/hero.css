@@ -23,7 +23,7 @@
     --hero-ink: #FFFFFF;
     --hero-ink-2: rgba(255, 255, 255, 0.82);
     --hero-ink-3: rgba(255, 255, 255, 0.55);
-    --hero-accent: #9DBEC3;
+    --hero-accent: var(--gold-light);
     --hero-hairline: rgba(255, 255, 255, 0.16);
     --hero-glass: rgba(255, 255, 255, 0.07);
 
@@ -49,7 +49,7 @@
     inset: 0;
     z-index: 0;
     background:
-        radial-gradient(58% 58% at 50% 46%, rgba(108, 150, 157, 0.20) 0%, transparent 68%),
+        radial-gradient(58% 58% at 50% 46%, rgba(var(--gold-rgb), 0.18) 0%, transparent 68%),
         radial-gradient(80% 60% at 12% 8%, rgba(70, 77, 119, 0.30) 0%, transparent 60%),
         radial-gradient(70% 60% at 88% 92%, rgba(10, 46, 99, 0.38) 0%, transparent 62%),
         linear-gradient(168deg, #050A1A 0%, #02030A 52%, #04081A 100%);
@@ -159,7 +159,7 @@ body[data-hero-hover="1"] .hero-veil {
     height: 6px;
     border-radius: 50%;
     background: var(--hero-accent);
-    box-shadow: 0 0 10px 2px rgba(157, 190, 195, 0.7);
+    box-shadow: 0 0 10px 2px rgba(var(--gold-rgb), 0.7);
 }
 
 /* ── Headline ── */
@@ -202,12 +202,12 @@ body[data-hero-hover="1"] .hero-veil {
     color: var(--brand-navy);
 }
 .hero-overlay .btn-gold::before {
-    background: linear-gradient(100deg, #B4D6DC 0%, #8FBFC7 100%);
+    background: var(--gold-gradient);
 }
 .hero-overlay .btn-gold:hover {
     color: var(--brand-navy);
-    border-color: #B4D6DC;
-    box-shadow: 0 20px 44px -18px rgba(157, 190, 195, 0.6);
+    border-color: var(--gold-light);
+    box-shadow: 0 20px 44px -18px rgba(var(--gold-rgb), 0.6);
 }
 .hero-overlay .btn-outline {
     border-color: rgba(255, 255, 255, 0.34);
@@ -269,8 +269,8 @@ body[data-hero-hover="1"] .hero-veil {
 .hero-arrow:first-child svg { transform: rotate(180deg); }
 .hero-arrow:hover {
     transform: translateY(-2px);
-    background: rgba(157, 190, 195, 0.2);
-    border-color: rgba(157, 190, 195, 0.55);
+    background: rgba(var(--gold-rgb), 0.2);
+    border-color: rgba(var(--gold-rgb), 0.55);
 }
 .hero-hint {
     font-family: var(--font-body);

@@ -16,11 +16,11 @@ import { TEXTURE } from '@/lib/hero/hero-config';
 
 /* Brand palette — the same values as css/base.css. */
 const NAVY = '5, 32, 74';
-const SAGE = '#9DBEC3';
-const SAGE_DEEP = 'rgba(108, 150, 157, 0.9)';
-/* A step lighter than the sage accent — on near-solid navy this clears AA at
-   the subtitle's small size, which #9DBEC3 alone does not. */
-const SUBTITLE = '#C6DDE1';
+const ACCENT = '#F0D28A';        /* gold accent — matches --gold-deep on dark */
+const ACCENT_FILL = 'rgba(201, 162, 39, 0.92)';  /* gold pill fill */
+/* A step lighter than the gold accent — on near-solid navy this clears AA at
+   the subtitle's small size, which the mid gold alone does not. */
+const SUBTITLE = '#F5E0A8';
 
 export type BakeInput = {
     img: HTMLImageElement | null;
@@ -145,7 +145,7 @@ function drawCover(ctx: CanvasRenderingContext2D, img: HTMLImageElement, w: numb
     ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
 }
 
-/* Small sage capsule holding the category. */
+/* Small gold capsule holding the category. */
 function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: number) {
     ctx.font = `500 12px "Plus Jakarta Sans", system-ui, sans-serif`;
     const padX = 12;
@@ -161,7 +161,7 @@ function drawPill(ctx: CanvasRenderingContext2D, text: string, x: number, y: num
     ctx.arcTo(x, y, x + w, y, r);
     ctx.closePath();
 
-    ctx.fillStyle = SAGE_DEEP;
+    ctx.fillStyle = ACCENT_FILL;
     ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.3)';
     ctx.lineWidth = 1;

@@ -5,6 +5,7 @@
    badges. Reuses the .page-hero styles in css/pages.css. */
 
 import Reveal from '@/components/shared/Reveal';
+import TextReveal from '@/components/shared/TextReveal';
 import { img, PHOTOS } from '@/lib/images';
 
 export default function PageHero({ kicker, title, lead, image, badges }: any) {
@@ -17,9 +18,11 @@ export default function PageHero({ kicker, title, lead, image, badges }: any) {
                         {kicker}
                     </Reveal>
                 ) : null}
-                <Reveal as="h1" variant="fadeUp" delay={0.05}>
+                {/* The h1 on every interior page. `once` so the headline does
+                    not replay if the user scrolls back to the top of a page. */}
+                <TextReveal as="h1" delay={0.05} once>
                     {title}
-                </Reveal>
+                </TextReveal>
                 {lead ? (
                     <Reveal as="p" variant="fadeUp" delay={0.12}>
                         {lead}

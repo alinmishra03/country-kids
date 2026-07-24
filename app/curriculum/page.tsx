@@ -54,15 +54,24 @@ export default function CurriculumPage() {
                             <div className="curric-tagline">{active.tagline}</div>
                             <p>{active.blurb}</p>
                         </div>
-                        <div className="curric-cards">
+                        {/* The panel is keyed on the active series, so switching
+                            tabs remounts this and the cards deal in one after
+                            another — the tab change reads as the deck being
+                            re-dealt rather than the text swapping in place. */}
+                        <Reveal className="curric-cards" stagger amount={0.05}>
                             {active.cards.map((c) => (
-                                <article className="curric-card" key={c.title}>
+                                <Reveal
+                                    as="article"
+                                    variant="item"
+                                    className="curric-card"
+                                    key={c.title}
+                                >
                                     <span className="curric-outcome">{c.outcome}</span>
                                     <h3>{c.title}</h3>
                                     <p>{c.text}</p>
-                                </article>
+                                </Reveal>
                             ))}
-                        </div>
+                        </Reveal>
                     </Reveal>
                 </div>
             </section>

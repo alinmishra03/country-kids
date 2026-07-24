@@ -35,9 +35,17 @@ export default function RoomsPage() {
                         lead="Joey, Koala, Kookaburra, Cockatoo, Kingfisher, Kangaroo and Emu — each room reflects our connection to nature, Country, and the wonder of the world our children are just beginning to explore."
                     />
 
+                    {/* Cards arrive alternately from the left and the right rather
+                        than all rising together — the same seven cards, but the
+                        grid reads as a composition being assembled instead of a
+                        block fading in. */}
                     <Reveal className="rooms-grid" stagger amount={0.05}>
-                        {ROOMS.map((room) => (
-                            <Reveal as="div" variant="item" key={room.id}>
+                        {ROOMS.map((room, i) => (
+                            <Reveal
+                                as="div"
+                                variant={i % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+                                key={room.id}
+                            >
                                 <RoomCard room={room} href={`#${room.id}`} />
                             </Reveal>
                         ))}

@@ -1,0 +1,178 @@
+/* ─── MOTION SYSTEM ──────────────────────────────────────────────────────
+   The site-wide interaction layer: smooth scrolling, masked text reveals,
+   parallax media and the route transition.
+
+   Loaded AFTER animations.css so the new .page-transition rules win over the
+   old fade overlay, and before theme-dark.css so dark-mode tokens still apply.
+
+   Everything here animates transform, opacity or clip-path only. */
+
+/* ── Smooth scrolling ────────────────────────────────────────────────────
+   Lenis drives the scroll position itself, so the CSS smooth-scroll in
+   base.css has to stand down — with both active, every programmatic scroll is
+   fought over by two systems and lands somewhere neither intended. The class
+   is added by the provider only once Lenis is actually running, so the native
+   behaviour stays intact for reduced-motion and touch users. */
+html.lenis-active {
+    scroll-behavior: auto;
+}
+html.lenis-active,
+html.lenis-active body {
+    /* Lenis reads and writes scroll on the root; letting the browser also
+       chain or bounce it produces a fight at the extremes. */
+    overscroll-behavior-y: none;
+}
+
+/* ── Masked text reveal (components/shared/TextReveal) ───────────────────
+   One mask per word, with the word translated below it until it plays.
+
+   The padding/margin pair is load-bearing: an overflow-hidden box sized to the
+   line box shears the tails off g, y, p and q. The mask is padded taller than
+   the glyphs and the padding is cancelled with an equal negative margin, so
+   descenders survive and the surrounding layout is untouched. */
+.tr {
+    /* The masks are inline-block; without this the heading's own line-height
+       would collapse around them inconsistently. */
+    display: block;
+}
+.tr-mask {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.18em;
+    margin-bottom: -0.18em;
+}
+.tr-word {
+    display: inline-block;
+    will-change: transform;
+}
+
+/* ── Wrapper neutralisation — REQUIRED, not cosmetic ─────────────────────
+   Existing heading styles are written as DESCENDANT selectors, e.g.
+
+       .section-title span        { color: accent; white-space: nowrap }
+       .section-title span::after { …the drawn-in underline… }
+
+   which were only ever meant to hit the one <span> a title uses to highlight a
+   phrase. TextReveal injects a <span> per word, and every one of them matches
+   those selectors — so without this block each word turns accent-coloured and
+   grows its own underline.
+
+   Two classes beat one class + one type, so these win on specificity without
+   !important. Anything else in the codebase that styles `heading span` is
+   covered by the same rule. */
+.tr .tr-mask,
+.tr .tr-word {
+    color: inherit;
+    position: static;
+    white-space: inherit;
+}
+.tr .tr-mask::after,
+.tr .tr-mask::before,
+.tr .tr-word::after,
+.tr .tr-word::before {
+    content: none;
+}
+
+/* ── Parallax media (components/shared/ParallaxMedia) ────────────────────
+   The wrapper clips; the inner element is over-scaled so the scrubbed drift
+   can never expose an edge. */
+.pm {
+    position: relative;
+    overflow: hidden;
+    /* Start covered so there is no flash of the image before the wipe runs.
+       Only applied when GSAP is available to animate it away — see the
+       no-JS/reduced-motion guard below. */
+    will-change: clip-path;
+}
+.pm-inner {
+    /* 8% drift each way needs ~16% of headroom; 1.18 is that with margin. */
+    height: 118%;
+    width: 100%;
+    position: relative;
+    top: -9%;
+    will-change: transform;
+}
+.pm-inner > * {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* If motion is off, the wrapper must not clip anything away. */
+@media (prefers-reduced-motion: reduce) {
+    .pm { clip-path: none !important; }
+    .pm-inner { height: 100%; top: 0; transform: none !important; }
+}
+
+/* ── Route transition ────────────────────────────────────────────────────
+   An opaque panel that wipes up to cover, then wipes up to clear. Overrides
+   the older fade overlay in animations.css.
+
+   It is OPAQUE on purpose. A translucent overlay lets the route swap show
+   through, which is the white blink this replaces. */
+.page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    background: var(--brand-navy);
+    pointer-events: none;
+    /* Parked below the viewport. clip-path rather than transform so the mark
+       inside stays put while the panel wipes. */
+    clip-path: inset(100% 0 0 0);
+    opacity: 1;
+}
+
+/* Covering: wipe up from the bottom edge. */
+.page-transition.is-covering {
+    pointer-events: all;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.52s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Covered, and now leaving: continue in the SAME direction, out the top. The
+   panel never reverses, so the movement reads as one pass rather than a
+   curtain that thinks better of it. */
+.page-transition.is-clearing {
+    pointer-events: none;
+    clip-path: inset(0 0 100% 0);
+    transition: clip-path 0.62s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Idle is the parked state with no transition, so re-arming is instant. */
+.page-transition.is-idle {
+    clip-path: inset(100% 0 0 0);
+    transition: none;
+}
+
+/* A small brand mark that fades with the panel. */
+.page-transition-mark {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-top-color: var(--gold-light, #9DBEC3);
+    opacity: 0;
+}
+.page-transition.is-covering .page-transition-mark {
+    opacity: 1;
+    animation: pt-spin 0.9s linear infinite;
+    transition: opacity 0.3s ease 0.15s;
+}
+
+@keyframes pt-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Reduced motion: no wipe, no spinner. The panel still covers so the route
+   swap is not visible, but it does it instantly. */
+@media (prefers-reduced-motion: reduce) {
+    .page-transition,
+    .page-transition.is-covering,
+    .page-transition.is-clearing {
+        transition: none;
+    }
+    .page-transition-mark { animation: none; }
+}

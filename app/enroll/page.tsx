@@ -68,8 +68,13 @@ export default function EnrollPage() {
                         lead={FORM_INTRO.lead}
                     />
                     <div className="enroll-wrap">
-                        <div className="enroll-info">
-                            <figure className="enroll-photo">
+                        {/* Info column slides in from the left; the photo inside
+                            it wipes open on its own clip-path reveal. (A stagger
+                            container would do nothing here — the contact cards
+                            are plain divs, and Framer Motion only staggers motion
+                            children.) */}
+                        <Reveal className="enroll-info" variant="fadeLeft">
+                            <Reveal as="figure" variant="imageReveal" className="enroll-photo" once>
                                 <img
                                     src={img(PHOTOS.enroll, 800, 60)}
                                     alt="Children busy with arts and crafts at Country Kids"
@@ -78,7 +83,7 @@ export default function EnrollPage() {
                                     width="800"
                                     height="500"
                                 />
-                            </figure>
+                            </Reveal>
                             <div className="info-card">
                                 <span className="info-icon" aria-hidden="true"><Icon name="phone" /></span>
                                 <span><b>Call us</b><a href={PHONE_HREF} className="link-accent">{PHONE}</a></span>
@@ -95,7 +100,7 @@ export default function EnrollPage() {
                                 <span className="info-icon" aria-hidden="true"><Icon name="clock" /></span>
                                 <span><b>Hours</b><span>Mon–Fri · 6:30am – 6:30pm</span></span>
                             </div>
-                        </div>
+                        </Reveal>
 
                         <EnrollForm />
                     </div>
