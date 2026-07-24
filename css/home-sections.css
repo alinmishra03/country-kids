@@ -112,34 +112,9 @@
 }
 .welcome-copy .btn-primary { margin-top: 0.5rem; }
 
-/* ── Philosophy teaser ── */
-.philosophy-teaser-grid {
-    display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap: 3.5rem;
-    align-items: center;
-}
-.philosophy-teaser-copy .section-eyebrow { margin-bottom: 1rem; }
-.philosophy-teaser-copy .section-title { text-align: start; }
-.philosophy-teaser-lead { margin-top: 1.1rem; color: var(--mid); font-size: 1.1rem; line-height: 1.7; }
-.philosophy-teaser-quote {
-    position: relative;
-    margin: 1.6rem 0;
-    padding: 1.3rem 1.5rem 1.3rem 3.2rem;
-    background: var(--green-pale);
-    border-radius: var(--radius-md);
-    font-family: var(--font-display);
-    font-size: 1.12rem;
-    line-height: 1.6;
-    color: var(--accent-ink);
-}
-.philosophy-teaser-quote svg {
-    position: absolute;
-    top: 1.2rem; inset-inline-start: 1.2rem;
-    width: 24px; height: 24px;
-    color: var(--green-deep);
-    opacity: 0.7;
-}
+/* The philosophy teaser's own layout now lives in css/philosophy-teaser.css
+   (its markup was rebuilt around `pt-` classes). The value-chip rules below
+   stay put — they are still used by app/philosophy/page.tsx. */
 
 /* Value chips and pillar cards take their surface from the shared card system
    in section-commons.css — only their inset and inner layout live here. */
@@ -195,8 +170,7 @@
     .pillars-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 900px) {
-    .welcome-grid,
-    .philosophy-teaser-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .welcome-grid { grid-template-columns: 1fr; gap: 2.5rem; }
     .welcome-media { aspect-ratio: 16 / 10; max-height: 460px; }
 }
 @media (max-width: 520px) {

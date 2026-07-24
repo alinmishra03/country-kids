@@ -1,0 +1,414 @@
+/* ─── PHILOSOPHY TEASER ──────────────────────────────────────────────────
+   Home band: ONE grid in which the seven value cards enclose the copy — two
+   wide cards across the top, three down the right, two across the bottom
+   (components/home/PhilosophyTeaser.tsx).
+
+   SPACING NOTE — rows 2–4 are sized by the copy block, and the three
+   right-hand cards divide that height between them. So any slack in the copy
+   (oversized headline, vertical padding, a max-width that forces extra lines)
+   is paid for three times over as blank space inside those cards. Keep the
+   copy tight; it is not just its own problem.
+
+   Class prefix is `pt-` throughout, deliberately: the old markup shared
+   `.values-grid` / `.value-chip` with the /philosophy page, so restyling those
+   would have silently redesigned a second page. Those classes are left exactly
+   as they were and this section uses its own.
+
+   The band's background comes from css/surfaces.css (white in light, surface-3
+   in dark) — untouched here, so the section still sits in the site's band
+   rhythm. Everything below is layout, surface and motion only.
+
+   All animation is transform/opacity. Both pointer behaviours (tilt, magnetic)
+   write CSS custom properties that the base transform composes, so a hover and
+   a cursor-follow never fight over `transform`. */
+
+.philosophy-teaser {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* ── Decorative field ────────────────────────────────────────────────────
+   Soft radial washes and three slowly drifting blurred orbs. Pointer-inert,
+   and the whole layer is parallaxed by Framer Motion — transform only, so it
+   can never shift the content. */
+.pt-decor {
+    position: absolute;
+    inset: -12% 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(42% 46% at 78% 18%, rgba(var(--gold-rgb), 0.10) 0%, transparent 68%),
+        radial-gradient(38% 42% at 10% 84%, rgba(var(--accent-rgb), 0.07) 0%, transparent 70%);
+    will-change: transform;
+}
+
+.pt-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.7;
+    will-change: transform;
+}
+.pt-orb--sage {
+    width: clamp(220px, 26vw, 400px);
+    aspect-ratio: 1;
+    top: 6%;
+    right: -6%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.30), transparent 68%);
+    animation: pt-float 22s ease-in-out infinite;
+}
+.pt-orb--navy {
+    width: clamp(180px, 22vw, 340px);
+    aspect-ratio: 1;
+    bottom: -4%;
+    left: -6%;
+    background: radial-gradient(circle, rgba(var(--accent-rgb), 0.16), transparent 68%);
+    animation: pt-float 28s ease-in-out infinite reverse;
+}
+.pt-orb--clay {
+    width: clamp(140px, 16vw, 240px);
+    aspect-ratio: 1;
+    top: 52%;
+    right: 34%;
+    background: radial-gradient(circle, rgba(var(--orange-rgb), 0.18), transparent 68%);
+    animation: pt-float 34s ease-in-out infinite;
+}
+
+/* Very slow, very small — ambient, not a distraction. */
+@keyframes pt-float {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+    33%      { transform: translate3d(2.5%, -4%, 0) scale(1.05); }
+    66%      { transform: translate3d(-2%, 3%, 0) scale(0.97); }
+}
+
+/* ── Grid ────────────────────────────────────────────────────────────────
+   ONE grid holds the copy AND the seven cards, so they sit on the same gutters
+   and read as a single composition. Four columns; five rows:
+
+       row 1        two wide cards across the top
+       rows 2–4     the copy (cols 1–3) with three cards down column 4
+       row 5        two wide cards across the bottom
+
+   The copy is placed explicitly rather than left to auto-flow, which is what
+   lets it come FIRST in the markup — correct for screen readers and for the
+   phone stack — while still landing in the middle on desktop.
+
+   Rows 2–4 are sized by the copy, and the three right-hand cards divide that
+   height between them, so the column always matches the copy block exactly. */
+.pt-grid {
+    /* Every row is at least this tall, so the top and bottom cards match the
+       three down the right instead of the outer rows collapsing to their
+       content and leaving the column ragged. This is the "align" lever. */
+    --pt-row: clamp(88px, 8.5vw, 108px);
+
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    /* Rows 2–4 carry the copy and grow with it; rows 1 and 5 are fixed, so all
+       four corners line up. */
+    grid-template-rows:
+        var(--pt-row)
+        repeat(3, minmax(var(--pt-row), auto))
+        var(--pt-row);
+    gap: clamp(0.85rem, 1.3vw, 1.15rem);
+    align-items: stretch;
+}
+
+.pt-copy {
+    /* row-start / col-start / row-end / col-end */
+    grid-area: 2 / 1 / 5 / 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Only a right inset, to hold the copy off the card column. Vertical
+       padding used to be up to 3rem top AND bottom, which inflated the rows the
+       right-hand cards are sized from — the grid gap already does that job. */
+    padding-inline-end: clamp(1.25rem, 2.4vw, 2.5rem);
+}
+
+/* ── Badge ── */
+.pt-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius-pill);
+    background: var(--green-pale);
+    border: 1px solid rgba(var(--gold-rgb), 0.28);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    width: fit-content;
+}
+.pt-badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold-solid);
+    box-shadow: 0 0 0 3px rgba(var(--gold-rgb), 0.2);
+}
+
+/* ── Headline ──
+   Each line is an overflow-hidden mask with the text sliding up inside it. The
+   mask needs a little vertical padding or descenders (g, y) get clipped by the
+   mask itself. */
+.pt-title {
+    margin-top: clamp(0.7rem, 1.4vw, 1rem);
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    /* Stepped down from 3.15rem: the copy block sizes rows 2–4, so every extra
+       line of headline height is dead space inside three cards. */
+    font-size: clamp(1.8rem, 2.7vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: var(--accent-ink);
+}
+.pt-line {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.06em;
+}
+.pt-line > span {
+    display: block;
+    will-change: transform;
+}
+.pt-accent {
+    color: var(--green-deep);
+    font-style: italic;
+}
+
+/* ── Lead ──
+   No max-width: the copy cell is already only three of four columns, and a
+   34rem cap on top of that left a dead strip down the right of the paragraph
+   while making the block taller than it needed to be. */
+.pt-lead {
+    margin-top: clamp(0.75rem, 1.3vw, 1rem);
+    font-size: 1rem;
+    line-height: 1.62;
+    color: var(--mid);
+    text-wrap: pretty;
+}
+
+/* ── Quote card ──
+   A raised card rather than the old flat tinted block: it is the one piece of
+   pull-quote furniture in the section and should read as an object. */
+.pt-quote {
+    position: relative;
+    margin-top: clamp(0.9rem, 1.6vw, 1.25rem);
+    padding: 1.15rem 1.35rem 1.15rem 3.35rem;
+    border-radius: var(--radius-lg);
+    background: linear-gradient(152deg, rgba(var(--gold-rgb), 0.13) 0%, rgba(var(--gold-rgb), 0.05) 100%);
+    border: 1px solid rgba(var(--gold-rgb), 0.26);
+    box-shadow: var(--shadow-soft);
+    font-family: var(--font-display);
+    font-size: 1.02rem;
+    line-height: 1.55;
+    color: var(--accent-ink);
+}
+/* Accent bar down the inside edge. */
+.pt-quote::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    top: 1.1rem;
+    bottom: 1.1rem;
+    width: 3px;
+    border-radius: 999px;
+    background: var(--gold-gradient);
+}
+.pt-quote-mark {
+    position: absolute;
+    top: 1.15rem;
+    inset-inline-start: 1.25rem;
+    display: grid;
+    place-items: center;
+    color: var(--green-deep);
+    opacity: 0.55;
+}
+.pt-quote-mark svg { width: 22px; height: 22px; }
+
+.pt-cta { margin-top: clamp(1rem, 1.8vw, 1.4rem); }
+
+/* ── Value cards ─────────────────────────────────────────────────────────
+   Icon circle left, label right. Each card's cell comes from the --area
+   custom property the component sets, so the enclosing arrangement lives in
+   one array next to the data rather than in a pile of nth-child rules.
+
+   The transform composes three things in a fixed order — perspective, the tilt
+   from useCardTilt, and the hover lift — so the cursor-follow and the hover
+   state can never overwrite each other. */
+.pt-value {
+    --rx: 0deg;
+    --ry: 0deg;
+    --lift: 0px;
+
+    grid-area: var(--area);
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.15rem 1.25rem;
+    border-radius: var(--radius-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    isolation: isolate;
+
+    transform: perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(0, var(--lift), 0);
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition:
+        transform 0.35s var(--ease-out),
+        box-shadow 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out);
+}
+
+/* The gradient wash that fades in on hover. A pseudo-element with its own
+   opacity, so the card's background-color is never repainted. */
+.pt-value::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    opacity: 0;
+    background: linear-gradient(152deg, rgba(var(--gold-rgb), 0.14) 0%, rgba(var(--gold-rgb), 0) 62%);
+    transition: opacity 0.35s var(--ease-out);
+}
+
+.pt-value:hover {
+    --lift: -8px;
+    border-color: rgba(var(--gold-rgb), 0.45);
+    box-shadow: var(--shadow-hover);
+}
+.pt-value:hover::before { opacity: 1; }
+
+/* ── Icon circle ── */
+.pt-value-icon {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--green-pale);
+    border: 1px solid rgba(var(--gold-rgb), 0.24);
+    color: var(--green-deep);
+    transition:
+        transform 0.35s var(--ease-out),
+        background-color 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out),
+        color 0.35s var(--ease-out);
+}
+.pt-value-icon svg {
+    width: 21px;
+    height: 21px;
+    transition: transform 0.35s var(--ease-out);
+}
+.pt-value:hover .pt-value-icon {
+    transform: scale(1.1);
+    background: var(--gold-solid);
+    border-color: var(--gold-solid);
+    color: #fff;
+}
+/* The icon itself takes the rotation, so the circle stays a circle. */
+.pt-value:hover .pt-value-icon svg { transform: rotate(-8deg); }
+
+.pt-value-label {
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    font-size: 1rem;
+    line-height: 1.35;
+    color: var(--text-primary);
+    min-width: 0;
+}
+
+/* ─── Dark theme ─────────────────────────────────────────────────────────
+   The band itself is already handled by surfaces.css; these are the pieces
+   that need a hand because they are tinted rather than plain surfaces. */
+[data-theme="dark"] .pt-value {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.09);
+}
+[data-theme="dark"] .pt-value:hover {
+    border-color: rgba(var(--gold-rgb), 0.5);
+}
+[data-theme="dark"] .pt-quote {
+    background: linear-gradient(152deg, rgba(var(--gold-rgb), 0.12) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(var(--gold-rgb), 0.24);
+}
+[data-theme="dark"] .pt-badge {
+    background: rgba(var(--gold-rgb), 0.12);
+    border-color: rgba(var(--gold-rgb), 0.3);
+    color: var(--gold-light);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────
+   The enclosing arrangement needs four columns to work. Below that the
+   explicit placement is dropped entirely (`grid-area: auto`) and the cards
+   auto-flow, which is exactly why the copy is first in the DOM — the stack
+   comes out in reading order with no reordering tricks. */
+
+/* Tablet: copy full width on top, cards two-up beneath it. */
+@media (max-width: 1024px) {
+    .pt-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        /* MUST reset: the desktop template pins rows 1 and 5 to a fixed height,
+           and once the items auto-flow the copy would land in one of them and
+           be clamped to ~88px. */
+        grid-template-rows: auto;
+        gap: clamp(0.85rem, 1.8vw, 1.1rem);
+    }
+    .pt-copy {
+        /* grid-ROW must be reset explicitly. Writing `grid-area: auto` here and
+           relying on the following grid-column to refine it does not survive
+           CSS minification — the shorthand gets dropped as redundant and the
+           copy stays pinned to the desktop rows 2–5. */
+        grid-row: auto;
+        grid-column: 1 / -1;
+        padding: 0 0 clamp(1rem, 2.5vw, 1.75rem);
+    }
+    .pt-value { grid-area: auto; }
+    /* Seven cards, two per row — the last spans so no hole is left. */
+    .pt-value:last-child { grid-column: 1 / -1; }
+    .pt-lead { max-width: 46rem; }
+    .pt-title { font-size: clamp(2rem, 5vw, 2.9rem); }
+}
+
+@media (max-width: 620px) {
+    .pt-grid { grid-template-columns: minmax(0, 1fr); }
+    .pt-value:last-child { grid-column: auto; }
+    .pt-value { padding: 1rem 1.1rem; gap: 0.85rem; }
+    .pt-value-icon { width: 42px; height: 42px; }
+    .pt-value-icon svg { width: 19px; height: 19px; }
+    .pt-quote {
+        padding: 1.35rem 1.25rem 1.35rem 3.4rem;
+        font-size: 1.02rem;
+    }
+    .pt-quote-mark { inset-inline-start: 1.25rem; }
+    .pt-lead { font-size: 1rem; }
+    /* Full-width CTA with a proper touch target. */
+    .pt-cta .btn-primary { width: 100%; min-height: 52px; }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────
+   The entrance sequence, the parallax and the tilt are all switched off in the
+   component; here the ambient drift and the hover springs go too. Hover still
+   changes colour — that is feedback, not decoration. */
+@media (prefers-reduced-motion: reduce) {
+    .pt-orb { animation: none; }
+    .pt-value,
+    .pt-value::before,
+    .pt-value-icon,
+    .pt-value-icon svg {
+        transition: none;
+    }
+    .pt-value:hover { --lift: 0px; }
+    .pt-value:hover .pt-value-icon { transform: none; }
+    .pt-value:hover .pt-value-icon svg { transform: none; }
+}

@@ -24,6 +24,8 @@
 /* ScrollStack must follow rooms.css — the .rooms-stack skin overrides .room-card. */
 @import url("../css/scroll-stack.css");
 @import url("../css/home-sections.css");
+/* Must follow home-sections.css — the teaser owns the .philosophy-teaser band. */
+@import url("../css/philosophy-teaser.css");
 @import url("../css/learning-spaces.css");
 @import url("../css/cta-band.css");
 @import url("../css/story.css");
