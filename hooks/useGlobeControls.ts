@@ -14,7 +14,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { MOTION } from '@/lib/hero/hero-config';
+import { IDLE, MOTION } from '@/lib/hero/hero-config';
 import { frontIndex, nearestSnap, snapAngles, type CardSlot } from '@/lib/hero/sphere-layout';
 
 type Mode = 'idle' | 'drag' | 'inertia' | 'snapping' | 'selected';
@@ -202,7 +202,7 @@ export default function useGlobeControls({
     }, [gl, reduced]);
 
     /* ── The frame loop ────────────────────────────────────────────────── */
-    useFrame((_, rawDelta) => {
+    useFrame((frameState, rawDelta) => {
         const group = groupRef.current;
         if (!group) return;
 
@@ -234,6 +234,22 @@ export default function useGlobeControls({
 
         group.rotation.y = rot.current.y;
         group.rotation.x = rot.current.x;
+
+        /* ── Idle life ──
+           A breathing scale and a slow vertical drift, so the globe is never
+           completely still even when nothing is happening. Both are tiny and
+           both are transform-only. Skipped under reduced motion, where the
+           globe should genuinely rest.
+
+           Applied here rather than in a separate tween because this is the one
+           place that already owns the group's transform — a second animator on
+           the same object is exactly how the earlier fights started. */
+        if (!reduced) {
+            const t = frameState.clock.elapsedTime;
+            const breathe = 1 + Math.sin(t * IDLE.breatheSpeed) * IDLE.breatheAmp;
+            group.scale.setScalar(breathe);
+            group.position.y = Math.sin(t * IDLE.driftSpeed) * IDLE.driftAmp;
+        }
     });
 
     /* True while the pointer has travelled far enough that the gesture is a

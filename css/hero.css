@@ -194,7 +194,7 @@ body[data-hero-hover="1"] .hero-veil {
     flex-wrap: wrap;
     justify-content: center;
     gap: 0.85rem;
-    margin-top: clamp(2rem, 4.5vh, 3rem);
+    margin-top: clamp(1.4rem, 3.2vh, 2.1rem);
 }
 .hero-overlay .btn-gold {
     background: #FFFFFF;
@@ -241,11 +241,12 @@ body[data-hero-hover="1"] .hero-veil {
 /* ── Controls ────────────────────────────────────────────────────────────
    Prev / next / hint. Dragging is not a discoverable affordance on its own, and
    it is not keyboard-reachable at all — these are both. */
+/* Sits between the heading and the buttons. */
 .hero-controls {
     display: flex;
     align-items: center;
     gap: clamp(1rem, 2.5vw, 1.75rem);
-    margin-top: clamp(2.25rem, 5.5vh, 3.75rem);
+    margin-top: clamp(1.75rem, 4vh, 2.6rem);
 }
 .hero-arrow {
     display: grid;

@@ -1,25 +1,33 @@
 'use client';
 
-/* useAutoPresent — walks the hero cards once, on first load, then hands the
-   globe back to the user.
+/* useAutoPresent — the globe's showcase loop.
 
-   Each beat is: focus card N → hold → release → short breath → focus card N+1.
-   After the last card the tour ends and the globe returns to its idle orbit.
+   One card at a time, forever:
 
-   YIELDING IS THE WHOLE POINT. A tour that fights the user is worse than no
-   tour, so ANY deliberate interaction — a pointer press on the hero, a wheel
-   gesture, a key, a touch — cancels it permanently for that page view. The
-   cancel listeners are passive and capture-phase, so they see the gesture
-   without interfering with it.
+       fly out → hold at centre → shrink back to its EXACT slot → pause → next
 
-   It also never starts, or immediately stops, when:
-     · prefers-reduced-motion is set,
-     · the hero is not on screen (an IntersectionObserver gate — no point
-       presenting to someone who has already scrolled past),
-     · the tab is hidden (visibilitychange), which would otherwise burn the
-       whole tour while the user is in another tab. */
+   STRICT SEQUENCING is the point. The next card must not begin until the
+   previous one has finished returning, or two cards are in flight at once and
+   the globe reads as chaos rather than a presentation. The release step
+   therefore waits `FOCUS.exit` — the real duration of the FocusCard exit tween,
+   imported from the same config the tween reads — plus a short settle, before
+   the next card is focused. Deriving it from the config means the two can never
+   drift apart when the animation is retuned.
+
+   MANUAL INTERACTION does not kill the loop any more, it PAUSES it: any
+   deliberate input (pointerdown, wheel, touch, key) stops the current beat and
+   schedules a resume. The user gets the globe to themselves for `resumeMs`,
+   then the showcase picks up again from the next card.
+
+   It also never runs when the hero is off screen, and stops while the tab is
+   hidden — otherwise the loop would keep firing against a page nobody is
+   looking at. */
 
 import { useEffect, useRef } from 'react';
+import { FOCUS } from '@/lib/hero/hero-config';
+
+/* The FocusCard exit, in ms, plus a beat for the 3D card to fade back in. */
+const RETURN_MS = FOCUS.exit * 1000 + 260;
 
 type Options = {
     /** Number of cards to walk. */
@@ -31,10 +39,12 @@ type Options = {
     enabled: boolean;
     /** How long each card is held at centre. */
     holdMs?: number;
-    /** Gap between one card returning and the next arriving. */
+    /** Quiet beat between one card returning and the next flying out. */
     gapMs?: number;
-    /** Delay before the tour begins, so the page can settle first. */
+    /** Delay before the loop begins, so the page can settle first. */
     startDelayMs?: number;
+    /** How long the user keeps control after interacting. */
+    resumeMs?: number;
 };
 
 export default function useAutoPresent({
@@ -42,12 +52,12 @@ export default function useAutoPresent({
     onFocus,
     hostRef,
     enabled,
-    holdMs = 2600,
-    gapMs = 700,
-    startDelayMs = 1400,
+    holdMs = 3000,
+    gapMs = 620,
+    startDelayMs = 1600,
+    resumeMs = 6000,
 }: Options) {
-    /* Kept in refs so the effect never re-runs on a prop identity change and
-       restarts the tour from the top. */
+    /* Kept in a ref so a new callback identity cannot restart the loop. */
     const focusRef = useRef(onFocus);
     focusRef.current = onFocus;
 
@@ -55,84 +65,91 @@ export default function useAutoPresent({
         if (!enabled || count <= 0) return;
         const host = hostRef.current;
         if (!host) return;
-
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
         let index = 0;
-        let cancelled = false;
-        let timer = 0;
-        /* Only clear the focus on cancel if the tour actually set one. */
+        let disposed = false;
+        /* Every pending step, so a pause can cancel the whole chain at once. */
+        let timers: number[] = [];
         let holding = false;
+        let started = false;
 
-        const stop = (clearFocus: boolean) => {
-            if (cancelled) return;
-            cancelled = true;
-            window.clearTimeout(timer);
-            if (clearFocus && holding) focusRef.current(null);
-            detach();
+        const clear = () => {
+            timers.forEach((t) => window.clearTimeout(t));
+            timers = [];
+        };
+        const after = (ms: number, fn: () => void) => {
+            timers.push(window.setTimeout(fn, ms));
         };
 
-        /* One beat of the tour. */
-        const showNext = () => {
-            if (cancelled) return;
-
-            if (index >= count) {
-                stop(false);
-                return;
-            }
+        /* ── One full beat ── */
+        const present = () => {
+            if (disposed) return;
 
             holding = true;
             focusRef.current(index);
-            index += 1;
+            /* Wrap forever — the showcase does not end. */
+            index = (index + 1) % count;
 
-            timer = window.setTimeout(() => {
-                if (cancelled) return;
+            after(holdMs, () => {
+                if (disposed) return;
+                holding = false;
+                /* Ask for the return. FocusCard plays its exit from here. */
+                focusRef.current(null);
+
+                /* Only once it has actually landed back in the globe. */
+                after(RETURN_MS + gapMs, present);
+            });
+        };
+
+        /* ── Pause on interaction, resume later ── */
+        const pause = () => {
+            if (disposed) return;
+            clear();
+            /* Hand back whatever the loop was showing; if the user clicked a
+               card, Hero has already selected it and this must not clear it —
+               only a card the LOOP opened gets closed. */
+            if (holding) {
                 holding = false;
                 focusRef.current(null);
-                timer = window.setTimeout(showNext, gapMs);
-            }, holdMs);
+            }
+            after(resumeMs, present);
         };
-
-        /* ── Cancel on any deliberate interaction ── */
-        const onInteract = () => stop(true);
 
         const onKey = (e: KeyboardEvent) => {
-            /* Ignore modifier-only presses so a stray Shift does not kill it. */
-            if (e.key === 'Shift' || e.key === 'Control' || e.key === 'Alt' || e.key === 'Meta') {
-                return;
-            }
-            stop(true);
+            /* A bare modifier is not an interaction. */
+            if (['Shift', 'Control', 'Alt', 'Meta'].includes(e.key)) return;
+            pause();
         };
-
         const onVisibility = () => {
-            if (document.hidden) stop(true);
+            if (document.hidden) clear();
+            else if (started) {
+                clear();
+                after(resumeMs, present);
+            }
         };
 
         const passive = { passive: true, capture: true } as AddEventListenerOptions;
-
-        const attach = () => {
-            host.addEventListener('pointerdown', onInteract, passive);
-            host.addEventListener('wheel', onInteract, passive);
-            host.addEventListener('touchstart', onInteract, passive);
-            window.addEventListener('keydown', onKey);
-            document.addEventListener('visibilitychange', onVisibility);
-        };
+        host.addEventListener('pointerdown', pause, passive);
+        host.addEventListener('wheel', pause, passive);
+        host.addEventListener('touchstart', pause, passive);
+        window.addEventListener('keydown', onKey);
+        document.addEventListener('visibilitychange', onVisibility);
 
         const detach = () => {
-            host.removeEventListener('pointerdown', onInteract, passive);
-            host.removeEventListener('wheel', onInteract, passive);
-            host.removeEventListener('touchstart', onInteract, passive);
+            host.removeEventListener('pointerdown', pause, passive);
+            host.removeEventListener('wheel', pause, passive);
+            host.removeEventListener('touchstart', pause, passive);
             window.removeEventListener('keydown', onKey);
             document.removeEventListener('visibilitychange', onVisibility);
         };
 
-        attach();
-
-        /* Only begin once the hero is genuinely on screen. */
+        /* ── Start only once the hero is genuinely on screen ── */
         let observer: IntersectionObserver | null = null;
         const begin = () => {
-            if (cancelled) return;
-            timer = window.setTimeout(showNext, startDelayMs);
+            if (disposed || started) return;
+            started = true;
+            after(startDelayMs, present);
         };
 
         if (typeof IntersectionObserver === 'undefined') {
@@ -151,10 +168,10 @@ export default function useAutoPresent({
         }
 
         return () => {
-            cancelled = true;
-            window.clearTimeout(timer);
+            disposed = true;
+            clear();
             observer?.disconnect();
             detach();
         };
-    }, [count, enabled, hostRef, holdMs, gapMs, startDelayMs]);
+    }, [count, enabled, hostRef, holdMs, gapMs, startDelayMs, resumeMs]);
 }

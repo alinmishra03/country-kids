@@ -31,8 +31,9 @@ import type { CardSlot } from '@/lib/hero/sphere-layout';
 import type { HeroCard } from '@/lib/hero/hero-cards';
 import type { FocusOrigin } from '@/components/home/hero/FocusCard';
 
-/* Scratch vector — module scope so projecting a click allocates nothing. */
+/* Scratch vectors — module scope so the per-frame maths allocates nothing. */
 const _world = new THREE.Vector3();
+const _depth = new THREE.Vector3();
 
 type Props = {
     slot: CardSlot;
@@ -208,11 +209,31 @@ export default function Card({
               ? CARD_MOTION.hoverDimOpacity
               : 1;
 
-        /* Lift the map's own brightness too, so the baked text gains contrast
-           rather than only the card's edges catching more light. */
-        const targetTint = isActive ? CARD_MOTION.activeBrightness : 1;
+        /* ── Depth cueing ──
+           How far round the globe this card currently is, 0 (back) … 1 (front),
+           taken from its world position. The rotor's rotation is already baked
+           into that, so this needs no knowledge of the rotation itself.
 
-        mesh.scale.setScalar(mesh.scale.x + (targetScale - mesh.scale.x) * k);
+           It drives brightness and size: the far side recedes instead of
+           reading as a flat ring. Both are interpolated through the same lerp
+           as everything else, so there is never a step change. */
+        mesh.getWorldPosition(_depth);
+        const depth = THREE.MathUtils.clamp(
+            (_depth.z + GLOBE.radius) / (2 * GLOBE.radius),
+            0,
+            1
+        );
+        const depthTint = CARD_MOTION.depthDim + (1 - CARD_MOTION.depthDim) * depth;
+        const depthScale = 1 - CARD_MOTION.depthShrink * (1 - depth);
+
+        /* Lift the map's own brightness too, so the baked text gains contrast
+           rather than only the card's edges catching more light. An active card
+           is exempt from depth dimming — it is the subject. */
+        const targetTint = isActive ? CARD_MOTION.activeBrightness : depthTint;
+
+        mesh.scale.setScalar(
+            mesh.scale.x + (targetScale * (isActive ? 1 : depthScale) - mesh.scale.x) * k
+        );
         /* +Z inside a billboard is straight at the camera. */
         mesh.position.z += (targetLift - mesh.position.z) * k;
 

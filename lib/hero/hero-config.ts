@@ -4,7 +4,7 @@
 
 export const GLOBE = {
     /** Sphere radius in world units at the equator. */
-    radius: 3.05,
+    radius: 3.78,
     /** Cards per ring. Also the snap resolution. */
     columns: 8,
     /** Number of latitude bands. columns × rows = card count. */
@@ -65,6 +65,27 @@ export const CARD_MOTION = {
     /** Lerp factor per 1/60s. Settles in ~330ms, i.e. the 300–500ms band, and
         because it is a lerp the curve is inherently ease-out. */
     ease: 0.16,
+
+    /* ── Depth cueing ──
+       A card's brightness and size track how far it is from the camera, so the
+       far side of the globe recedes instead of reading as a flat ring. Real
+       per-card BLUR is deliberately not done: blurring individual objects needs
+       a depth-of-field pass over the whole scene, which costs more than the
+       whole rest of the hero. Darkening plus a size falloff reads as depth at a
+       fraction of the price. */
+    depthDim: 0.5,        /* brightness at the very back (1 = no dimming)      */
+    depthShrink: 0.12,    /* how much smaller the very back card is            */
+} as const;
+
+/* Idle life — the globe is never completely still. All of it is tiny on
+   purpose; it should register as "alive", never as movement. */
+export const IDLE = {
+    /** Breathing scale, ± this fraction. */
+    breatheAmp: 0.014,
+    breatheSpeed: 0.42,
+    /** Slow vertical drift of the whole globe, in world units. */
+    driftAmp: 0.075,
+    driftSpeed: 0.24,
 } as const;
 
 /* The centred focus state (components/home/hero/FocusCard.tsx). */
@@ -87,7 +108,7 @@ export const CAMERA = {
     parallax: 0.42,
     parallaxEase: 0.045,
     /** The globe must fit inside this half-extent on both axes. */
-    fit: 4.35,
+    fit: 4.6,
 } as const;
 
 /* Card face texture. Sized for the largest on-screen card (~340 css px) at 2×,

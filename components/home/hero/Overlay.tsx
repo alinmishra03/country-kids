@@ -81,6 +81,31 @@ export default function Overlay({ card, onClear, onStep, reduced }: Props) {
        plays the card's exit animation instead of tearing the selection out
        from under it. */
 
+    /* Rendered once, placed between the heading and the buttons in BOTH
+       branches — heading → drag hint → buttons. Held in a variable rather than
+       duplicated so there is still only one copy of this markup. */
+    const controls = (
+        <div className="hero-controls">
+            <button
+                type="button"
+                className="hero-arrow"
+                onClick={() => onStep(-1)}
+                aria-label="Previous card"
+            >
+                <Icon name="chevron-right" />
+            </button>
+            <span className="hero-hint">Drag to explore</span>
+            <button
+                type="button"
+                className="hero-arrow"
+                onClick={() => onStep(1)}
+                aria-label="Next card"
+            >
+                <Icon name="chevron-right" />
+            </button>
+        </div>
+    );
+
     return (
         <div className="hero-overlay" ref={rootRef}>
             {card ? (
@@ -92,6 +117,9 @@ export default function Overlay({ card, onClear, onStep, reduced }: Props) {
                     <h1 className="hero-title" data-anim>
                         {card.title}
                     </h1>
+
+                    {controls}
+
                     <div className="hero-cta" data-anim>
                         <Link className="btn-gold" href={card.href}>
                             {card.cta} <Icon name="arrow-right" />
@@ -111,6 +139,9 @@ export default function Overlay({ card, onClear, onStep, reduced }: Props) {
                         {HERO_INTRO.title}{' '}
                         <em>{HERO_INTRO.titleAccent}</em>
                     </h1>
+
+                    {controls}
+
                     <div className="hero-cta" data-anim>
                         <Link className="btn-gold" href={HERO_INTRO.primary.href}>
                             {HERO_INTRO.primary.label} <Icon name="arrow-right" />
@@ -121,29 +152,6 @@ export default function Overlay({ card, onClear, onStep, reduced }: Props) {
                     </div>
                 </>
             )}
-
-            {/* Explicit controls — the globe is draggable, but drag alone is not
-                an accessible affordance. These are keyboard-reachable and give
-                the same prev/next the arrow keys do. */}
-            <div className="hero-controls">
-                <button
-                    type="button"
-                    className="hero-arrow"
-                    onClick={() => onStep(-1)}
-                    aria-label="Previous card"
-                >
-                    <Icon name="chevron-right" />
-                </button>
-                <span className="hero-hint">Drag to explore</span>
-                <button
-                    type="button"
-                    className="hero-arrow"
-                    onClick={() => onStep(1)}
-                    aria-label="Next card"
-                >
-                    <Icon name="chevron-right" />
-                </button>
-            </div>
         </div>
     );
 }

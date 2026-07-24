@@ -55,11 +55,11 @@ export default function Scene({
        shrinking to a marble. An active card is always rotated to front centre
        there, so it is never the one hanging off the edge. */
     const fitRadius = isNarrow
-        ? 3.1
+        ? 3.5
         : isMobile
-          ? 3.8
+          ? 4.15
           : isTablet
-            ? 4.1
+            ? 4.4
             : CAMERA.fit;
 
     /* Postprocessing and shadow maps are the two real costs. Both are desktop-

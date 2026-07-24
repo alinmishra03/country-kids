@@ -111,9 +111,13 @@ export function bakeCardTexture({ img, category, title, subtitle }: BakeInput) {
 
     /* ── Inner hairline, so the card has a visible edge even against a dark
           background where the bevel highlight has nothing to catch ── */
-    ctx.strokeStyle = 'rgba(255,255,255,0.22)';
-    ctx.lineWidth = 2;
-    ctx.strokeRect(1, 1, W - 2, H - 2);
+    /* A single hairline, not a 2px rule: at the size these cards render the
+       thinner, fainter edge reads as a luxury card rather than an outlined
+       tile. Half-pixel offset so the 1px stroke lands on a pixel boundary
+       instead of being smeared across two. */
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, W - 1, H - 1);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.colorSpace = THREE.SRGBColorSpace;
