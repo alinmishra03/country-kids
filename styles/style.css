@@ -5,6 +5,8 @@
 @import url("../css/base.css");
 @import url("../css/scrollbar.css");
 @import url("../css/nav.css");
+/* Nav refinements — MUST follow nav.css. */
+@import url("../css/nav-polish.css");
 @import url("../css/pages.css");
 @import url("../css/hero.css");
 @import url("../css/hero-globe.css");
@@ -47,5 +49,7 @@
 /* Motion system — smooth scroll, text masks, parallax, route transition.
    MUST follow animations.css (it supersedes the old .page-transition fade). */
 @import url("../css/motion-system.css");
+/* First-visit intro overlay — above every other layer. */
+@import url("../css/intro.css");
 /* Dark theme — MUST be the absolute last import so [data-theme="dark"] wins. */
 @import url("../css/theme-dark.css");

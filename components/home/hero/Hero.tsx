@@ -26,6 +26,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { HERO_CARDS } from '@/lib/hero/hero-cards';
 import type { GlobeApi } from '@/hooks/useGlobeControls';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
+import useAutoPresent from '@/hooks/useAutoPresent';
 import Overlay from '@/components/home/hero/Overlay';
 import FocusCard, { type FocusOrigin } from '@/components/home/hero/FocusCard';
 
@@ -72,6 +73,26 @@ export default function Hero() {
             return (from + direction + HERO_CARDS.length) % HERO_CARDS.length;
         });
     }, []);
+
+    /* Guided tour on first load: each card comes to centre in turn, then the
+       globe is handed back. It cancels permanently the moment the user touches
+       anything — see useAutoPresent. Selecting with no `origin` makes the focus
+       card scale up in place rather than flying from a click position, which is
+       the right read for something the page did on its own. */
+    useAutoPresent({
+        count: HERO_CARDS.length,
+        hostRef: sectionRef,
+        enabled: !reduced,
+        onFocus: (index) => {
+            if (index === null) {
+                setClosing(true);
+                return;
+            }
+            setOrigin(null);
+            setClosing(false);
+            setSelected(index);
+        },
+    });
 
     /* Keyboard control, live whenever the hero is the thing on screen.
        Escape is handled by FocusCard itself, so its exit animation plays. */

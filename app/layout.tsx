@@ -14,6 +14,7 @@ import { TranslationProvider } from '@/components/providers/TranslationProvider'
 import SiteHeader from '@/components/layout/SiteHeader';
 import SiteFooter from '@/components/layout/SiteFooter';
 import PageTransition from '@/components/layout/PageTransition';
+import IntroLoader from '@/components/layout/IntroLoader';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 
 export const metadata = {
@@ -74,7 +75,11 @@ export default function RootLayout({ children }) {
                             __html:
                                 '.tr-word{transform:none!important}' +
                                 '.pm{clip-path:none!important}' +
-                                '.pm-inner{transform:none!important}',
+                                '.pm-inner{transform:none!important}' +
+                                /* The intro overlay is server-rendered and is
+                                   dismissed by an effect — without JS it would
+                                   cover the homepage forever. */
+                                '.intro{display:none!important}',
                         }}
                     />
                 </noscript>
@@ -84,6 +89,8 @@ export default function RootLayout({ children }) {
                     <TranslationProvider>
                         {/* Renders nothing — owns the Lenis + ScrollTrigger loop. */}
                         <SmoothScroll />
+                        <IntroLoader />
+
                         <PageTransition />
                         <SiteHeader />
                         {children}

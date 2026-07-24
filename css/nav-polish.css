@@ -1,0 +1,93 @@
+/* ─── NAVIGATION POLISH ──────────────────────────────────────────────────
+   Refinements layered over css/nav.css — thinner bar, deeper glass, a sliding
+   underline on the links and a magnetic CTA.
+
+   Loaded AFTER nav.css so these win, and scoped tightly so none of the
+   existing nav behaviour (mobile drawer, dropdowns, theme toggle, active
+   states) is touched. Nothing here changes markup or JS. */
+
+/* ── Thinner bar, and thinner again once scrolled ──
+   --nav-h is read by the mobile drawer's padding and by the hero's top inset,
+   so it is overridden as a TOKEN rather than by setting a height on #navbar —
+   that way everything that depends on the nav height follows automatically. */
+:root {
+    --nav-h: 72px;
+}
+#navbar.scrolled {
+    height: 60px;
+    /* More glass, less panel: a heavier blur and a lighter fill reads as a
+       sheet of glass rather than a solid strip. */
+    background: color-mix(in srgb, var(--surface-elevated) 68%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow:
+        0 1px 0 0 var(--border-subtle),
+        0 14px 40px -18px rgba(0, 0, 0, 0.45);
+    border-bottom: 0;
+}
+
+/* ── Sliding underline on the nav links ──
+   A scaleX transform on a pseudo-element: no layout, no repaint of the label,
+   and it composes with the existing colour change on hover. */
+.pill-label {
+    position: relative;
+}
+.pill-label::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.32em;
+    height: 1.5px;
+    border-radius: 999px;
+    background: var(--gold-gradient);
+    transform: scaleX(0);
+    transform-origin: right center;
+    transition: transform 0.45s var(--ease-out);
+}
+.pill-item:hover .pill-label::after,
+.pill-link:focus-visible .pill-label::after,
+.pill-item.is-active .pill-label::after {
+    transform: scaleX(1);
+    /* Grows from the left on the way IN and retracts to the right on the way
+       out, which is what makes it read as a stroke rather than a bar. */
+    transform-origin: left center;
+}
+
+/* The alt label in the swap pair must not carry a second underline. */
+.pill-label--alt::after { content: none; }
+
+/* ── Magnetic CTA ──
+   useMagnetic writes --mx/--my; the shared button transform in base.css
+   already composes them. The nav CTA is not a .btn-* so it needs its own
+   composition — same contract, so the two never diverge. */
+.nav-cta {
+    --mx: 0px;
+    --my: 0px;
+    --lift: 0px;
+    transform: translate3d(var(--mx), calc(var(--my) + var(--lift)), 0);
+    transition:
+        transform 0.4s var(--ease-out),
+        box-shadow 0.4s var(--ease-out),
+        background-color 0.3s ease,
+        border-color 0.3s ease;
+    will-change: transform;
+}
+.nav-cta:hover {
+    --lift: -2px;
+    box-shadow: 0 14px 30px -14px rgba(var(--gold-rgb), 0.65);
+}
+
+/* ── Focus visibility ──
+   The bar is glass over arbitrary content, so the global focus ring needs a
+   dark backing here or it can land on a light photo and vanish. */
+#navbar :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pill-label::after { transition: none; }
+    .nav-cta { transform: none; transition: background-color 0.3s ease; }
+}
