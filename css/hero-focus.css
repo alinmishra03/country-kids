@@ -1,0 +1,258 @@
+/* ─── HERO FOCUS CARD ────────────────────────────────────────────────────
+   The centred card shown while one gallery card is selected
+   (components/home/hero/FocusCard.tsx).
+
+   It is DOM, not WebGL, because it needs a real <img>, a real clickable CTA,
+   independently fading text and a blur behind it — none of which a baked card
+   texture can provide. GSAP animates it out of the 3D card's exact screen
+   position, so the two read as one object.
+
+   Only transform / opacity / filter animate. The card's size is fixed by the
+   layout before the tween starts, so nothing here triggers a reflow mid-flight. */
+
+.hero-focus {
+    position: absolute;
+    inset: 0;
+    /* Above .hero-overlay (3) — the focused card outranks every other layer. */
+    z-index: 5;
+    display: grid;
+    place-items: center;
+    padding: calc(var(--nav-h) + 1rem) clamp(1rem, 5vw, 3rem) clamp(1.5rem, 5vh, 3rem);
+    pointer-events: none;
+}
+
+/* Catches the click/tap that dismisses the card. Deliberately transparent —
+   the dimming is done by blurring the canvas itself, so the globe stays
+   visible behind rather than being covered by a sheet. */
+.hero-focus-backdrop {
+    position: absolute;
+    inset: 0;
+    pointer-events: auto;
+    cursor: zoom-out;
+}
+
+/* ── The card ────────────────────────────────────────────────────────────
+   Mobile takes ~88vw as asked; desktop is capped so it never overflows, and
+   the whole card is height-bounded against the viewport at every size. */
+.hero-focus-card {
+    position: relative;
+    z-index: 1;
+    pointer-events: auto;
+    width: min(26rem, 88vw);
+    max-height: min(82vh, 40rem);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: #05204A;
+    /* Soft sage glow + a deep contact shadow for the lift off the background. */
+    box-shadow:
+        0 0 0 1px rgba(157, 190, 195, 0.18),
+        0 0 60px -10px rgba(108, 150, 157, 0.5),
+        0 40px 90px -30px rgba(0, 0, 0, 0.9),
+        0 12px 30px -12px rgba(0, 0, 0, 0.7);
+    /* GSAP writes transform and opacity here every frame of the tween. */
+    will-change: transform, opacity;
+    transform-origin: center center;
+}
+
+/* ── Media ───────────────────────────────────────────────────────────────
+   A fixed aspect box, so the card's height is known before the image loads —
+   no layout shift mid-animation. 5:4 is deliberately shallow: the taller the
+   box, the more of a landscape photo gets cropped away. */
+.hero-focus-media {
+    position: relative;
+    flex: none;
+    aspect-ratio: 5 / 4;
+    overflow: hidden;
+    background: #0A2E63;
+}
+.hero-focus-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    -webkit-user-drag: none;
+    user-select: none;
+}
+
+/* The gradient that buys the type its contrast. Tall enough that the text
+   never sits on raw photo, short enough that the image is still the subject. */
+.hero-focus-shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(5, 32, 74, 0.55) 0%,
+        rgba(5, 32, 74, 0) 26%,
+        rgba(5, 32, 74, 0) 42%,
+        rgba(5, 32, 74, 0.82) 78%,
+        rgba(5, 32, 74, 0.97) 100%
+    );
+}
+
+.hero-focus-badge {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--radius-pill);
+    background: rgba(108, 150, 157, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    font-family: var(--font-body);
+    font-size: 0.66rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #FFFFFF;
+}
+
+/* Title + subtitle sit on the gradient, at the foot of the image. */
+.hero-focus-heading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 1.4rem 1.15rem;
+}
+.hero-focus-title {
+    font-family: var(--font-display);
+    font-weight: var(--fw-medium);
+    font-size: clamp(1.6rem, 4.6vw, 2rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    color: #FFFFFF;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.7);
+    /* Long titles wrap rather than being clipped. */
+    text-wrap: balance;
+}
+.hero-focus-subtitle {
+    margin-top: 0.3rem;
+    font-family: var(--font-body);
+    font-size: 0.78rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #C6DDE1;
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Body ──
+   Description and CTA on the solid navy panel, so neither ever fights the
+   photograph for legibility. */
+.hero-focus-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.15rem 1.4rem 1.4rem;
+    background: linear-gradient(180deg, #05204A 0%, #041838 100%);
+    /* If a description ever runs long on a short screen, the panel scrolls
+       instead of the card overflowing its own boundary. */
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.hero-focus-text {
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    line-height: 1.62;
+    color: rgba(255, 255, 255, 0.86);
+    text-wrap: pretty;
+}
+
+/* The CTA reuses the hero's inverted primary: white fill, navy type. */
+.hero-focus-cta {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 46px;
+    padding: 0.7rem 1.4rem;
+    border-radius: var(--radius-pill);
+    background: #FFFFFF;
+    color: var(--brand-navy);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.15px;
+    transition:
+        transform 0.35s var(--ease-out),
+        background-color 0.35s var(--ease-out),
+        box-shadow 0.35s var(--ease-out);
+}
+.hero-focus-cta svg {
+    width: 1.05em;
+    height: 1.05em;
+    transition: transform 0.4s var(--ease-out);
+}
+.hero-focus-cta:hover {
+    transform: translateY(-2px);
+    background: #C6DDE1;
+    box-shadow: 0 16px 34px -14px rgba(157, 190, 195, 0.75);
+}
+.hero-focus-cta:hover svg { transform: translateX(4px); }
+
+/* ── Close ── */
+.hero-focus-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(2, 3, 10, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.24);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #FFFFFF;
+    cursor: pointer;
+    transition:
+        transform 0.3s var(--ease-out),
+        background-color 0.3s var(--ease-out);
+}
+.hero-focus-close svg { width: 16px; height: 16px; }
+.hero-focus-close:hover {
+    transform: scale(1.08);
+    background: rgba(108, 150, 157, 0.85);
+}
+
+/* ── Small screens ───────────────────────────────────────────────────────
+   The card takes ~88vw as specified. On short phones the image box gives up
+   height first, so the description and CTA always stay on screen. */
+@media (max-width: 600px) {
+    .hero-focus { padding: calc(var(--nav-h) + 0.75rem) 1rem 1.5rem; }
+    .hero-focus-card { width: 88vw; max-height: 78vh; }
+    .hero-focus-heading { padding: 0 1.15rem 1rem; }
+    .hero-focus-body { padding: 1rem 1.15rem 1.15rem; gap: 0.85rem; }
+    .hero-focus-cta { width: 100%; justify-content: center; min-height: 50px; }
+}
+@media (max-height: 720px) and (max-width: 600px) {
+    .hero-focus-media { aspect-ratio: 16 / 11; }
+}
+
+/* Landscape phones: the image would eat the whole screen, so it goes shallow
+   and the card sits wider. */
+@media (max-height: 520px) and (orientation: landscape) {
+    .hero-focus-card { width: min(30rem, 84vw); max-height: 88vh; }
+    .hero-focus-media { aspect-ratio: 21 / 9; }
+    .hero-focus-body { padding: 0.85rem 1.15rem 1rem; }
+}
+
+/* ── Reduced motion ──
+   GSAP still positions the card, but the CTA and close hover springs go. */
+@media (prefers-reduced-motion: reduce) {
+    .hero-focus-cta,
+    .hero-focus-cta svg,
+    .hero-focus-close {
+        transition: none;
+    }
+}

@@ -13,7 +13,7 @@ import Page from '@/components/shared/Page';
 import useFadeUps from '@/hooks/useFadeUps';
 import useCountUp from '@/hooks/useCountUp';
 
-import Hero from '@/components/home/Hero';
+import Hero from '@/components/home/hero/Hero';
 import StatsBar from '@/components/home/StatsBar';
 import WelcomeSection from '@/components/home/WelcomeSection';
 import RoomsPreview from '@/components/home/RoomsPreview';

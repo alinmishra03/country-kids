@@ -1,826 +1,393 @@
 /* ─── HERO ───────────────────────────────────────────────────────────────
-   Editorial, asymmetric landing composition built around the interactive 3D room
-   sphere. The sphere itself (SphereGallery / SphereScene, styled in
-   css/sphere-gallery.css) is untouched — it keeps its own full-bleed layer, size,
-   camera fit and motion. Everything in this file is the frame around it.
+   Full-bleed dark stage with the interactive 3D card globe behind centred copy.
 
-   Layer order (all decoration is pointer-transparent so drag/hover still reach
-   the canvas; only the copy blocks, floating cards and scroll cue take events):
+   Layers (z-index):
+       0  .hero-bg       dark premium gradient + grain + vignette (pure CSS)
+       1  .hero-canvas   the WebGL globe — see css/hero-globe.css
+       2  .hero-veil     scrim that buys the copy its contrast back
+       3  .hero-overlay  the real heading / description / CTA
+       3  .hero-sr       the same content as plain links, visually hidden
 
-       0  .hero-bg            gradient field, glow behind the sphere, vignette
-       1  .hero-sphere-layer  the sphere — only its BOX is set here (see below)
-       2  .hero-scrim         reading scrim: light left, fully clear by 29%
-       2  .hero-decor         two blurred orbs (static — nothing animates)
-       3  .hero-inner         25 / 75 grid — copy column + reserved sphere stage
-       4  .hero-badges        right rail, middle — absolutely pinned right
-       4  .hero-float         right rail, top + bottom — same width, same edge
-       4  .hero-scroll        bottom-left scroll cue
+   POINTER MODEL — this is the load-bearing detail of the whole composition.
+   The globe fills the section and the copy sits on top of it, so every layer
+   above the canvas is `pointer-events: none` and only the actual controls
+   (links, buttons) switch them back on. That is what lets the user drag the
+   globe straight through the headline, while the CTA still clicks.
 
-   Desktop is three vertical bands, and the globe owns the middle one:
-
-       0 ────── 29% ─────────────────────── 71% ────── 100%
-       │  copy  │           sphere           │  rail   │
-
-   --hero-sphere-inset (29%) is the single number driving that. The sphere box is
-   inset by it on BOTH sides, so the globe is centred on the section; the copy
-   column is then sized to stop before it and the right rail to start after it.
-   That is what keeps the headline off the globe — a layout guarantee, not a
-   tuned overlap. The narrow copy column is the direct price of centring.
-
-   THEMING — the hero is LIGHT in light mode and deep navy in dark mode. Every
-   surface below reads from the hero-scoped tokens declared on .hero, so the dark
-   variant is a single override block (see "Dark theme" further down) instead of
-   a second copy of the stylesheet. */
+   The hero is dark in BOTH themes — it is a deliberate dark band at the top of
+   a light page, the way the rest of the site's navy bands work. */
 
 .hero {
-    /* ── Light-mode tokens (default) ── */
-    --hero-ink: var(--blue-deep);                       /* headline / strong text */
-    --hero-ink-2: rgba(5, 32, 74, 0.78);               /* chip + card text        */
-    --hero-ink-3: rgba(5, 32, 74, 0.52);               /* labels, scroll cue      */
-    --hero-gold: var(--gold-deep);                      /* accent that holds AA    */
-    --hero-glass-a: rgba(255, 255, 255, 0.78);          /* glass gradient — top    */
-    --hero-glass-b: rgba(255, 255, 255, 0.42);          /* glass gradient — bottom */
-    --hero-glass-border: rgba(5, 32, 74, 0.1);
-    --hero-glass-shadow: 0 18px 38px -24px rgba(5, 32, 74, 0.4);
-    --hero-glass-shadow-lg: 0 26px 56px -28px rgba(5, 32, 74, 0.45);
-    --hero-hairline: rgba(5, 32, 74, 0.1);
-    /* Soft same-colour halo — keeps the tail of the headline legible where it
-       reaches past the scrim, without dimming the sphere behind it. */
-    --hero-title-shadow: 0 2px 24px rgba(255, 253, 208, 0.92);
-
-    /* ── Composition geometry ──
-       The sphere box is inset by the SAME amount left and right, so the globe is
-       centred on the section. Everything else is sized off that: the copy column
-       has to finish before 29% and the right rail has to start after 71%.
-       --hero-rail-* place that rail — reviews card, trust chips and learning card
-       all share one width and one right edge. */
-    --hero-sphere-inset: 29%;
-    /* Flat viewport gutter. The copy used to sit on the 1240px container line,
-       but with the globe centred that line is far too far in on wide screens —
-       it would crush the copy column to nothing at 1920+. */
-    --hero-gutter: clamp(1.25rem, 4vw, 5rem);
-    --hero-rail-gap: clamp(1rem, 2.4vw, 2.5rem);
-    --hero-rail-w: clamp(15.5rem, 19vw, 18rem);
+    /* Tokens scoped to the dark stage, so nothing below reaches for a global
+       light-mode colour and quietly disappears. */
+    --hero-ink: #FFFFFF;
+    --hero-ink-2: rgba(255, 255, 255, 0.82);
+    --hero-ink-3: rgba(255, 255, 255, 0.55);
+    --hero-accent: #9DBEC3;
+    --hero-hairline: rgba(255, 255, 255, 0.16);
+    --hero-glass: rgba(255, 255, 255, 0.07);
 
     position: relative;
     min-height: 100vh;
     min-height: 100svh;
     display: flex;
     align-items: center;
-    padding: calc(var(--nav-h) + clamp(1rem, 3.5vh, 2.5rem)) 0 clamp(4.5rem, 10vh, 7rem);
+    justify-content: center;
     overflow: hidden;
     isolation: isolate;
-    background: var(--band-cream);
+    background: #02030A;
+    /* The canvas is a drag surface: never let a horizontal drag also pan the
+       page, but keep vertical scrolling native. */
+    touch-action: pan-y;
 }
 
-/* ── Background field ──
-   A soft warm light behind the sphere, a cool wash top-right, a tinted pool
-   bottom-left and a gentle vignette. Static — all motion belongs to the sphere. */
+/* ── Background field ────────────────────────────────────────────────────
+   Deep navy-to-black gradient, a sage bloom behind the globe, and a fine grain
+   so the large flat areas never band on an 8-bit display. */
 .hero-bg {
     position: absolute;
     inset: 0;
     z-index: 0;
     background:
-        radial-gradient(40% 52% at 50% 50%, rgba(var(--gold-rgb), 0.16) 0%, transparent 64%),
-        radial-gradient(120% 120% at 82% 2%, rgba(216, 188, 171, 0.38) 0%, rgba(216, 188, 171, 0) 48%),
-        radial-gradient(70% 70% at 6% 92%, rgba(108, 150, 157, 0.20) 0%, transparent 62%),
-        linear-gradient(180deg, #FFFEE4 0%, #FBF3DA 100%);
+        radial-gradient(58% 58% at 50% 46%, rgba(108, 150, 157, 0.20) 0%, transparent 68%),
+        radial-gradient(80% 60% at 12% 8%, rgba(70, 77, 119, 0.30) 0%, transparent 60%),
+        radial-gradient(70% 60% at 88% 92%, rgba(10, 46, 99, 0.38) 0%, transparent 62%),
+        linear-gradient(168deg, #050A1A 0%, #02030A 52%, #04081A 100%);
 }
-/* Vignette */
+/* Grain + vignette. The SVG turbulence is inline, so there is no request. */
 .hero-bg::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(118% 96% at 52% 46%, transparent 52%, rgba(5, 32, 74, 0.06) 100%);
-}
-
-/* ── Sphere layer ──
-   The sphere itself is untouched (same component, same fit/camera/interaction);
-   only the BOX it fills changes. Equal insets left and right put the globe dead
-   centre on the section, with the copy finishing before it and the right rail
-   starting after it — so it is centred AND nothing overlaps it. FitCamera
-   re-fits to the new aspect on its own, so the whole globe reads inside the box.
-
-   Note the globe fills this box edge to edge horizontally (FitCamera is
-   width-limited at these aspects), so --hero-sphere-inset is literally the
-   globe's left edge. */
-.hero-sphere-layer {
-    position: absolute;
-    inset: 0 var(--hero-sphere-inset);
-    z-index: 1;
+    opacity: 0.5;
+    background-image:
+        radial-gradient(120% 100% at 50% 50%, transparent 46%, rgba(0, 0, 0, 0.62) 100%),
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
 }
 
 /* ── Reading scrim ──
-   Now that no globe sits behind the copy, this is only lifting the text off the
-   background gradient, so it is much lighter than it used to be — and it is
-   fully off by --hero-sphere-inset (29%), i.e. exactly where the globe starts,
-   so there is never a veil over any part of the sphere. */
-.hero-scrim {
+   Strongest through the vertical centre band where the copy sits, clear at the
+   left and right edges so the globe's outer cards stay bright. */
+.hero-veil {
     position: absolute;
     inset: 0;
     z-index: 2;
     pointer-events: none;
+    opacity: 1;
+    /* Only opacity animates — compositor-only, no repaint of the gradients. */
+    will-change: opacity;
+    transition: opacity 0.4s var(--ease-out);
     background:
-        linear-gradient(97deg,
-            rgba(255, 253, 208, 0.9) 0%,
-            rgba(255, 253, 208, 0.72) 18%,
-            rgba(255, 253, 208, 0.3) 24%,
-            rgba(255, 253, 208, 0) 29%),
-        linear-gradient(180deg,
-            rgba(255, 253, 208, 0.34) 0%,
-            rgba(255, 253, 208, 0) 18%,
-            rgba(255, 253, 208, 0) 74%,
-            rgba(255, 253, 208, 0.4) 100%);
+        radial-gradient(46% 52% at 50% 50%, rgba(2, 3, 10, 0.86) 0%, rgba(2, 3, 10, 0.5) 46%, rgba(2, 3, 10, 0) 74%),
+        linear-gradient(180deg, rgba(2, 3, 10, 0.72) 0%, rgba(2, 3, 10, 0) 26%, rgba(2, 3, 10, 0) 68%, rgba(2, 3, 10, 0.8) 100%);
 }
 
-/* ── Decorative layer ───────────────────────────────────────────────────
-   Two soft blurred orbs filling the negative space behind the copy. The dot
-   field, the gold hairline rule and the four drifting sparks that used to live
-   here were removed: visual noise, plus four infinite animations running for
-   the whole life of the page. Nothing in this layer animates now. */
-.hero-decor {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
+/* ── Focus state ──
+   The resting scrim is tuned to hold the headline over a moving globe. The
+   moment a card becomes the focus — hovered (body attribute, set straight from
+   the 3D layer with no React render) or selected (class from state) — it eases
+   back so the enlarged card is genuinely readable rather than sitting under a
+   veil meant for the idle composition. */
+body[data-hero-hover="1"] .hero-veil {
+    opacity: 0.42;
+}
+
+/* ── Focused state ──
+   While a card is centred it is the only thing to read. The scrim goes (the
+   canvas is already blurred and dimmed behind, so the veil has nothing left to
+   do) and the hero copy steps aside rather than showing the same title twice
+   behind a card that already carries it. */
+.hero.is-focused .hero-veil {
+    opacity: 0;
+}
+.hero.is-focused .hero-overlay {
+    opacity: 0;
     pointer-events: none;
-    overflow: hidden;
+    transition:
+        opacity 0.4s var(--ease-out),
+        transform 0.5s var(--ease-out);
+    transform: scale(0.98);
+}
+.hero-overlay {
+    transition:
+        opacity 0.45s var(--ease-out) 0.1s,
+        transform 0.5s var(--ease-out) 0.1s;
+    will-change: opacity, transform;
 }
 
-/* Blurred colour orbs. */
-.hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(60px);
-}
-.hero-orb--gold {
-    width: clamp(220px, 26vw, 380px);
-    aspect-ratio: 1;
-    left: -8%;
-    top: 8%;
-    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.2), transparent 68%);
-}
-.hero-orb--blue {
-    width: clamp(260px, 30vw, 460px);
-    aspect-ratio: 1;
-    left: -12%;
-    bottom: -14%;
-    background: radial-gradient(circle, rgba(108, 150, 157, 0.30), transparent 68%);
-}
-
-
-/* ── Asymmetric grid: 25% copy / 75% sphere stage ──
-   The row spans the full section width and carries the gutter as PADDING, so the
-   right rail — absolutely positioned against this element — can be pinned to the
-   section's true right edge, in line with the floating cards.
-
-   25fr is the number that keeps the copy clear of a CENTRED globe: the column's
-   right edge lands ~28–40px short of --hero-sphere-inset at every width from
-   1201px up to ultrawide. It is narrow, and that is the direct cost of centring
-   the sphere — the copy only gets what is left beside a 29%-inset circle.
-
-   The row is pointer-transparent so the sphere behind stays draggable; the copy
-   blocks re-enable events for links, buttons and text selection. */
-.hero-inner {
+/* ── Overlay ─────────────────────────────────────────────────────────────
+   Centred column of real text. Transparent to the pointer so the globe behind
+   stays draggable; only the controls take events. */
+.hero-overlay {
     position: relative;
     z-index: 3;
-    width: 100%;
-    padding-inline: var(--hero-gutter);
-    display: grid;
-    grid-template-columns: minmax(0, 25fr) minmax(0, 75fr);
+    width: min(58rem, calc(100% - 2 * clamp(1.5rem, 5vw, 4rem)));
+    margin-inline: auto;
+    padding-block: calc(var(--nav-h) + 2rem) clamp(4.5rem, 10vh, 7rem);
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: clamp(1.5rem, 3.5vw, 3rem);
+    text-align: center;
     pointer-events: none;
-    text-align: left;
 }
-
-/* Everything in the copy column is flush left at every breakpoint. */
-.hero-copy {
-    max-width: 700px;
-    margin-inline: 0;
-    text-align: left;
-}
-.hero-eyebrow,
-.hero-title,
-.hero-main-cta,
-.hero-badges,
-.hero-stats {
+.hero-overlay a,
+.hero-overlay button {
     pointer-events: auto;
 }
 
-/* The sphere's stage: holds the right column open and carries the trust chips
-   as a right-aligned rail beside the globe. On phones it becomes the window the
-   globe reads through, with the chips sitting at its top. */
-.hero-stage {
-    min-height: clamp(360px, 46vh, 560px);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-}
-
-/* ── Badge ── */
+/* ── Eyebrow ── */
 .hero-eyebrow {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    color: var(--hero-ink-2);
-    background: var(--hero-glass-a);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    padding: 0.5rem 1.1rem;
-    border-radius: var(--radius-pill);
-    border: 1px solid var(--hero-glass-border);
-    font-size: 0.78rem;
-    letter-spacing: 0.3px;
-    margin-bottom: clamp(1.1rem, 2.6vh, 1.85rem);
-    /* The pill is wider than the narrow copy column at the smallest desktop
-       widths. Let it run a few px past the column rather than wrap into two
-       lines — it still stops well short of the globe (the grid gap alone is
-       ~42px, on top of the column's own clearance). */
-    white-space: nowrap;
-}
-.hero-eyebrow-icon { width: 18px; height: 18px; color: var(--hero-gold); }
-
-/* ── Headline ──
-   The size ceiling is set so the longest line ("child belongs.", ~5.8em wide)
-   always fits inside the copy column with ~10% to spare — the headline can never
-   run under the sphere. Words are separate inline-blocks, so even if a line did
-   outgrow the column it would wrap rather than overflow onto the globe.
-   3.55vw is what a 25fr column beside a centred sphere can carry; it only
-   reaches the 4.5rem ceiling past ~2000px, where the column finally has room. */
-.hero-title {
-    font-size: clamp(2.6rem, 3.55vw, 4.5rem);
-    line-height: 1.02;
-    letter-spacing: -0.03em;
-    color: var(--hero-ink);
-    text-shadow: var(--hero-title-shadow);
-    text-align: left;
-}
-.hero-line { display: block; text-align: left; }
-.hero-word {
-    display: inline-block;
-    margin-inline-end: 0.24em;
-    will-change: transform, opacity, filter;
-}
-/* The accent word carries a hairline underline that draws itself in once the
-   headline has finished animating — the hero's one piece of flourish. Scale
-   only, so it costs nothing and cannot shift the line. */
-.hero-word.gold {
-    position: relative;
-    color: var(--hero-gold);
-}
-.hero-word.gold::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0.24em;
-    bottom: 0.06em;
-    height: 0.06em;
-    border-radius: 999px;
-    background: var(--gold-gradient);
-    transform: scaleX(0);
-    transform-origin: left center;
-    animation: hero-underline 0.9s var(--ease-out) 1.05s forwards;
-}
-@keyframes hero-underline {
-    to { transform: scaleX(1); }
-}
-
-/* ── CTAs ──
-   Stacked one under the other, left-aligned and matched in width so their edges
-   line up. They never reach into the sphere's column. */
-.hero-main-cta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.85rem;
-    margin-top: clamp(1.8rem, 4vh, 2.75rem);
-}
-.hero-main-cta .btn-gold,
-.hero-main-cta .btn-outline {
-    width: 100%;
-    max-width: 17rem;
-}
-/* The hero CTAs are the SHARED buttons (.btn-gold → primary navy, .btn-outline →
-   secondary) and deliberately add no transform or transition of their own: the
-   base.css button composes the hover lift with the magnetic --mx/--my offset in
-   one transform, and a local `transform` here would clobber it. Layout only. */
-.hero-main-cta .btn-gold,
-.hero-main-cta .btn-outline {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    white-space: nowrap;
-}
-
-/* ── Trust cards — the middle block of the right rail ──
-   Lifted out of the grid and pinned to the section's right edge (the containing
-   block is .hero-inner, whose padding box spans the full section width), so it
-   shares an exact right edge and width with the two floating cards above and
-   below it. On tablet/phone it drops back into flow — see the media queries. */
-.hero-badges {
-    position: absolute;
-    top: 50%;
-    right: var(--hero-rail-gap);
-    transform: translateY(-50%);
-    z-index: 4;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
     gap: 0.6rem;
-    width: var(--hero-rail-w);
-}
-
-/* ── Stat cards ── */
-.hero-stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    margin-top: clamp(1.8rem, 4vh, 2.6rem);
-    padding-top: clamp(1.3rem, 3vh, 1.9rem);
-    border-top: 1px solid var(--hero-hairline);
-    max-width: 100%;
-}
-.hero-stat {
-    flex: 1 1 0;
-    /* Sized to fit three across the narrow copy column without wrapping. */
-    min-width: 84px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    padding: 0.7rem 0.75rem;
-    border-radius: var(--radius-md);
-    background: linear-gradient(158deg, var(--hero-glass-a) 0%, var(--hero-glass-b) 100%);
-    border: 1px solid var(--hero-glass-border);
+    padding: 0.5rem 1.15rem;
+    border-radius: var(--radius-pill);
+    background: var(--hero-glass);
+    border: 1px solid var(--hero-hairline);
     -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
-    box-shadow: var(--hero-glass-shadow);
-    transition:
-        transform 0.35s var(--ease-out),
-        border-color 0.35s var(--ease-out),
-        box-shadow 0.35s var(--ease-out);
-}
-.hero-stat:hover {
-    transform: translateY(-4px);
-    border-color: rgba(var(--gold-rgb), 0.42);
-    box-shadow: 0 22px 44px -22px rgba(var(--gold-rgb), 0.55);
-}
-.hero-stat-value {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
+    font-family: var(--font-body);
+    font-size: 0.76rem;
     font-weight: var(--fw-medium);
-    line-height: 1.1;
-    color: var(--hero-ink);
-}
-.hero-stat-label {
-    font-size: 0.62rem;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: var(--hero-ink-3);
+    color: var(--hero-ink-2);
+}
+.hero-eyebrow-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--hero-accent);
+    box-shadow: 0 0 10px 2px rgba(157, 190, 195, 0.7);
 }
 
-/* ── Floating glass cards ───────────────────────────────────────────────
-   Top and bottom of the right rail: same width and same right edge as the trust
-   chips between them, so the three groups read as one column rather than three
-   loose cards. The wrapper owns the entrance + bob; the card owns the hover
-   lift, so the two never fight over `transform`. */
-.hero-float {
-    position: absolute;
-    z-index: 4;
-    width: var(--hero-rail-w);
-}
-
-/* ── The shared glass card ──
-   One surface used by BOTH the floating cards and the trust rail, so the two
-   groups read as the same component. */
-.hero-float-card,
-.hero-badge {
-    display: flex;
-    align-items: center;
-    gap: 0.7rem;
-    padding: 0.75rem 1rem;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(150deg, var(--hero-glass-a) 0%, var(--hero-glass-b) 100%);
-    border: 1px solid var(--hero-glass-border);
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-    box-shadow: var(--hero-glass-shadow-lg);
-    transition:
-        transform 0.35s var(--ease-out),
-        border-color 0.35s var(--ease-out),
-        box-shadow 0.35s var(--ease-out);
-}
-.hero-float-card:hover,
-.hero-badge:hover {
-    transform: translate3d(0, -5px, 0);
-    border-color: rgba(var(--gold-rgb), 0.45);
-    box-shadow: 0 30px 60px -26px rgba(var(--gold-rgb), 0.45);
-}
-.hero-card-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.25;
-    min-width: 0;
-}
-.hero-card-text strong {
-    font-size: 0.88rem;
-    font-weight: var(--fw-medium);
+/* ── Headline ── */
+.hero-title {
+    margin-top: clamp(1.25rem, 3vh, 2rem);
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-size: clamp(2.6rem, 6.2vw, 5.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.032em;
     color: var(--hero-ink);
-    letter-spacing: 0.1px;
+    text-wrap: balance;
+    text-shadow: 0 2px 40px rgba(0, 0, 0, 0.7);
 }
-.hero-card-text small {
-    font-size: 0.72rem;
-    color: var(--hero-ink-3);
-}
-.hero-card-stars { display: inline-flex; gap: 1px; }
-.hero-card-stars svg { width: 13px; height: 13px; color: var(--hero-gold); }
-.hero-card-icon {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 34px;
-    height: 34px;
-    border-radius: var(--radius-sm);
-    background: rgba(var(--gold-rgb), 0.16);
-    border: 1px solid rgba(var(--gold-rgb), 0.32);
-}
-.hero-card-icon svg { width: 17px; height: 17px; color: var(--hero-gold); }
-
-/* Vertical placement leaves a clear gap above and below the centred chip stack
-   at every realistic desktop viewport height (≈700px and up). */
-.hero-float--reviews {
-    top: clamp(6.5rem, 17vh, 10.5rem);
-    right: var(--hero-rail-gap);
-}
-.hero-float--learning {
-    bottom: clamp(4.5rem, 13vh, 8.5rem);
-    right: var(--hero-rail-gap);
+/* The accent half of the headline. <em> rather than a span: it is genuine
+   emphasis, and it keeps the markup meaningful without the styling. */
+.hero-title em {
+    font-style: normal;
+    color: var(--hero-accent);
 }
 
-/* ── Scroll cue (bottom-left, on the same gutter line as the copy) ── */
-.hero-scroll {
-    position: absolute;
-    z-index: 4;
-    left: var(--hero-gutter);
-    bottom: clamp(1.25rem, 3.6vh, 2.5rem);
+/* ── CTAs ────────────────────────────────────────────────────────────────
+   The shared site buttons, re-skinned for a dark stage: the navy primary would
+   vanish against this background, so the fill inverts to white with navy type
+   and the outline takes a white hairline. Layout and motion still come from
+   base.css — only the colours are overridden here. */
+/* Sits directly under the heading now that the description is gone. The gap is
+   the heading's breathing room, not a leftover slot — nothing is reserved for
+   the removed paragraph. */
+.hero-cta {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.7rem;
-    padding: 0;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.85rem;
+    margin-top: clamp(2rem, 4.5vh, 3rem);
+}
+.hero-overlay .btn-gold {
+    background: #FFFFFF;
+    border-color: #FFFFFF;
+    color: var(--brand-navy);
+}
+.hero-overlay .btn-gold::before {
+    background: linear-gradient(100deg, #B4D6DC 0%, #8FBFC7 100%);
+}
+.hero-overlay .btn-gold:hover {
+    color: var(--brand-navy);
+    border-color: #B4D6DC;
+    box-shadow: 0 20px 44px -18px rgba(157, 190, 195, 0.6);
+}
+.hero-overlay .btn-outline {
+    border-color: rgba(255, 255, 255, 0.34);
+    color: #FFFFFF;
+}
+.hero-overlay .btn-outline::before { background: #FFFFFF; }
+.hero-overlay .btn-outline:hover {
+    color: var(--brand-navy);
+    border-color: #FFFFFF;
+    box-shadow: 0 20px 44px -18px rgba(255, 255, 255, 0.4);
+}
+
+/* Text button that clears the selection. */
+.hero-back {
+    padding: 1.05rem 1.4rem;
     background: none;
     border: 0;
     cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.86rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.02em;
     color: var(--hero-ink-3);
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: rgba(255, 255, 255, 0.28);
+    transition: color 0.3s var(--ease-out);
+}
+.hero-back:hover { color: #FFFFFF; }
+
+/* ── Controls ────────────────────────────────────────────────────────────
+   Prev / next / hint. Dragging is not a discoverable affordance on its own, and
+   it is not keyboard-reachable at all — these are both. */
+.hero-controls {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 2.5vw, 1.75rem);
+    margin-top: clamp(2.25rem, 5.5vh, 3.75rem);
+}
+.hero-arrow {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--hero-glass);
+    border: 1px solid var(--hero-hairline);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    color: #FFFFFF;
+    cursor: pointer;
+    transition:
+        transform 0.35s var(--ease-out),
+        background-color 0.35s var(--ease-out),
+        border-color 0.35s var(--ease-out);
+}
+.hero-arrow svg { width: 18px; height: 18px; }
+/* One chevron asset, mirrored for "previous". */
+.hero-arrow:first-child svg { transform: rotate(180deg); }
+.hero-arrow:hover {
+    transform: translateY(-2px);
+    background: rgba(157, 190, 195, 0.2);
+    border-color: rgba(157, 190, 195, 0.55);
+}
+.hero-hint {
     font-family: var(--font-body);
     font-size: 0.68rem;
     font-weight: var(--fw-medium);
     letter-spacing: 0.24em;
     text-transform: uppercase;
-    transition: color 0.35s var(--ease-out);
+    color: var(--hero-ink-3);
 }
-.hero-scroll:hover { color: var(--hero-gold); }
-.hero-scroll-track {
-    position: relative;
-    width: 1px;
-    height: 46px;
-    margin-left: 2px;
-    background: linear-gradient(180deg, var(--hero-hairline), transparent);
-    overflow: hidden;
-}
-.hero-scroll-track span {
+
+/* ── Crawlable / screen-reader copy of the globe's content ── */
+.hero-sr {
     position: absolute;
-    left: -2px;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--hero-gold);
-    box-shadow: 0 0 10px 2px rgba(var(--gold-rgb), 0.55);
-    animation: hero-scroll-dot 2.1s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
 }
-@keyframes hero-scroll-dot {
-    0%   { transform: translateY(-6px); opacity: 0; }
-    25%  { opacity: 1; }
-    75%  { opacity: 1; }
-    100% { transform: translateY(46px); opacity: 0; }
-}
-
-/* ─── Dark theme ─────────────────────────────────────────────────────────
-   Same composition, deep-navy field. Only the tokens and the two painted
-   layers (.hero-bg / .hero-scrim) change. */
-[data-theme="dark"] .hero {
-    --hero-ink: #fff;
-    --hero-ink-2: rgba(255, 255, 255, 0.9);
-    --hero-ink-3: rgba(255, 255, 255, 0.58);
-    --hero-gold: var(--gold-light);
-    --hero-glass-a: rgba(255, 255, 255, 0.1);
-    --hero-glass-b: rgba(255, 255, 255, 0.03);
-    --hero-glass-border: rgba(255, 255, 255, 0.14);
-    --hero-glass-shadow: 0 16px 34px -22px rgba(0, 0, 0, 0.9);
-    --hero-glass-shadow-lg: 0 26px 56px -28px rgba(0, 0, 0, 0.95);
-    --hero-hairline: rgba(255, 255, 255, 0.12);
-    --hero-title-shadow: 0 2px 26px rgba(0, 0, 0, 0.85);
-
-    background: var(--bg-dark);
-}
-[data-theme="dark"] .hero-bg {
-    background:
-        radial-gradient(40% 52% at 50% 50%, rgba(var(--gold-rgb), 0.17) 0%, transparent 64%),
-        radial-gradient(120% 120% at 82% 2%, #111827 0%, rgba(17, 24, 39, 0) 48%),
-        radial-gradient(70% 70% at 6% 92%, rgba(108, 150, 157, 0.20) 0%, transparent 62%),
-        linear-gradient(180deg, #02020A 0%, #0A0A14 100%);
-}
-[data-theme="dark"] .hero-bg::after {
-    background: radial-gradient(118% 96% at 52% 46%, transparent 52%, rgba(0, 0, 0, 0.55) 100%);
-}
-[data-theme="dark"] .hero-scrim {
-    background:
-        linear-gradient(97deg,
-            rgba(2, 2, 10, 0.97) 0%,
-            rgba(2, 2, 10, 0.95) 30%,
-            rgba(2, 2, 10, 0.6) 38%,
-            rgba(2, 2, 10, 0.2) 43%,
-            rgba(2, 2, 10, 0) 47%),
-        linear-gradient(180deg,
-            rgba(2, 2, 10, 0.36) 0%,
-            rgba(2, 2, 10, 0) 18%,
-            rgba(2, 2, 10, 0) 74%,
-            rgba(2, 2, 10, 0.44) 100%);
-}
-[data-theme="dark"] .hero-orb--blue {
-    background: radial-gradient(circle, rgba(70, 77, 119, 0.38), transparent 68%);
+.hero-sr a:focus-visible {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 999;
+    width: auto;
+    height: auto;
+    padding: 0.6rem 1rem;
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-soft);
+    clip-path: none;
+    white-space: normal;
 }
 
-/* The navigation is transparent over the hero and paints its content white,
-   which only works over the dark variant. In LIGHT mode the hero is light, so
-   the unscrolled nav flips to navy — scoped to that exact state, and reverting
-   the moment the nav scrolls into its own solid surface. */
-[data-theme="light"] #navbar:not(.scrolled) .logo-text,
-[data-theme="light"] #navbar:not(.scrolled) .pill-label,
-[data-theme="light"] #navbar:not(.scrolled) .pill-caret-btn {
-    color: var(--blue-deep);
+/* ─── Navigation over the hero ───────────────────────────────────────────
+   The hero is dark in both themes, so the unscrolled nav paints white in both.
+   (The previous light hero needed the opposite override; it is gone.) */
+#navbar:not(.scrolled) .logo-text,
+#navbar:not(.scrolled) .pill-label,
+#navbar:not(.scrolled) .pill-caret-btn {
+    color: #FFFFFF;
 }
-[data-theme="light"] #navbar:not(.scrolled) .logo-text em { color: var(--mid); }
-[data-theme="light"] #navbar:not(.scrolled) .logo-text b { color: var(--gold-deep); }
-[data-theme="light"] #navbar:not(.scrolled) .nav-logo-img,
-[data-theme="light"] #navbar:not(.scrolled) .hamburger span {
-    background-color: var(--blue-deep);
+#navbar:not(.scrolled) .logo-text em { color: rgba(255, 255, 255, 0.72); }
+#navbar:not(.scrolled) .logo-text b { color: var(--hero-accent, #9DBEC3); }
+#navbar:not(.scrolled) .nav-logo-img,
+#navbar:not(.scrolled) .hamburger span {
+    background-color: #FFFFFF;
 }
-[data-theme="light"] #navbar:not(.scrolled) .theme-toggle {
-    background: rgba(5, 32, 74, 0.06);
-    border-color: rgba(5, 32, 74, 0.14);
-    color: var(--blue-deep);
+#navbar:not(.scrolled) .theme-toggle {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
 }
 
-/* ─── Entrance animation ─────────────────────────────────────────────────
-   Content only — the sphere runs its own load-in and is never touched here.
-   0.6s fade-up, ~0.08s between groups. */
-.hero-eyebrow { animation: hero-rise 0.6s var(--ease-out) both; animation-delay: 0.08s; }
-.hero-word {
-    animation: hero-word 0.6s var(--ease-out) both;
-    animation-delay: calc(0.16s + var(--d) * 0.045s);
-}
-.hero-main-cta { animation: hero-rise 0.6s var(--ease-out) both; animation-delay: 0.48s; }
-.hero-badges   { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 0.56s; }
-.hero-badges .hero-badge { animation: hero-rise 0.6s var(--ease-out) both; }
-.hero-badges .hero-badge:nth-child(1) { animation-delay: 0.56s; }
-.hero-badges .hero-badge:nth-child(2) { animation-delay: 0.64s; }
-.hero-badges .hero-badge:nth-child(3) { animation-delay: 0.72s; }
-.hero-stats { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 0.74s; }
-.hero-stat  { animation: hero-rise 0.6s var(--ease-out) both; }
-.hero-stat:nth-child(1) { animation-delay: 0.74s; }
-.hero-stat:nth-child(2) { animation-delay: 0.82s; }
-.hero-stat:nth-child(3) { animation-delay: 0.90s; }
+/* ─── Entrance ───────────────────────────────────────────────────────────
+   There is intentionally NO CSS keyframe entrance on the copy. GSAP animates
+   the same elements on mount and on every card change, and a CSS animation with
+   `fill: both` outranks inline styles — it would win permanently once it
+   finished and freeze the card transitions. One owner per property.
 
-/* Floating cards: fade up, then settle into a slow bob (the later animation in
-   the list owns the transform once the entrance has filled). */
-.hero-float--reviews {
-    animation:
-        hero-rise 0.6s var(--ease-out) 0.96s both,
-        hero-bob 8s ease-in-out 1.56s infinite;
+   The controls are not part of that timeline, so they keep a CSS entrance. */
+.hero-controls {
+    animation: hero-rise 0.85s var(--ease-out) 0.6s both;
 }
-.hero-float--learning {
-    animation:
-        hero-rise 0.6s var(--ease-out) 1.04s both,
-        hero-bob 9.5s ease-in-out 1.64s infinite;
-}
-.hero-scroll { animation: hero-fade 0.6s var(--ease-out) both; animation-delay: 1.12s; }
-
 @keyframes hero-rise {
-    from { opacity: 0; transform: translate3d(0, 20px, 0); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); }
-}
-@keyframes hero-word {
-    from { opacity: 0; transform: translate3d(0, 16px, 0); filter: blur(7px); }
-    to   { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
-}
-@keyframes hero-fade {
-    from { opacity: 0; }
-    to   { opacity: 1; }
-}
-@keyframes hero-bob {
-    0%, 100% { transform: translate3d(0, 0, 0); }
-    50%      { transform: translate3d(0, -9px, 0); }
+    from { opacity: 0; transform: translate3d(0, 26px, 0); filter: blur(8px); }
+    to   { opacity: 1; transform: none; filter: blur(0); }
 }
 
-/* ─── Responsive ─────────────────────────────────────────────────────────── */
-
-/* Short laptops: the four-line headline plus the stat rail no longer clears a
-   sub-840px viewport, so the stats go and the headline steps down. */
-@media (max-height: 840px) and (min-width: 1201px) {
-    .hero-stats { display: none; }
-    .hero-title { font-size: clamp(2.2rem, 3vw, 3.5rem); }
+/* ─── Responsive ─────────────────────────────────────────────────────────
+   The 3D layer resizes itself (CameraRig re-solves the framing distance every
+   frame), so there is nothing here but type and spacing. */
+@media (max-width: 900px) {
+    .hero-overlay { padding-block: calc(var(--nav-h) + 1.5rem) clamp(3rem, 8vh, 5rem); }
+    .hero-title { font-size: clamp(2.4rem, 8.4vw, 3.6rem); }
+    .hero-controls { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
 }
 
-/* Tablet: content on top (still left-aligned), sphere reading through the
-   reserved stage below.
-
-   This kicks in at 1200px rather than 1024px: a centred globe needs copy | globe
-   | rail to fit side by side, and below ~1200px the copy column left over is too
-   narrow to carry the headline at a readable size. */
-@media (max-width: 1200px) {
-    .hero-float { display: none; }
-    /* One column: the sphere goes back to filling the whole section, read
-       through the reserved stage below the copy. */
-    .hero-sphere-layer { inset: 0; }
-    .hero-inner {
-        grid-template-columns: minmax(0, 1fr);
-        justify-items: start;
-        gap: clamp(1.25rem, 3vh, 2rem);
-    }
-    .hero-copy { max-width: 720px; }
-    .hero-title { font-size: clamp(2.7rem, 7.2vw, 4rem); }
-    /* The column is wide again here, so the copy furniture goes back to its
-       roomier desktop proportions (the tight values above only exist to survive
-       the narrow column beside the centred globe). */
-    .hero-eyebrow { font-size: 0.82rem; white-space: normal; }
-    .hero-stats { max-width: 520px; }
-    .hero-stat { min-width: 118px; padding: 0.8rem 0.95rem; }
-    .hero-stat-value { font-size: 1.42rem; }
-    .hero-stat-label { font-size: 0.7rem; letter-spacing: 0.09em; }
-    .hero-stage {
-        min-height: clamp(300px, 38vh, 440px);
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: flex-start;
-        width: 100%;
-    }
-    /* The rail leaves the right edge and becomes a left-aligned row of the same
-       cards, sitting above the sphere window. */
-    .hero-badges {
-        position: static;
-        transform: none;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-items: stretch;
-        width: 100%;
-        max-width: none;
-        margin-top: 0.35rem;
-    }
-    .hero-badge { flex: 1 1 15rem; max-width: 20rem; }
-    /* Vertical wash: the copy now sits across the full width. */
-    .hero-scrim {
-        background:
-            linear-gradient(180deg,
-                rgba(255, 253, 208, 0.97) 0%,
-                rgba(255, 253, 208, 0.93) 40%,
-                rgba(255, 253, 208, 0.6) 64%,
-                rgba(255, 253, 208, 0.5) 84%,
-                rgba(255, 253, 208, 0.72) 100%);
-    }
-    [data-theme="dark"] .hero-scrim {
-        background:
-            linear-gradient(180deg,
-                rgba(2, 2, 10, 0.95) 0%,
-                rgba(2, 2, 10, 0.9) 40%,
-                rgba(2, 2, 10, 0.56) 64%,
-                rgba(2, 2, 10, 0.46) 84%,
-                rgba(2, 2, 10, 0.72) 100%);
-    }
-}
-
-/* ─── PHONE ──────────────────────────────────────────────────────────────
-   One left-aligned stack: eyebrow → heading → buttons → chips, with the globe
-   reading through the window below it. The stat rail is dropped; the chips
-   carry the proof on small screens.
-
-   The hero keeps min-height:100svh but never CLIPS: min-height only sets a
-   floor, so a stack taller than the viewport grows the section rather than
-   getting cut off by the parent's overflow:hidden. Vertical centring is also
-   dropped here — a tall stack centred in a short viewport pushes the eyebrow up
-   under the nav, so on phones the content anchors to the top instead. */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
     .hero {
-        /* Wider gutter than the desktop minimum: 20px reads cramped on a phone,
-           and the extra 4px is what makes the column feel deliberate. */
-        --hero-gutter: 1.5rem;
+        /* A tall stack on a short phone must grow the section, never clip it. */
         align-items: flex-start;
-        padding-top: calc(var(--nav-h) + 1rem + env(safe-area-inset-top, 0px));
-        padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+        min-height: 100svh;
     }
-    .hero-inner { gap: 1rem; }
-
-    .hero-eyebrow {
-        margin-bottom: 1.1rem;
-        font-size: 0.76rem;
-        padding: 0.45rem 0.9rem;
-        /* Long enough to overflow a 360px screen if it ever refuses to wrap. */
-        white-space: normal;
+    .hero-title { font-size: clamp(2.2rem, 10vw, 3rem); }
+    .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.1em; padding: 0.45rem 0.9rem; }
+    /* Full-width stacked CTAs with a real 52px touch target. */
+    .hero-cta { width: 100%; flex-direction: column; }
+    .hero-cta .btn-gold,
+    .hero-cta .btn-outline { width: 100%; min-height: 52px; }
+    .hero-back { width: 100%; }
+    .hero-arrow { width: 42px; height: 42px; }
+    /* The centre scrim has to work much harder over a full-bleed globe. */
+    .hero-veil {
+        background:
+            radial-gradient(72% 48% at 50% 44%, rgba(2, 3, 10, 0.92) 0%, rgba(2, 3, 10, 0.6) 54%, rgba(2, 3, 10, 0.1) 82%),
+            linear-gradient(180deg, rgba(2, 3, 10, 0.85) 0%, rgba(2, 3, 10, 0.2) 34%, rgba(2, 3, 10, 0.35) 70%, rgba(2, 3, 10, 0.9) 100%);
     }
-
-    /* A touch larger and tighter than before — on a phone the headline is the
-       whole composition, so it earns the extra size. Longest line
-       ("child belongs.", ~5.8em) still clears the column at 360px. */
-    .hero-title {
-        font-size: clamp(2.35rem, 10vw, 3.4rem);
-        line-height: 1.04;
-        letter-spacing: -0.032em;
-    }
-
-    /* Full-width stacked CTAs with a proper 52px touch target. */
-    .hero-main-cta {
-        width: 100%;
-        gap: 0.7rem;
-        margin-top: 1.6rem;
-    }
-    .hero-main-cta .btn-gold,
-    .hero-main-cta .btn-outline {
-        width: 100%;
-        max-width: none;
-        min-height: 52px;
-        padding-inline: 1.5rem;
-    }
-
-    /* Chips go full-width in one column, tightened so the stack still reads as
-       a set rather than three loose boxes. */
-    .hero-badges {
-        flex-direction: column;
-        gap: 0.55rem;
-        width: 100%;
-        max-width: none;
-        margin-top: 0.35rem;
-    }
-    .hero-badge {
-        flex: none;
-        max-width: none;
-        padding: 0.65rem 0.85rem;
-        gap: 0.7rem;
-        border-radius: var(--radius-md);
-    }
-    .hero-card-icon { width: 32px; height: 32px; }
-    .hero-card-icon svg { width: 16px; height: 16px; }
-    .hero-card-text strong { font-size: 0.85rem; }
-    .hero-card-text small { font-size: 0.7rem; }
-
-    .hero-stats { display: none; }
-    .hero-stage { min-height: clamp(170px, 24vh, 250px); }
-    /* The cue's label + track cost ~70px of a phone screen — the stack wins. */
-    .hero-scroll { display: none; }
-
-    /* The orbs pull further off-canvas so they stay a wash behind the copy
-       rather than a visible circle on a narrow screen. */
-    .hero-orb--gold { left: -34%; top: 4%; }
-    .hero-orb--blue { left: -38%; }
 }
 
-/* Roomier phones and small tablets in portrait: two chips per row uses the
-   width instead of running one long column. */
-@media (min-width: 520px) and (max-width: 768px) {
-    .hero-badges { flex-direction: row; flex-wrap: wrap; }
-    .hero-badge { flex: 1 1 13rem; }
+/* Landscape phones: almost no vertical room. */
+@media (max-height: 520px) and (orientation: landscape) {
+    .hero { min-height: auto; }
+    .hero-overlay { padding-block: calc(var(--nav-h) + 1rem) 2rem; }
+    .hero-title { font-size: clamp(1.8rem, 5vw, 2.4rem); }
+    .hero-controls { margin-top: 1.25rem; }
 }
 
-/* Landscape phones: almost no vertical room, so the sphere window collapses and
-   the headline steps down rather than the copy being pushed off-screen. */
-@media (max-width: 900px) and (max-height: 520px) and (orientation: landscape) {
-    .hero { min-height: auto; padding-bottom: 2.5rem; }
-    .hero-stage { min-height: 0; }
-    .hero-title { font-size: clamp(1.9rem, 5.2vw, 2.4rem); }
-    .hero-badges { display: none; }
-}
-
-/* Very short phones in portrait: trade the sphere window down rather than clip
-   the copy. */
-@media (max-width: 768px) and (max-height: 700px) and (orientation: portrait) {
-    .hero-stage { min-height: clamp(120px, 15vh, 165px); }
-    .hero-title { font-size: clamp(2rem, 8.6vw, 2.7rem); }
-}
-
-/* ── Respect reduced motion — reveal everything instantly, still the decor. ── */
+/* ─── Reduced motion ─────────────────────────────────────────────────────
+   The globe stops orbiting and the postprocessing is skipped (both handled in
+   the 3D layer); here the entrance and the hint animation go. Drag, arrows and
+   selection all keep working — those are direct responses to the user. */
 @media (prefers-reduced-motion: reduce) {
-    .hero-eyebrow,
-    .hero-word,
-    .hero-main-cta,
-    .hero-badges,
-    .hero-badges .hero-badge,
-    .hero-stats,
-    .hero-stat,
-    .hero-float,
-    .hero-scroll,
-    .hero-scroll-track span {
-        animation: none !important;
+    .hero-controls {
+        animation: none;
         opacity: 1;
         transform: none;
         filter: none;
