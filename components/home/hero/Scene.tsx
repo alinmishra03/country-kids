@@ -7,8 +7,9 @@
    pointer-transparent to nothing — the drag surface is the canvas itself, and
    the overlay above it passes pointer events through except on its buttons. */
 
-import { Suspense } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { onIntroDone } from '@/lib/intro-signal';
 import { QUALITY, CAMERA, GLOBE } from '@/lib/hero/hero-config';
 import type { HeroCard } from '@/lib/hero/hero-cards';
 import type { GlobeApi } from '@/hooks/useGlobeControls';
@@ -43,6 +44,13 @@ export default function Scene({
     dimmed,
 }: Props) {
     const { textures, progress } = useCardTextures(cards);
+
+    /* Gate for the globe's entrance convergence. It flips true only once the
+       fullscreen intro has handed the screen over — otherwise the cards would
+       converge behind the opaque intro and never be seen. Fires immediately if
+       the intro is already gone (e.g. the Scene chunk loaded late). */
+    const [play, setPlay] = useState(false);
+    useEffect(() => onIntroDone(() => setPlay(true)), []);
 
     const isMobile = useMediaQuery(`(max-width: ${QUALITY.mobileBreakpoint - 1}px)`);
     const isNarrow = useMediaQuery('(max-width: 600px)');
@@ -104,6 +112,7 @@ export default function Scene({
                             apiRef={apiRef}
                             reduced={reduced}
                             scale={1}
+                            play={play}
                         />
                     )}
 

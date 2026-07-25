@@ -17,7 +17,8 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { GLOBE } from '@/lib/hero/hero-config';
+import gsap from 'gsap';
+import { ENTRANCE, GLOBE } from '@/lib/hero/hero-config';
 import { createCardGeometry } from '@/lib/hero/card-geometry';
 import { buildSlots } from '@/lib/hero/sphere-layout';
 import type { HeroCard } from '@/lib/hero/hero-cards';
@@ -36,6 +37,9 @@ type Props = {
     reduced: boolean;
     /** Uniform scale — CameraRig shrinks the globe on narrow viewports. */
     scale: number;
+    /** Flips true once the loader has cleared the globe — the cue to run the
+        entrance convergence, so its extended start is actually on screen. */
+    play: boolean;
 };
 
 export default function Globe({
@@ -47,6 +51,7 @@ export default function Globe({
     apiRef,
     reduced,
     scale,
+    play,
 }: Props) {
     const groupRef = useRef<THREE.Group>(null);
     /* Which card is hovered, or null. A ref, not state — it changes on every
@@ -66,6 +71,58 @@ export default function Globe({
         () => buildSlots(GLOBE.columns * GLOBE.rows),
         []
     );
+
+    /* ENTRANCE SPREAD — a single scalar multiplying every card's slot position.
+       It holds at ENTRANCE.spread (the ball spread wide) until `play` turns true,
+       then tweens to 1 (the final, resting layout) exactly once, so the cards
+       converge toward the globe. `play` is gated on the loader clearing, or the
+       whole convergence would run behind the loading veil and never be seen.
+
+       A ref, not state: each card reads it in its own frame callback, so the
+       convergence costs zero React renders. It only multiplies POSITION, never
+       card scale, so the cards keep their size and simply draw inward. Under
+       reduced motion it sits at 1 from the start — no entrance. */
+    const spread = useRef({ value: reduced ? 1 : ENTRANCE.spread });
+    useEffect(() => {
+        if (reduced) {
+            spread.current.value = 1;
+            return;
+        }
+        if (!play) return;
+
+        /* fromTo, not to: the convergence is FORCED to begin fully extended every
+           time, so it can never start from a half-settled value and read as "no
+           animation". */
+        const run = () =>
+            gsap.fromTo(
+                spread.current,
+                { value: ENTRANCE.spread },
+                {
+                    value: 1,
+                    duration: ENTRANCE.duration,
+                    delay: ENTRANCE.delay,
+                    ease: 'power3.out',
+                    overwrite: true,
+                }
+            );
+
+        let tween = run();
+
+        /* Some browsers restore this page from the back/forward cache instead of
+           re-executing it — the React mount never runs again, so replay the
+           entrance by hand when that happens. */
+        const onShow = (e: PageTransitionEvent) => {
+            if (!e.persisted) return;
+            tween.kill();
+            tween = run();
+        };
+        window.addEventListener('pageshow', onShow);
+
+        return () => {
+            tween.kill();
+            window.removeEventListener('pageshow', onShow);
+        };
+    }, [reduced, play]);
 
     const geometry = useMemo(
         () =>
@@ -145,6 +202,7 @@ export default function Globe({
                             isSelected={selectedIndex === cardIndex}
                             anySelected={selectedIndex !== null}
                             activeRef={activeRef}
+                            spreadRef={spread}
                             reduced={reduced}
                             onSelect={onSelect}
                             wasDragged={wasDragged}

@@ -101,6 +101,20 @@ export const IDLE = {
     driftSpeed: 0.24,
 } as const;
 
+/* One-time entrance: on load the cards start spread far out from the globe's
+   centre and converge to their final slots. Nothing here changes the RESTING
+   layout — `spread` animates to 1, which is exactly the current spacing. There
+   is no automatic motion after it settles. */
+export const ENTRANCE = {
+    /** The card sphere starts this many× its final radius, then draws in. Kept
+        below the point where a front card would cross the camera (z ≈ 9.4). */
+    spread: 1.62,
+    /** Seconds for the cards to settle from `spread` down to their final slots. */
+    duration: 1.7,
+    /** A beat before the convergence begins, so the globe registers first. */
+    delay: 0.3,
+} as const;
+
 /* The centred focus state (components/home/hero/FocusCard.tsx). */
 export const FOCUS = {
     /** Card flies out of the globe to dead centre. */

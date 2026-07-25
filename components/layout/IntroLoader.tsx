@@ -26,6 +26,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site-data';
+import { markIntroDone } from '@/lib/intro-signal';
 
 const INTRO_VIDEO = '/videos/intro.mp4';
 
@@ -60,6 +61,10 @@ export default function IntroLoader() {
         /* Fade the overlay, then unmount so it can never trap a click. */
         setPhase('out');
         document.documentElement.classList.remove('intro-locked');
+        /* Release the globe's entrance convergence NOW, as the intro begins to
+           fade, so the cards draw in as the intro reveals them rather than
+           finishing hidden behind it. */
+        markIntroDone();
         timers.current.push(window.setTimeout(() => setPhase('done'), 700));
     }, []);
 
@@ -78,6 +83,7 @@ export default function IntroLoader() {
             finished.current = true;
             setPhase('done');
             document.documentElement.classList.remove('intro-locked');
+            markIntroDone();
             return;
         }
 

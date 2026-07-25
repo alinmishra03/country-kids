@@ -49,6 +49,9 @@ type Props = {
     anySelected: boolean;
     /** Index of the hovered card, or null. Shared, mutable, never in state. */
     activeRef: React.MutableRefObject<number | null>;
+    /** Entrance multiplier on the slot position: >1 while the cards converge on
+        load, 1 at rest. Shared and animated outside React (see Globe). */
+    spreadRef: React.MutableRefObject<{ value: number }>;
     reduced: boolean;
     /** `origin` is where this card was on screen, so the DOM focus card can
         fly out of exactly this spot. */
@@ -67,6 +70,7 @@ export default function Card({
     isSelected,
     anySelected,
     activeRef,
+    spreadRef,
     reduced,
     onSelect,
     wasDragged,
@@ -288,15 +292,28 @@ export default function Card({
             rim.needsUpdate = true;
         }
 
-        /* Idle bob — desynchronised per card by its own phase. Skipped under
-           reduced motion, and while this card is the focus (a focused card must
-           be still enough to read). */
-        if (!reduced && !isActive) {
-            const t = state.clock.elapsedTime;
-            group.position.y =
-                slot.position[1] +
-                Math.sin(t * CARD_MOTION.floatSpeed + slot.floatPhase) * CARD_MOTION.floatAmp;
-        }
+        /* ── Slot position + entrance spread + idle bob ──
+           The card's home is its slot scaled by the shared entrance multiplier:
+           >1 while the cards converge on load, then a fixed 1 at rest. Applied to
+           every axis each frame so the whole ball draws inward together. Scaling
+           only the position (not the mesh) keeps the cards their true size — they
+           move closer rather than shrinking.
+
+           Idle bob rides on top of Y, desynchronised per card by its own phase.
+           It is skipped under reduced motion and while this card is the focus (a
+           focused card must be still enough to read); the base position still
+           tracks the slot in those cases. */
+        const spread = spreadRef.current.value;
+        const bob =
+            !reduced && !isActive
+                ? Math.sin(state.clock.elapsedTime * CARD_MOTION.floatSpeed + slot.floatPhase) *
+                  CARD_MOTION.floatAmp
+                : 0;
+        group.position.set(
+            slot.position[0] * spread,
+            slot.position[1] * spread + bob,
+            slot.position[2] * spread
+        );
     });
 
     return (
