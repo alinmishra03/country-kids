@@ -81,35 +81,6 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
 
     useEffect(() => () => void timeline.current?.kill(), []);
 
-    /* Escape is NOT handled here — FocusCard owns it, so dismissing always
-       plays the card's exit animation instead of tearing the selection out
-       from under it. */
-
-    /* Rendered once, placed between the heading and the buttons in BOTH
-       branches — heading → drag hint → buttons. Held in a variable rather than
-       duplicated so there is still only one copy of this markup. */
-    const controls = (
-        <div className="hero-controls">
-            <button
-                type="button"
-                className="hero-arrow"
-                onClick={() => onStep(-1)}
-                aria-label="Previous card"
-            >
-                <Icon name="chevron-right" />
-            </button>
-            <span className="hero-hint">Drag to explore</span>
-            <button
-                type="button"
-                className="hero-arrow"
-                onClick={() => onStep(1)}
-                aria-label="Next card"
-            >
-                <Icon name="chevron-right" />
-            </button>
-        </div>
-    );
-
     return (
         <div className="hero-overlay" ref={rootRef}>
             {card ? (
@@ -121,8 +92,6 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
                     <h1 className="hero-title" data-anim>
                         {card.title}
                     </h1>
-
-                    {controls}
 
                     <div className="hero-cta" data-anim>
                         <Link className="btn-gold" href={card.href}>
@@ -144,19 +113,7 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
                         <em>{HERO_INTRO.titleAccent}</em>
                     </h1>
 
-                    {controls}
-
-                    <div className="hero-cta" data-anim>
-                        <Link className="btn-gold" href={HERO_INTRO.primary.href}>
-                            {HERO_INTRO.primary.label} <Icon name="arrow-right" />
-                        </Link>
-                        <Link className="btn-outline" href={HERO_INTRO.secondary.href}>
-                            {HERO_INTRO.secondary.label} <Icon name="arrow-right" />
-                        </Link>
-                    </div>
-
-                    {/* Flattens the globe into a pannable wall, and back. Sits
-                        under the CTAs so it reads as a secondary way in. */}
+                    {/* Flattens the globe into a pannable wall, and back. */}
                     <div className="hero-continue-row" data-anim>
                         <button
                             type="button"

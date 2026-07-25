@@ -6,6 +6,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Icon from '@/components/shared/Icon';
 import Reveal from '@/components/shared/Reveal';
 import { ROOM_LINKS } from '@/lib/rooms-data';
@@ -181,6 +182,9 @@ function NewsletterBand() {
 }
 
 export default function SiteFooter() {
+    const pathname = usePathname();
+    if (pathname === '/') return null;
+
     return (
         <footer id="site-footer">
             <NewsletterBand />

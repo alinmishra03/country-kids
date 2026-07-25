@@ -242,7 +242,7 @@ body[data-hero-hover="1"] .hero-veil {
 .hero-continue-row {
     display: flex;
     justify-content: center;
-    margin-top: clamp(0.75rem, 1.6vh, 1.1rem);
+    margin-top: clamp(1.5rem, 3.5vh, 2.5rem);
 }
 .hero-continue {
     display: inline-flex;
