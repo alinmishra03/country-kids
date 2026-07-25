@@ -55,7 +55,17 @@ export default function Globe({
        24 cards. */
     const activeRef = useRef<number | null>(null);
 
-    const slots = useMemo(() => buildSlots(cards.length), [cards.length]);
+    /* SLOTS vs CARDS — the sphere carries more slots (columns × rows) than there
+       are unique cards, so the ball reads as a dense, wrapped surface. Each slot
+       borrows a card by index modulo the card count; a card therefore appears in
+       two or three places, which is exactly the decorative repetition the
+       reference globe has. Everything DOWNSTREAM of the click (overlay, focus
+       card, keyboard) works in card-index space, so a slot reports the CARD it
+       is showing — never its own index — when selected. */
+    const slots = useMemo(
+        () => buildSlots(GLOBE.columns * GLOBE.rows),
+        []
+    );
 
     const geometry = useMemo(
         () =>
@@ -119,22 +129,28 @@ export default function Globe({
             </mesh>
 
             <group ref={groupRef}>
-                {slots.map((slot) => (
-                    <Card
-                        key={cards[slot.index].id}
-                        slot={slot}
-                        card={cards[slot.index]}
-                        texture={textures[slot.index]}
-                        geometry={geometry}
-                        edgeMaterial={edgeMaterial}
-                        isSelected={selectedIndex === slot.index}
-                        anySelected={selectedIndex !== null}
-                        activeRef={activeRef}
-                        reduced={reduced}
-                        onSelect={onSelect}
-                        wasDragged={wasDragged}
-                    />
-                ))}
+                {slots.map((slot) => {
+                    /* The card this slot shows. Multiple slots can share one. */
+                    const cardIndex = slot.index % cards.length;
+                    return (
+                        <Card
+                            /* Keyed by the SLOT, not the card — the card repeats. */
+                            key={slot.index}
+                            slot={slot}
+                            cardIndex={cardIndex}
+                            card={cards[cardIndex]}
+                            texture={textures[cardIndex]}
+                            geometry={geometry}
+                            edgeMaterial={edgeMaterial}
+                            isSelected={selectedIndex === cardIndex}
+                            anySelected={selectedIndex !== null}
+                            activeRef={activeRef}
+                            reduced={reduced}
+                            onSelect={onSelect}
+                            wasDragged={wasDragged}
+                        />
+                    );
+                })}
             </group>
         </group>
     );

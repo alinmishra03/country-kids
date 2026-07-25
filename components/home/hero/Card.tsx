@@ -4,9 +4,10 @@
 
    Three nested transforms, each owned by exactly one thing, so they never
    fight:
-     · <group>     the slot's fixed position on the sphere, plus the idle bob
-     · <Billboard> orientation only — always square to the camera
-     · <mesh>      the interaction spring: scale, push toward camera, glow
+     · <group>  the slot's fixed position on the sphere, plus the idle bob
+     · <group>  tangent orientation — the card lies flat on the sphere so it
+                curves with the surface (its normal points out from the centre)
+     · <mesh>   the interaction spring: scale, push along the normal, glow
 
    FOCUS MODEL — the active card (hovered on desktop, tapped on mobile) has to
    be the clear focal point:
@@ -23,7 +24,6 @@
    second, and dimming 23 siblings would make that 24 re-renders each time. */
 
 import { useEffect, useMemo, useRef } from 'react';
-import { Billboard } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CARD_MOTION, GLOBE } from '@/lib/hero/hero-config';
@@ -37,6 +37,9 @@ const _depth = new THREE.Vector3();
 
 type Props = {
     slot: CardSlot;
+    /** The card this slot shows (0…cardCount−1). Slots outnumber cards, so this
+        is what the click reports upward — the overlay/focus UI is card-indexed. */
+    cardIndex: number;
     card: HeroCard;
     texture: THREE.Texture;
     geometry: THREE.BufferGeometry;
@@ -56,6 +59,7 @@ type Props = {
 
 export default function Card({
     slot,
+    cardIndex,
     card,
     texture,
     geometry,
@@ -142,6 +146,27 @@ export default function Card({
 
     /* Indexed by the geometry's groups: 0 = front/back face, 1 = bevelled sides. */
     const materials = useMemo(() => [faceMaterial, edge], [faceMaterial, edge]);
+
+    /* ── Tangent orientation ──
+       The card lies FLAT on the sphere: its face normal (+Z) points straight out
+       from the globe's centre, so the card curves with the surface instead of
+       turning to face the camera. This — not a scatter of billboards — is what
+       makes the ball read as a wrapped globe. Built once per slot from the slot's
+       own position; because the card is a child of the rotating rotor, this fixed
+       orientation spins with the globe for free.
+
+       The basis is kept upright (local +Y ≈ world up) so no card ends up rolled;
+       the outer bands never reach the poles, so `up × normal` is never
+       degenerate. For a front-and-centre card the normal points at the camera,
+       so it presents square — which is exactly the card the showcase flies out. */
+    const orientation = useMemo(() => {
+        const normal = new THREE.Vector3(...slot.position).normalize();
+        const up = new THREE.Vector3(0, 1, 0);
+        const xAxis = new THREE.Vector3().crossVectors(up, normal).normalize();
+        const yAxis = new THREE.Vector3().crossVectors(normal, xAxis).normalize();
+        const basis = new THREE.Matrix4().makeBasis(xAxis, yAxis, normal);
+        return new THREE.Quaternion().setFromRotationMatrix(basis);
+    }, [slot.position]);
 
     const setHover = (value: boolean) => {
         if (value) {
@@ -234,7 +259,8 @@ export default function Card({
         mesh.scale.setScalar(
             mesh.scale.x + (targetScale * (isActive ? 1 : depthScale) - mesh.scale.x) * k
         );
-        /* +Z inside a billboard is straight at the camera. */
+        /* +Z is the card's outward normal — for a front card that is straight at
+           the camera, so a hovered card still lifts toward the viewer. */
         mesh.position.z += (targetLift - mesh.position.z) * k;
 
         const [face, rim] = mesh.material as THREE.MeshPhysicalMaterial[];
@@ -275,7 +301,7 @@ export default function Card({
 
     return (
         <group ref={groupRef} position={slot.position}>
-            <Billboard>
+            <group quaternion={orientation}>
                 <mesh
                     ref={meshRef}
                     geometry={geometry}
@@ -302,10 +328,12 @@ export default function Card({
                         e.stopPropagation();
                         /* A drag that happens to end on a card is not a click. */
                         if (wasDragged()) return;
-                        onSelect(slot.index, projectToScreen());
+                        /* Report the CARD, not the slot — the overlay/focus UI is
+                           card-indexed, and several slots may share this card. */
+                        onSelect(cardIndex, projectToScreen());
                     }}
                 />
-            </Billboard>
+            </group>
         </group>
     );
 }

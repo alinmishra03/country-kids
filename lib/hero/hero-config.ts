@@ -3,19 +3,32 @@
    whole experience can be re-tuned from one file. */
 
 export const GLOBE = {
-    /** Sphere radius in world units at the equator. */
-    radius: 3.78,
-    /** Cards per ring. Also the snap resolution. */
-    columns: 8,
-    /** Number of latitude bands. columns × rows = card count. */
-    rows: 3,
-    /** Latitude of the outer bands, degrees. 0 would collapse to a flat ring. */
-    latitude: 29,
+    /** Sphere radius in world units at the equator. A larger ball gives every
+        ring enough circumference that the cards SPACE OUT with a gap between
+        neighbours instead of crowding into each other. */
+    radius: 4.4,
+    /** Cards per ring. Also the snap resolution. Kept low on purpose: the cards
+        are large and sit TANGENT to the sphere, so too many per ring makes them
+        overlap at the edges. Ten leaves a clean gap between each. */
+    columns: 10,
+    /** Number of latitude bands. columns × rows = the number of SLOTS on the
+        sphere, which is larger than the number of unique cards — the real cards
+        (24) are cycled across the slots so the globe reads full. See Globe.tsx.
+        Four bands keeps a gap between rows too, top to bottom. */
+    rows: 4,
+    /** Latitude of the outer bands, degrees. The bands spread from +lat to −lat;
+        wide enough to wrap the ball, but NOT so high that the top/bottom rings
+        collapse to a tight circle and fan their cards over one another. */
+    latitude: 46,
     /** Odd bands are offset half a column so the ball reads organic, not gridded. */
     stagger: true,
 
-    cardW: 1.18,
-    cardH: 1.54,
+    /* Cards sit TANGENT to the sphere (they curve with the surface rather than
+       facing the camera). Sized large and readable, but small enough against the
+       ring spacing above that neighbours keep a clear gap — separate cards on a
+       sphere, the way the reference reads, not a solid crust. */
+    cardW: 1.55,
+    cardH: 1.95,
     cardDepth: 0.055,
     cardRadius: 0.1,
 } as const;
@@ -97,7 +110,9 @@ export const FOCUS = {
 } as const;
 
 export const CAMERA = {
-    fov: 42,
+    /* A touch wider than a portrait lens — enough perspective that the sphere's
+       curvature reads as a gentle fisheye at the frame edges. */
+    fov: 46,
     near: 0.1,
     far: 60,
     /** Resting distance. CameraRig re-fits this to the viewport aspect. */
