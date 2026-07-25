@@ -39,6 +39,18 @@ html.intro-locked body {
     flex-direction: column;
     align-items: center;
     gap: 1.75rem;
+    transition: opacity 0.45s var(--ease-out);
+}
+
+/* The mark belongs to the FIRST beat and nothing after it.
+   It used to be covered rather than removed — the video simply painted over
+   it — which held right up until the clip ended, at which point the video
+   unmounted for the overlay's fade-out and the logo reappeared underneath for
+   700ms. Fading the stage out for good as the film step arrives means there is
+   nothing left behind to uncover, whichever way the intro ends. */
+.intro.has-content .intro-stage {
+    opacity: 0;
+    pointer-events: none;
 }
 
 /* Soft glow behind the mark. Pure decoration, never sized off content. */
@@ -87,8 +99,11 @@ html.intro-locked body {
 }
 
 /* ── Video step ──
-   Covers the field completely; the mark stays behind it and is simply hidden
-   by the video's own opacity fade, so there is no second element to time. */
+   Covers the field completely once it is playing. It is in the DOM from the
+   first frame so the download runs during the logo beat rather than starting
+   after it, which means the element exists for ~1.8s before it should be seen
+   — hence a hidden resting state and an explicit `is-playing` reveal, rather
+   than a mount-triggered fade. */
 .intro-video {
     position: absolute;
     inset: 0;
@@ -96,6 +111,10 @@ html.intro-locked body {
     height: 100%;
     object-fit: cover;
     object-position: center;
+    opacity: 0;
+    pointer-events: none;
+}
+.intro-video.is-playing {
     animation: intro-fade-in 0.6s var(--ease-out) both;
 }
 
@@ -259,5 +278,13 @@ html.intro-locked body {
     .intro-film-kicker,
     .intro-film-tagline {
         animation: none;
+    }
+    /* The video's reveal IS its animation, so switching animations off would
+       leave it stuck at the hidden resting state. Reveal it outright instead. */
+    .intro-video.is-playing {
+        opacity: 1;
+    }
+    .intro-stage {
+        transition: none;
     }
 }
