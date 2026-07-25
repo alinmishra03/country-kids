@@ -238,6 +238,38 @@ body[data-hero-hover="1"] .hero-veil {
 }
 .hero-back:hover { color: #FFFFFF; }
 
+/* "Continue" — flattens the globe into the browse wall (and "Back to globe"). */
+.hero-continue-row {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(0.75rem, 1.6vh, 1.1rem);
+}
+.hero-continue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.15rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--hero-ink-3);
+    transition: color 0.3s var(--ease-out);
+}
+.hero-continue svg {
+    width: 15px;
+    height: 15px;
+    transition: transform 0.3s var(--ease-out);
+}
+.hero-continue[aria-pressed='true'] svg { transform: rotate(180deg); }
+.hero-continue:hover { color: #FFFFFF; }
+.hero-continue:hover svg { transform: translateX(3px); }
+.hero-continue[aria-pressed='true']:hover svg { transform: rotate(180deg) translateX(3px); }
+
 /* ── Controls ────────────────────────────────────────────────────────────
    Prev / next / hint. Dragging is not a discoverable affordance on its own, and
    it is not keyboard-reachable at all — these are both. */

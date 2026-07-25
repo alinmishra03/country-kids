@@ -42,6 +42,8 @@ export default function Hero() {
     const [selected, setSelected] = useState<number | null>(null);
     const [origin, setOrigin] = useState<FocusOrigin | null>(null);
     const [closing, setClosing] = useState(false);
+    /* The "Continue" browse mode: the globe morphs into a flat, pannable wall. */
+    const [flat, setFlat] = useState(false);
     const reduced = usePrefersReducedMotion();
 
     const select = useCallback((index: number, from?: FocusOrigin) => {
@@ -53,6 +55,8 @@ export default function Hero() {
     /* Ask the focus card to leave. The selection is NOT dropped here — the card
        needs it to render while it animates out. */
     const requestClose = useCallback(() => setClosing(true), []);
+
+    const toggleFlat = useCallback(() => setFlat((f) => !f), []);
 
     const onClosed = useCallback(() => {
         setClosing(false);
@@ -123,11 +127,19 @@ export default function Hero() {
                 apiRef={apiRef}
                 reduced={reduced}
                 dimmed={focused && !closing}
+                flat={flat}
             />
 
             <div className="hero-veil" aria-hidden="true" />
 
-            <Overlay card={card} onClear={requestClose} onStep={step} reduced={reduced} />
+            <Overlay
+                card={card}
+                onClear={requestClose}
+                onStep={step}
+                reduced={reduced}
+                flat={flat}
+                onToggleFlat={toggleFlat}
+            />
 
             {card && (
                 <FocusCard

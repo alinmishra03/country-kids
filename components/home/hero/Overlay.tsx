@@ -32,9 +32,13 @@ type Props = {
     onClear: () => void;
     onStep: (direction: 1 | -1) => void;
     reduced: boolean;
+    /** True while the globe is flattened into the pannable wall. */
+    flat: boolean;
+    /** Flatten the globe into the wall, or morph it back. */
+    onToggleFlat: () => void;
 };
 
-export default function Overlay({ card, onClear, onStep, reduced }: Props) {
+export default function Overlay({ card, onClear, onStep, reduced, flat, onToggleFlat }: Props) {
     const rootRef = useRef<HTMLDivElement>(null);
     const timeline = useRef<gsap.core.Timeline | null>(null);
 
@@ -149,6 +153,20 @@ export default function Overlay({ card, onClear, onStep, reduced }: Props) {
                         <Link className="btn-outline" href={HERO_INTRO.secondary.href}>
                             {HERO_INTRO.secondary.label} <Icon name="arrow-right" />
                         </Link>
+                    </div>
+
+                    {/* Flattens the globe into a pannable wall, and back. Sits
+                        under the CTAs so it reads as a secondary way in. */}
+                    <div className="hero-continue-row" data-anim>
+                        <button
+                            type="button"
+                            className="hero-continue"
+                            onClick={onToggleFlat}
+                            aria-pressed={flat}
+                        >
+                            {flat ? 'Back to globe' : 'Continue'}
+                            <Icon name={flat ? 'chevron-right' : 'arrow-right'} />
+                        </button>
                     </div>
                 </>
             )}

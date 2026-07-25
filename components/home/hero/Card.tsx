@@ -26,14 +26,24 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { CARD_MOTION, GLOBE } from '@/lib/hero/hero-config';
-import type { CardSlot } from '@/lib/hero/sphere-layout';
+import { CARD_MOTION, FLATTEN, GLOBE } from '@/lib/hero/hero-config';
+import { shortestAngle, type CardSlot } from '@/lib/hero/sphere-layout';
 import type { HeroCard } from '@/lib/hero/hero-cards';
 import type { FocusOrigin } from '@/components/home/hero/FocusCard';
 
-/* Scratch vectors — module scope so the per-frame maths allocates nothing. */
+/* Scratch objects — module scope so the per-frame maths allocates nothing. */
 const _world = new THREE.Vector3();
 const _depth = new THREE.Vector3();
+const _flat = new THREE.Vector3();
+const _globe = new THREE.Vector3();
+const _euler = new THREE.Euler();
+const _qInv = new THREE.Quaternion();
+const _qFlat = new THREE.Quaternion();
+
+/* World units of horizontal wall per radian of pan. columns × colGap is the
+   full ribbon width, so this maps the periodic pan angle onto it 1:1 and the
+   ribbon wraps off screen exactly as the globe wraps around its far side. */
+const FLAT_K = (FLATTEN.colGap * GLOBE.columns) / (Math.PI * 2);
 
 type Props = {
     slot: CardSlot;
@@ -52,6 +62,12 @@ type Props = {
     /** Entrance multiplier on the slot position: >1 while the cards converge on
         load, 1 at rest. Shared and animated outside React (see Globe). */
     spreadRef: React.MutableRefObject<{ value: number }>;
+    /** The rotor group — its live rotation drives BOTH the globe spin and the
+        flat wall's pan, read here per frame so the two stay in lockstep. */
+    rotorRef: React.RefObject<THREE.Group | null>;
+    /** Globe → wall morph, 0 (sphere) … 1 (flat wall). Shared, animated in
+        Globe outside React. */
+    morphRef: React.MutableRefObject<{ value: number }>;
     reduced: boolean;
     /** `origin` is where this card was on screen, so the DOM focus card can
         fly out of exactly this spot. */
@@ -71,11 +87,16 @@ export default function Card({
     anySelected,
     activeRef,
     spreadRef,
+    rotorRef,
+    morphRef,
     reduced,
     onSelect,
     wasDragged,
 }: Props) {
     const groupRef = useRef<THREE.Group>(null);
+    /* The tangent-orientation group. Its quaternion is written each frame so it
+       can slerp between the curved sphere basis and the flat wall's square-on. */
+    const orientRef = useRef<THREE.Group>(null);
     const meshRef = useRef<THREE.Mesh>(null);
     /* Last applied render state, so depthTest/renderOrder are written on
        CHANGE rather than every frame. */
@@ -215,6 +236,11 @@ export default function Card({
             h: state.size.height,
         };
 
+        /* Globe → flat-wall morph, 0 … 1. Drives both the geometry blend below
+           and the fade-out of the sphere's depth cueing (a flat wall has no
+           near/far side to cue). */
+        const m = morphRef.current.value;
+
         const hoveredIndex = activeRef.current;
         const isHovered = hoveredIndex === slot.index;
         const someoneHovered = hoveredIndex !== null;
@@ -252,8 +278,16 @@ export default function Card({
             0,
             1
         );
-        const depthTint = CARD_MOTION.depthDim + (1 - CARD_MOTION.depthDim) * depth;
-        const depthScale = 1 - CARD_MOTION.depthShrink * (1 - depth);
+        const depthTint = THREE.MathUtils.lerp(
+            CARD_MOTION.depthDim + (1 - CARD_MOTION.depthDim) * depth,
+            1,
+            m
+        );
+        const depthScale = THREE.MathUtils.lerp(
+            1 - CARD_MOTION.depthShrink * (1 - depth),
+            1,
+            m
+        );
 
         /* Lift the map's own brightness too, so the baked text gains contrast
            rather than only the card's edges catching more light. An active card
@@ -292,33 +326,63 @@ export default function Card({
             rim.needsUpdate = true;
         }
 
-        /* ── Slot position + entrance spread + idle bob ──
-           The card's home is its slot scaled by the shared entrance multiplier:
-           >1 while the cards converge on load, then a fixed 1 at rest. Applied to
-           every axis each frame so the whole ball draws inward together. Scaling
-           only the position (not the mesh) keeps the cards their true size — they
-           move closer rather than shrinking.
+        /* ── Position & orientation: sphere ⇄ flat wall ──
+           Two targets, blended by the morph:
 
-           Idle bob rides on top of Y, desynchronised per card by its own phase.
-           It is skipped under reduced motion and while this card is the focus (a
-           focused card must be still enough to read); the base position still
-           tracks the slot in those cases. */
+           GLOBE (m=0) — the slot on the sphere, scaled by the entrance spread
+           (>1 while the cards converge on load, 1 at rest) with the idle bob on
+           top. The rotor group's own rotation spins this, exactly as before.
+
+           WALL (m=1) — a flat ribbon that PANS with the same rotor rotation, so
+           the very same drag / inertia / snap controls scroll it, and it wraps
+           off screen the way the globe wraps round its back. The card's column
+           on the wall is its azimuth plus the live pan (rotor.rotation.y), and
+           because that angle is periodic the ribbon is endless. The target is
+           computed in WORLD space, then pushed into the rotor's local frame by
+           the inverse of the rotor's rotation — so when the rotor re-applies that
+           rotation the card lands exactly on the flat wall, upright and facing
+           the camera, no matter how far the wall has panned. */
+        const rotor = rotorRef.current;
+        const ry = rotor ? rotor.rotation.y : 0;
+        const rx = rotor ? rotor.rotation.x : 0;
+        _euler.set(rx, ry, 0);
+        _qInv.setFromEuler(_euler).invert();
+
         const spread = spreadRef.current.value;
         const bob =
             !reduced && !isActive
                 ? Math.sin(state.clock.elapsedTime * CARD_MOTION.floatSpeed + slot.floatPhase) *
                   CARD_MOTION.floatAmp
                 : 0;
-        group.position.set(
+        _globe.set(
             slot.position[0] * spread,
             slot.position[1] * spread + bob,
             slot.position[2] * spread
         );
+
+        /* Flat target in world space, then counter-rotated into rotor-local. */
+        _flat.set(
+            shortestAngle(slot.azimuth + ry) * FLAT_K,
+            ((GLOBE.rows - 1) / 2 - slot.row) * FLATTEN.rowGap,
+            FLATTEN.z
+        );
+        _flat.applyQuaternion(_qInv);
+
+        group.position.set(
+            THREE.MathUtils.lerp(_globe.x, _flat.x, m),
+            THREE.MathUtils.lerp(_globe.y, _flat.y, m),
+            THREE.MathUtils.lerp(_globe.z, _flat.z, m)
+        );
+
+        /* Orientation blends from the fixed tangent basis (curved onto the ball)
+           to the rotor's inverse (which the rotor cancels back to square-on). */
+        const orient = orientRef.current;
+        if (orient) orient.quaternion.copy(orientation).slerp(_qInv, m);
     });
 
     return (
         <group ref={groupRef} position={slot.position}>
-            <group quaternion={orientation}>
+            <group ref={orientRef} quaternion={orientation}>
                 <mesh
                     ref={meshRef}
                     geometry={geometry}

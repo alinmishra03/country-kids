@@ -18,7 +18,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import gsap from 'gsap';
-import { ENTRANCE, GLOBE } from '@/lib/hero/hero-config';
+import { ENTRANCE, FLATTEN, GLOBE } from '@/lib/hero/hero-config';
 import { createCardGeometry } from '@/lib/hero/card-geometry';
 import { buildSlots } from '@/lib/hero/sphere-layout';
 import type { HeroCard } from '@/lib/hero/hero-cards';
@@ -40,6 +40,9 @@ type Props = {
     /** Flips true once the loader has cleared the globe — the cue to run the
         entrance convergence, so its extended start is actually on screen. */
     play: boolean;
+    /** True while the "Continue" wall is showing — the sphere morphs to a flat,
+        pannable wall and back. */
+    flat: boolean;
 };
 
 export default function Globe({
@@ -52,6 +55,7 @@ export default function Globe({
     reduced,
     scale,
     play,
+    flat,
 }: Props) {
     const groupRef = useRef<THREE.Group>(null);
     /* Which card is hovered, or null. A ref, not state — it changes on every
@@ -124,6 +128,28 @@ export default function Globe({
         };
     }, [reduced, play]);
 
+    /* MORPH — 0 = sphere, 1 = flat wall. Each Card reads it per frame and blends
+       its own geometry (see Card). Animated here, outside React, so the whole
+       transition is one GSAP tween and costs no renders. */
+    const morph = useRef({ value: 0 });
+    useEffect(() => {
+        const tween = gsap.to(morph.current, {
+            value: flat ? 1 : 0,
+            duration: reduced ? 0 : FLATTEN.duration,
+            ease: 'power3.inOut',
+            overwrite: true,
+        });
+        return () => {
+            tween.kill();
+        };
+    }, [flat, reduced]);
+
+    /* Read by the controls each frame — the pan replaces the idle orbit while
+       flat, and the wheel scrolls the wall. A ref so toggling never re-runs the
+       control effects. */
+    const flatRef = useRef(flat);
+    flatRef.current = flat;
+
     const geometry = useMemo(
         () =>
             createCardGeometry(
@@ -171,6 +197,7 @@ export default function Globe({
         activeRef,
         apiRef,
         reduced,
+        flatRef,
     });
 
     return (
@@ -203,6 +230,8 @@ export default function Globe({
                             anySelected={selectedIndex !== null}
                             activeRef={activeRef}
                             spreadRef={spread}
+                            rotorRef={groupRef}
+                            morphRef={morph}
                             reduced={reduced}
                             onSelect={onSelect}
                             wasDragged={wasDragged}

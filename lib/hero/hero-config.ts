@@ -115,6 +115,25 @@ export const ENTRANCE = {
     delay: 0.3,
 } as const;
 
+/* FLATTEN — the "Continue" mode. The sphere of cards morphs into a flat wall
+   that fills the hero and PANS sideways, wrapping endlessly the same way the
+   globe's rotation does (the same rotation scalar drives both). Nothing here
+   changes the globe; at morph 0 the sphere is untouched. */
+export const FLATTEN = {
+    /** World units between neighbouring columns on the wall. Also sets the wrap
+        width: columns × colGap is the full ribbon, and it wraps off screen. */
+    colGap: 2.05,
+    /** World units between the four rows. Kept so all four rows fit the frame. */
+    rowGap: 2.05,
+    /** The wall sits on this z-plane — slightly toward the camera from centre so
+        the cards read at a comfortable size. */
+    z: 1.5,
+    /** Morph duration, seconds (sphere ⇄ wall). */
+    duration: 1.1,
+    /** Radians of pan per unit of wheel delta, when flattened. */
+    wheelSens: 0.005,
+} as const;
+
 /* The centred focus state (components/home/hero/FocusCard.tsx). */
 export const FOCUS = {
     /** Card flies out of the globe to dead centre. */

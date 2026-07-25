@@ -14,7 +14,7 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
-import { IDLE, MOTION } from '@/lib/hero/hero-config';
+import { FLATTEN, IDLE, MOTION } from '@/lib/hero/hero-config';
 import { frontIndex, nearestSnap, snapAngles, type CardSlot } from '@/lib/hero/sphere-layout';
 
 type Mode = 'idle' | 'drag' | 'inertia' | 'snapping' | 'selected';
@@ -36,6 +36,9 @@ type Options = {
     activeRef: React.MutableRefObject<number | null>;
     apiRef: React.MutableRefObject<GlobeApi | null>;
     reduced: boolean;
+    /** True while the flat "Continue" wall is showing. Read live: the idle orbit
+        is replaced by a still wall, and the wheel scrolls it. */
+    flatRef: React.MutableRefObject<boolean>;
 };
 
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
@@ -47,6 +50,7 @@ export default function useGlobeControls({
     activeRef,
     apiRef,
     reduced,
+    flatRef,
 }: Options) {
     const gl = useThree((s) => s.gl);
 
@@ -187,16 +191,33 @@ export default function useGlobeControls({
             s.mode = 'inertia';
         };
 
+        /* Wheel scrolls the flat wall sideways. Ignored on the globe, where the
+           wheel belongs to the page — so scrolling past the hero still works
+           unless the user has deliberately flattened it into the browse wall. */
+        const wheel = (e: WheelEvent) => {
+            if (!flatRef.current) return;
+            e.preventDefault();
+            gsap.killTweensOf(rot.current);
+            const s = state.current;
+            s.mode = 'idle';
+            s.autoBlend = 0;
+            s.hold = 0.2;
+            s.vy = 0;
+            rot.current.y += (e.deltaY + e.deltaX) * FLATTEN.wheelSens;
+        };
+
         canvas.addEventListener('pointerdown', down);
         canvas.addEventListener('pointermove', move);
         canvas.addEventListener('pointerup', up);
         canvas.addEventListener('pointercancel', up);
+        canvas.addEventListener('wheel', wheel, { passive: false });
 
         return () => {
             canvas.removeEventListener('pointerdown', down);
             canvas.removeEventListener('pointermove', move);
             canvas.removeEventListener('pointerup', up);
             canvas.removeEventListener('pointercancel', up);
+            canvas.removeEventListener('wheel', wheel);
             canvas.classList.remove('is-grabbing');
         };
     }, [gl, reduced]);
@@ -220,9 +241,12 @@ export default function useGlobeControls({
 
             if (Math.abs(s.vy) < MOTION.snapBelow) startSnap();
         } else if (s.mode === 'idle' && !reduced) {
+            /* The flat wall does NOT auto-scroll — it holds where the user left
+               it. Everything else (drag, inertia, snap, tilt easing) still runs,
+               so the wall pans and snaps exactly like the globe. */
             if (s.hold > 0) {
                 s.hold -= dt;
-            } else {
+            } else if (!flatRef.current) {
                 s.autoBlend = Math.min(1, s.autoBlend + dt * MOTION.resume);
                 /* Hovering a card all but stops the orbit so it can be read. */
                 const hoverFactor = activeRef.current !== null ? MOTION.hoverSpeed : 1;

@@ -32,6 +32,8 @@ type Props = {
     reduced: boolean;
     /** Pushes the whole globe back — blur + fade — behind the focus card. */
     dimmed: boolean;
+    /** True while the "Continue" flat wall is showing. */
+    flat: boolean;
 };
 
 export default function Scene({
@@ -42,6 +44,7 @@ export default function Scene({
     apiRef,
     reduced,
     dimmed,
+    flat,
 }: Props) {
     const { textures, progress } = useCardTextures(cards);
 
@@ -113,6 +116,7 @@ export default function Scene({
                             reduced={reduced}
                             scale={1}
                             play={play}
+                            flat={flat}
                         />
                     )}
 
