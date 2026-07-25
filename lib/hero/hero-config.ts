@@ -35,7 +35,7 @@ export const GLOBE = {
 
 export const MOTION = {
     /** Idle orbit, radians/second. Deliberately very slow. */
-    autoSpeed: 0.085,
+    autoSpeed: 0.13,
     /** Orbit multiplier while a card is hovered — near-stop, but never a hard stop. */
     hoverSpeed: 0.1,
     /** Radians of Y rotation per pixel dragged. */
@@ -110,7 +110,7 @@ export const ENTRANCE = {
         below the point where a front card would cross the camera (z ≈ 9.4). */
     spread: 1.62,
     /** Seconds for the cards to settle from `spread` down to their final slots. */
-    duration: 1.7,
+    duration: 2.6,
     /** A beat before the convergence begins, so the globe registers first. */
     delay: 0.3,
 } as const;
@@ -125,13 +125,20 @@ export const FLATTEN = {
     colGap: 2.05,
     /** World units between the four rows. Kept so all four rows fit the frame. */
     rowGap: 2.05,
-    /** The wall sits on this z-plane — slightly toward the camera from centre so
-        the cards read at a comfortable size. */
-    z: 1.5,
+    /** The wall sits on this z-plane — toward the camera from centre. Also tuned
+        so the vertical wrap seam falls just off screen. */
+    z: 2,
     /** Morph duration, seconds (sphere ⇄ wall). */
     duration: 1.1,
-    /** Radians of pan per unit of wheel delta, when flattened. */
-    wheelSens: 0.005,
+    /** World units of pan per pixel dragged — both axes track the pointer ~1:1,
+        so the wall goes exactly where you drag it. */
+    dragSens: 0.0092,
+    /** Velocity (world units/sec) added per unit of wheel delta. Friction then
+        glides it to a smooth stop, so the wheel scrolls richly in any axis. */
+    wheelSens: 0.02,
+    /** Inertia decay per 1/60s after a flick — drag release or wheel. Lower =
+        stops sooner; higher = longer, smoother glide. */
+    friction: 0.92,
 } as const;
 
 /* The centred focus state (components/home/hero/FocusCard.tsx). */

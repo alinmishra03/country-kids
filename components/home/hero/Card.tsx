@@ -27,7 +27,13 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { CARD_MOTION, FLATTEN, GLOBE } from '@/lib/hero/hero-config';
-import { shortestAngle, type CardSlot } from '@/lib/hero/sphere-layout';
+import {
+    FLAT_K,
+    FLAT_SPAN_Y,
+    shortestAngle,
+    wrapCentered,
+    type CardSlot,
+} from '@/lib/hero/sphere-layout';
 import type { HeroCard } from '@/lib/hero/hero-cards';
 import type { FocusOrigin } from '@/components/home/hero/FocusCard';
 
@@ -38,12 +44,6 @@ const _flat = new THREE.Vector3();
 const _globe = new THREE.Vector3();
 const _euler = new THREE.Euler();
 const _qInv = new THREE.Quaternion();
-const _qFlat = new THREE.Quaternion();
-
-/* World units of horizontal wall per radian of pan. columns × colGap is the
-   full ribbon width, so this maps the periodic pan angle onto it 1:1 and the
-   ribbon wraps off screen exactly as the globe wraps around its far side. */
-const FLAT_K = (FLATTEN.colGap * GLOBE.columns) / (Math.PI * 2);
 
 type Props = {
     slot: CardSlot;
@@ -63,11 +63,16 @@ type Props = {
         load, 1 at rest. Shared and animated outside React (see Globe). */
     spreadRef: React.MutableRefObject<{ value: number }>;
     /** The rotor group — its live rotation drives BOTH the globe spin and the
-        flat wall's pan, read here per frame so the two stay in lockstep. */
+        flat wall's horizontal pan, read here per frame so the two stay in
+        lockstep. */
     rotorRef: React.RefObject<THREE.Group | null>;
     /** Globe → wall morph, 0 (sphere) … 1 (flat wall). Shared, animated in
         Globe outside React. */
     morphRef: React.MutableRefObject<{ value: number }>;
+    /** The flat wall's VERTICAL pan offset (world units). Horizontal pan rides
+        on the rotor rotation; this adds the second axis so the wall drags in any
+        direction. Shared, written by the controls. */
+    flatPanRef: React.MutableRefObject<{ v: number }>;
     reduced: boolean;
     /** `origin` is where this card was on screen, so the DOM focus card can
         fly out of exactly this spot. */
@@ -89,6 +94,7 @@ export default function Card({
     spreadRef,
     rotorRef,
     morphRef,
+    flatPanRef,
     reduced,
     onSelect,
     wasDragged,
@@ -314,12 +320,18 @@ export default function Card({
             ((isActive ? CARD_MOTION.rimGlow : 0) - rim.emissiveIntensity) * k;
 
         /* ── The "z-index" ──
-           Written only when the state flips, not every frame. */
-        if (isActive !== onTop.current) {
-            onTop.current = isActive;
-            mesh.renderOrder = isActive ? 10 : 0;
-            face.depthTest = !isActive;
-            rim.depthTest = !isActive;
+           Drawing the active card with depthTest off lets it sit over cards on
+           the FAR side of the globe — essential there. On the flat wall every
+           card shares one depth plane, so that override just makes the hovered
+           card fight its neighbours as the pointer sweeps across during a drag.
+           It is therefore only used on the globe (m below half). Written on
+           change, not every frame. */
+        const wantTop = isActive && m < 0.5;
+        if (wantTop !== onTop.current) {
+            onTop.current = wantTop;
+            mesh.renderOrder = wantTop ? 10 : 0;
+            face.depthTest = !wantTop;
+            rim.depthTest = !wantTop;
             /* depthTest is a render state, not a shader define — no recompile,
                but three still needs to be told the material changed. */
             face.needsUpdate = true;
@@ -333,15 +345,15 @@ export default function Card({
            (>1 while the cards converge on load, 1 at rest) with the idle bob on
            top. The rotor group's own rotation spins this, exactly as before.
 
-           WALL (m=1) — a flat ribbon that PANS with the same rotor rotation, so
-           the very same drag / inertia / snap controls scroll it, and it wraps
-           off screen the way the globe wraps round its back. The card's column
-           on the wall is its azimuth plus the live pan (rotor.rotation.y), and
-           because that angle is periodic the ribbon is endless. The target is
-           computed in WORLD space, then pushed into the rotor's local frame by
+           WALL (m=1) — a flat ribbon the user drags in ANY direction. HORIZONTAL
+           pan rides on the rotor rotation (azimuth + rotor.rotation.y), so it
+           wraps off screen the way the globe wraps round its back. VERTICAL pan
+           is the shared flatPan.v, wrapped over the row ribbon so up/down is
+           endless too. Both are periodic, so the wall never runs out. The target
+           is computed in WORLD space, then pushed into the rotor's local frame by
            the inverse of the rotor's rotation — so when the rotor re-applies that
            rotation the card lands exactly on the flat wall, upright and facing
-           the camera, no matter how far the wall has panned. */
+           the camera, no matter how far it has been dragged. */
         const rotor = rotorRef.current;
         const ry = rotor ? rotor.rotation.y : 0;
         const rx = rotor ? rotor.rotation.x : 0;
@@ -363,7 +375,10 @@ export default function Card({
         /* Flat target in world space, then counter-rotated into rotor-local. */
         _flat.set(
             shortestAngle(slot.azimuth + ry) * FLAT_K,
-            ((GLOBE.rows - 1) / 2 - slot.row) * FLATTEN.rowGap,
+            wrapCentered(
+                ((GLOBE.rows - 1) / 2 - slot.row) * FLATTEN.rowGap + flatPanRef.current.v,
+                FLAT_SPAN_Y
+            ),
             FLATTEN.z
         );
         _flat.applyQuaternion(_qInv);

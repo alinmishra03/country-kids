@@ -150,6 +150,10 @@ export default function Globe({
     const flatRef = useRef(flat);
     flatRef.current = flat;
 
+    /* The flat wall's VERTICAL pan offset. The controls write it; each Card
+       reads it (horizontal pan rides on the rotor rotation instead). */
+    const flatPan = useRef({ v: 0 });
+
     const geometry = useMemo(
         () =>
             createCardGeometry(
@@ -198,6 +202,7 @@ export default function Globe({
         apiRef,
         reduced,
         flatRef,
+        flatPanRef: flatPan,
     });
 
     return (
@@ -232,6 +237,7 @@ export default function Globe({
                             spreadRef={spread}
                             rotorRef={groupRef}
                             morphRef={morph}
+                            flatPanRef={flatPan}
                             reduced={reduced}
                             onSelect={onSelect}
                             wasDragged={wasDragged}

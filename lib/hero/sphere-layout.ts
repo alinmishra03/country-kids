@@ -7,9 +7,27 @@
    bands are offset half a column so the result still reads as an organic ball
    rather than a grid wrapped round a cylinder. */
 
-import { GLOBE } from '@/lib/hero/hero-config';
+import { FLATTEN, GLOBE } from '@/lib/hero/hero-config';
 
 export const TAU = Math.PI * 2;
+
+/* ── Flat "Continue" wall ──
+   Shared by Card (positions) and the controls (pan sensitivity) so the pixel
+   maths agrees on both sides. */
+
+/** World units of horizontal wall per radian of pan. columns × colGap is the
+    full ribbon, so the pan angle maps onto it 1:1 and the ribbon wraps off
+    screen exactly as the globe wraps round its far side. */
+export const FLAT_K = (FLATTEN.colGap * GLOBE.columns) / TAU;
+/** Height of the wrapping vertical ribbon — the four rows plus the gap that
+    carries the wrap seam off screen. */
+export const FLAT_SPAN_Y = GLOBE.rows * FLATTEN.rowGap;
+
+/** Wrap a value into (−span/2, span/2] — the periodic pan on either wall axis. */
+export function wrapCentered(v: number, span: number) {
+    const half = span / 2;
+    return (((v + half) % span) + span) % span - half;
+}
 
 export type CardSlot = {
     index: number;

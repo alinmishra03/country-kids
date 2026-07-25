@@ -15,9 +15,15 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import gsap from 'gsap';
 import { FLATTEN, IDLE, MOTION } from '@/lib/hero/hero-config';
-import { frontIndex, nearestSnap, snapAngles, type CardSlot } from '@/lib/hero/sphere-layout';
+import {
+    FLAT_K,
+    frontIndex,
+    nearestSnap,
+    snapAngles,
+    type CardSlot,
+} from '@/lib/hero/sphere-layout';
 
-type Mode = 'idle' | 'drag' | 'inertia' | 'snapping' | 'selected';
+type Mode = 'idle' | 'drag' | 'inertia' | 'snapping' | 'selected' | 'flatGlide';
 
 /* The imperative handle the DOM side (overlay buttons, keyboard) drives the
    globe through — deliberately imperative so a rotation never costs a React
@@ -37,8 +43,11 @@ type Options = {
     apiRef: React.MutableRefObject<GlobeApi | null>;
     reduced: boolean;
     /** True while the flat "Continue" wall is showing. Read live: the idle orbit
-        is replaced by a still wall, and the wheel scrolls it. */
+        is replaced by a still wall the user drags in any direction. */
     flatRef: React.MutableRefObject<boolean>;
+    /** The wall's VERTICAL pan offset, written here and read by each Card. The
+        horizontal pan rides on the rotor rotation (rot.y). */
+    flatPanRef: React.MutableRefObject<{ v: number }>;
 };
 
 const clamp = (v: number, lo: number, hi: number) => (v < lo ? lo : v > hi ? hi : v);
@@ -51,6 +60,7 @@ export default function useGlobeControls({
     apiRef,
     reduced,
     flatRef,
+    flatPanRef,
 }: Options) {
     const gl = useThree((s) => s.gl);
 
@@ -62,6 +72,11 @@ export default function useGlobeControls({
         vx: 0,
         autoBlend: 1,
         hold: 0,
+        /* Flat wall: vertical pan offset and its glide velocities (vertical +
+           horizontal-angular), plus a flag to detect entering the wall. */
+        panV: 0,
+        vv: 0,
+        wasFlat: false,
         lastX: 0,
         lastY: 0,
         lastT: 0,
@@ -145,6 +160,7 @@ export default function useGlobeControls({
             s.moved = 0;
             s.vy = 0;
             s.vx = 0;
+            s.vv = 0;
             s.autoBlend = 0;
             canvas.setPointerCapture?.(e.pointerId);
             canvas.classList.add('is-grabbing');
@@ -163,6 +179,22 @@ export default function useGlobeControls({
             s.lastY = e.clientY;
             s.lastT = e.timeStamp;
             s.moved += Math.abs(dx) + Math.abs(dy);
+
+            if (flatRef.current) {
+                /* THE WALL — drag it anywhere, 1:1 with the pointer. Horizontal
+                   still travels through rot.y (so it wraps like the globe); the
+                   sensitivity is scaled by FLAT_K so a pixel means the same world
+                   distance on both axes. Vertical is world units straight into
+                   the pan. Content follows the hand: drag right → wall right,
+                   drag down → wall down. */
+                const ry = dx * (FLATTEN.dragSens / FLAT_K);
+                const pv = -dy * FLATTEN.dragSens;
+                rot.current.y += ry;
+                s.panV += pv;
+                s.vy = s.vy * 0.62 + (ry / dt) * 0.38;
+                s.vv = s.vv * 0.62 + (pv / dt) * 0.38;
+                return;
+            }
 
             const ry = dx * MOTION.dragSensX;
             const rx = dy * MOTION.dragSensY;
@@ -185,39 +217,58 @@ export default function useGlobeControls({
                 s.autoBlend = 1;
                 return;
             }
+            if (flatRef.current) {
+                /* Free glide to a stop — no snap, so it settles wherever the
+                   flick leaves it. */
+                s.vy = clamp(s.vy, -6, 6);
+                s.vv = clamp(s.vv, -14, 14);
+                s.mode = 'flatGlide';
+                return;
+            }
             /* Cap the throw so a hard flick can't spin the globe into a blur. */
             s.vy = clamp(s.vy, -5.5, 5.5);
             s.vx = clamp(s.vx, -3, 3);
             s.mode = 'inertia';
         };
 
-        /* Wheel scrolls the flat wall sideways. Ignored on the globe, where the
-           wheel belongs to the page — so scrolling past the hero still works
-           unless the user has deliberately flattened it into the browse wall. */
+        /* Wheel scrolls the flat wall. Each notch adds VELOCITY (vertical from
+           deltaY, horizontal from deltaX) which friction then glides to a smooth
+           stop — so quick notches accumulate into one continuous, rich scroll
+           rather than a stack of jumps.
+
+           This is a WINDOW listener in the CAPTURE phase, on purpose: the site
+           runs Lenis smooth-scroll, which hijacks the wheel on window and would
+           otherwise swallow the event before it reached the hero. Capturing on
+           window runs first, so while flat and the pointer is over the hero we
+           take the event over (preventDefault + stopPropagation keeps Lenis and
+           the page still). Anywhere else — or on the globe — we do nothing and
+           the page scrolls normally. */
+        const host = canvas.closest('.hero') as HTMLElement | null;
         const wheel = (e: WheelEvent) => {
             if (!flatRef.current) return;
+            const target = e.target as Node | null;
+            if (host && target && !host.contains(target)) return;
             e.preventDefault();
-            gsap.killTweensOf(rot.current);
+            e.stopPropagation();
             const s = state.current;
-            s.mode = 'idle';
+            s.vv = clamp(s.vv + e.deltaY * FLATTEN.wheelSens, -16, 16);
+            s.vy = clamp(s.vy + (e.deltaX * FLATTEN.wheelSens) / FLAT_K, -6, 6);
             s.autoBlend = 0;
-            s.hold = 0.2;
-            s.vy = 0;
-            rot.current.y += (e.deltaY + e.deltaX) * FLATTEN.wheelSens;
+            s.mode = 'flatGlide';
         };
 
         canvas.addEventListener('pointerdown', down);
         canvas.addEventListener('pointermove', move);
         canvas.addEventListener('pointerup', up);
         canvas.addEventListener('pointercancel', up);
-        canvas.addEventListener('wheel', wheel, { passive: false });
+        window.addEventListener('wheel', wheel, { passive: false, capture: true });
 
         return () => {
             canvas.removeEventListener('pointerdown', down);
             canvas.removeEventListener('pointermove', move);
             canvas.removeEventListener('pointerup', up);
             canvas.removeEventListener('pointercancel', up);
-            canvas.removeEventListener('wheel', wheel);
+            window.removeEventListener('wheel', wheel, { capture: true } as EventListenerOptions);
             canvas.classList.remove('is-grabbing');
         };
     }, [gl, reduced]);
@@ -231,7 +282,33 @@ export default function useGlobeControls({
         const dt = Math.min(rawDelta, 0.05);
         const s = state.current;
 
-        if (s.mode === 'inertia') {
+        /* Entering the wall starts it level: vertical pan reset, tilt cleared,
+           any leftover throw dropped. Horizontal keeps rot.y so the wall
+           continues from wherever the globe had spun to. */
+        if (flatRef.current && !s.wasFlat) {
+            s.panV = 0;
+            s.vv = 0;
+            s.vy = 0;
+            s.vx = 0;
+            if (s.mode !== 'drag') s.mode = 'idle';
+        }
+        s.wasFlat = flatRef.current;
+
+        if (s.mode === 'flatGlide') {
+            /* Free 2D glide on the wall — velocity + friction on both axes, no
+               snap, so a flick coasts to a smooth stop wherever it lands. */
+            if (!flatRef.current) {
+                s.mode = 'idle';
+            } else {
+                rot.current.y += s.vy * dt;
+                s.panV += s.vv * dt;
+                const decay = Math.pow(FLATTEN.friction, dt * 60);
+                s.vy *= decay;
+                s.vv *= decay;
+                rot.current.x += (0 - rot.current.x) * Math.min(1, dt * 1.2);
+                if (Math.abs(s.vy) < 0.012 && Math.abs(s.vv) < 0.03) s.mode = 'idle';
+            }
+        } else if (s.mode === 'inertia') {
             rot.current.y += s.vy * dt;
             rot.current.x = clamp(rot.current.x + s.vx * dt, -MOTION.maxTilt, MOTION.maxTilt);
 
@@ -258,6 +335,9 @@ export default function useGlobeControls({
 
         group.rotation.y = rot.current.y;
         group.rotation.x = rot.current.x;
+
+        /* Publish the wall's vertical pan for the cards to read. */
+        flatPanRef.current.v = s.panV;
 
         /* ── Idle life ──
            A breathing scale and a slow vertical drift, so the globe is never
