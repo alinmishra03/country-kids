@@ -68,10 +68,18 @@ export default function IntroLoader() {
         timers.current.push(window.setTimeout(() => setPhase('done'), 700));
     }, []);
 
-    /* Skip immediately when it should not play at all. */
+    /* Skip immediately when it should not play at all.
+       `finished.current` is part of that test, not just the pathname. This
+       effect re-runs on every route change, so navigating away from home and
+       back used to re-arm the whole sequence — and because every exit path is
+       guarded by finish(), which had already run, the phase advanced to `video`
+       and then STUCK there: the mark on screen forever, with `intro-locked`
+       still holding the page. The intro is a page-load event, so once it is
+       done it is done for the life of this document. */
     useEffect(() => {
-        if (pathname !== '/') {
+        if (pathname !== '/' || finished.current) {
             setPhase('done');
+            document.documentElement.classList.remove('intro-locked');
             return;
         }
 

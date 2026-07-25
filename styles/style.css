@@ -11,6 +11,9 @@
 @import url("../css/hero.css");
 @import url("../css/hero-globe.css");
 @import url("../css/hero-focus.css");
+/* Pre-entry hero navigation. Must follow hero.css (it reads the --hero-* tokens
+   scoped to .hero) and hero-focus.css (it dims itself for the focused card). */
+@import url("../css/line-sidebar.css");
 @import url("../css/grid-motion.css");
 @import url("../css/section-commons.css");
 @import url("../css/stats-bar.css");

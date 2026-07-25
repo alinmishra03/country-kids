@@ -174,6 +174,20 @@
         color 0.35s ease,
         border-color 0.35s ease;
 
+    /* ── Button metrics ──
+       The ONLY dial a context is allowed to turn when a button has to fit
+       somewhere tighter than a content band. A button that needs to be smaller
+       retunes these tokens; it never redeclares padding, radius, font or
+       height of its own. That is what keeps "every button on the site" one
+       button instead of six lookalikes that drift apart over time. */
+    --btn-pad-y: 1.05rem;
+    --btn-pad-x: 2.2rem;
+    --btn-fs: 0.98rem;
+    --btn-min-h: 52px;
+    --btn-gap: 0.6rem;
+    --btn-icon: 1.05em;
+    --btn-tracking: 0.2px;
+
     color-scheme: light;
 }
 
@@ -362,7 +376,8 @@ textarea,
 }
 
 /* ─── SHARED BUTTONS ─────────────────────────────────────────────────────
-   Two variants, one shape.
+   ONE button. Two colour variants, and nothing else on the site is allowed a
+   pill of its own.
 
      PRIMARY   (.btn-primary, .btn-gold) — solid navy pill, white text. On hover
                it lifts, glows in the indigo hover colour, and the arrow slides.
@@ -373,12 +388,23 @@ textarea,
    .btn-gold is a legacy class name used throughout the markup for the lead
    action, so it maps to PRIMARY rather than being renamed.
 
+   The four buttons that used to hand-roll their own pill — the newsletter
+   submit, the CTA band's phone link, the hero focus card's CTA and the nav
+   CTA (which already carried .btn-gold) — now join the same rules. Each still
+   sits on a dark band where the navy primary would disappear, so each keeps
+   its own FILL COLOUR and only that; shape, size, easing, lift, arrow slide,
+   press and reduced-motion behaviour all come from here. Size differences are
+   expressed by retuning the --btn-* tokens in the owning stylesheet.
+
    Both are transform/opacity-only on hover and carry the magnetic offset that
    useMagnetic() writes into --mx / --my, so the pointer-follow and the hover
    lift compose in a single transform instead of fighting each other. */
 .btn-primary,
 .btn-outline,
-.btn-gold {
+.btn-gold,
+.newsletter-submit,
+.cta-band-phone,
+.hero-focus-cta {
     --mx: 0px;
     --my: 0px;
     --lift: 0px;
@@ -386,14 +412,16 @@ textarea,
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
+    gap: var(--btn-gap);
+    min-height: var(--btn-min-h);
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
-    font-size: 0.98rem;
-    padding: 1.05rem 2.2rem;
+    font-size: var(--btn-fs);
+    line-height: 1.2;
+    padding: var(--btn-pad-y) var(--btn-pad-x);
     border-radius: var(--radius-pill);
     cursor: pointer;
-    letter-spacing: 0.2px;
+    letter-spacing: var(--btn-tracking);
     overflow: hidden;
     isolation: isolate;
     will-change: transform;
@@ -405,6 +433,38 @@ textarea,
         border-color 0.4s ease;
 }
 
+/* The wipe layer. Geometry and timing are shared so every button fills the
+   same way; only the colour is set per variant, below and in the stylesheets
+   that own the dark-band buttons. */
+.btn-primary::before,
+.btn-outline::before,
+.btn-gold::before,
+.newsletter-submit::before,
+.cta-band-phone::before,
+.hero-focus-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s cubic-bezier(0.6, 0.01, 0.2, 1);
+}
+.btn-primary:hover::before,
+.btn-outline:hover::before,
+.btn-gold:hover::before,
+.newsletter-submit:hover::before,
+.cta-band-phone:hover::before,
+.hero-focus-cta:hover::before { transform: scaleX(1); }
+
+/* The one hover motion. */
+.btn-primary:hover,
+.btn-outline:hover,
+.btn-gold:hover,
+.newsletter-submit:hover,
+.cta-band-phone:hover,
+.hero-focus-cta:hover { --lift: -4px; }
+
 /* ── Primary — solid navy ── */
 .btn-primary,
 .btn-gold {
@@ -415,26 +475,16 @@ textarea,
 /* Indigo wash that wipes in from the left, so the fill has somewhere to go. */
 .btn-primary::before,
 .btn-gold::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
     background: linear-gradient(100deg, var(--brand-hover) 0%, #3A4066 100%);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.55s cubic-bezier(0.6, 0.01, 0.2, 1);
 }
 .btn-primary:hover,
 .btn-gold:hover {
-    --lift: -4px;
     color: #fff;
     border-color: var(--brand-hover);
     box-shadow:
         0 18px 40px -18px rgba(var(--hover-rgb), 0.65),
         0 0 0 6px rgba(var(--hover-rgb), 0.10);
 }
-.btn-primary:hover::before,
-.btn-gold:hover::before { transform: scaleX(1); }
 
 /* ── Secondary — transparent, navy border, fills navy ── */
 .btn-outline {
@@ -443,24 +493,15 @@ textarea,
     color: var(--blue-deep);
 }
 .btn-outline::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
     background: var(--brand-navy);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 0.55s cubic-bezier(0.6, 0.01, 0.2, 1);
 }
 .btn-outline:hover {
-    --lift: -4px;
     color: #fff;
     border-color: var(--brand-navy);
     box-shadow:
         0 18px 40px -18px rgba(var(--accent-rgb), 0.5),
         0 0 0 6px rgba(var(--accent-rgb), 0.08);
 }
-.btn-outline:hover::before { transform: scaleX(1); }
 /* On dark the navy fill is nearly the page colour, so the outline fills with
    the indigo hover instead and keeps a visible edge. */
 [data-theme="dark"] .btn-outline { border-color: rgba(255, 255, 255, 0.24); color: var(--text-primary); }
@@ -471,23 +512,50 @@ textarea,
 /* ── Arrow ── */
 .btn-primary svg,
 .btn-outline svg,
-.btn-gold svg {
-    width: 1.05em;
-    height: 1.05em;
+.btn-gold svg,
+.newsletter-submit svg,
+.cta-band-phone svg,
+.hero-focus-cta svg {
+    width: var(--btn-icon);
+    height: var(--btn-icon);
+    flex: 0 0 auto;
     transition: transform 0.45s cubic-bezier(0.6, 0.01, 0.2, 1);
 }
 .btn-primary:hover svg,
 .btn-outline:hover svg,
-.btn-gold:hover svg { transform: translateX(5px); }
+.btn-gold:hover svg,
+.newsletter-submit:hover svg,
+.cta-band-phone:hover svg,
+.hero-focus-cta:hover svg { transform: translateX(5px); }
 
 .btn-primary:active,
 .btn-outline:active,
-.btn-gold:active { --lift: 0px; }
+.btn-gold:active,
+.newsletter-submit:active,
+.cta-band-phone:active,
+.hero-focus-cta:active { --lift: 0px; }
+
+/* A disabled button must not look pressable. */
+.btn-primary:disabled,
+.btn-outline:disabled,
+.btn-gold:disabled,
+.newsletter-submit:disabled {
+    --lift: 0px;
+    cursor: not-allowed;
+    opacity: 0.62;
+}
+.btn-primary:disabled::before,
+.btn-outline:disabled::before,
+.btn-gold:disabled::before,
+.newsletter-submit:disabled::before { transform: scaleX(0); }
 
 @media (prefers-reduced-motion: reduce) {
     .btn-primary,
     .btn-outline,
-    .btn-gold { transform: none; transition: color 0.2s ease, background-color 0.2s ease; }
+    .btn-gold,
+    .newsletter-submit,
+    .cta-band-phone,
+    .hero-focus-cta { transform: none; transition: color 0.2s ease, background-color 0.2s ease; }
 }
 
 /* ─── LOGO ───

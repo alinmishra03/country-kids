@@ -28,6 +28,15 @@ import type { GlobeApi } from '@/hooks/useGlobeControls';
 import { usePrefersReducedMotion } from '@/hooks/useMediaQuery';
 import Overlay from '@/components/home/hero/Overlay';
 import FocusCard, { type FocusOrigin } from '@/components/home/hero/FocusCard';
+import LineSidebar from '@/components/home/hero/LineSidebar';
+import { useHeroNav } from '@/components/providers/HeroNavProvider';
+
+/* The handover, in ms. The rail begins leaving immediately and the navbar starts
+   arriving while it is still on its way out — an overlap, not a queue, because a
+   gap between the two would read as two separate events instead of one exchange.
+   Both run on the site's --ease-out, cubic-bezier(.22, 1, .36, 1). */
+const EXIT_MS = 800;
+const NAV_REVEAL_DELAY_MS = 200;
 
 /* WebGL never runs on the server, and the canvas must not be in the SSR HTML —
    the copy above it is what gets server-rendered. */
@@ -46,6 +55,34 @@ export default function Hero() {
     const [flat, setFlat] = useState(false);
     const reduced = usePrefersReducedMotion();
 
+    /* ── Pre-entry navigation ──
+       The rail belongs to the GLOBE, not to a one-way entrance: it is on screen
+       whenever the globe is, and steps aside for the browse wall. So it follows
+       `flat` — out on Continue, back on "Back to globe" — rather than unmounting
+       for good the first time.
+
+       The navbar is the mirror of that: it belongs to the browse wall, so it
+       arrives with the wall and leaves with it. The two navigations are never on
+       screen together — whichever layer the user is looking at owns the way out
+       of it.
+
+       The rail's items are links and travel on click; `selectedNav` only lights
+       the chosen one while the route transition wipes across. */
+    const { revealNav, concealNav } = useHeroNav();
+    const [selectedNav, setSelectedNav] = useState<string | null>(null);
+    /* Mounted vs exiting are separate because the departure is animated: the
+       rail has to keep rendering while it fades. `returning` only shortens the
+       entrance — a first impression can afford a slow reveal, a return cannot. */
+    const [railMounted, setRailMounted] = useState(true);
+    const [railExiting, setRailExiting] = useState(false);
+    const [railReturning, setRailReturning] = useState(false);
+    const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    const clearTimers = useCallback(() => {
+        timersRef.current.forEach(clearTimeout);
+        timersRef.current = [];
+    }, []);
+
     const select = useCallback((index: number, from?: FocusOrigin) => {
         setOrigin(from ?? null);
         setClosing(false);
@@ -57,6 +94,45 @@ export default function Hero() {
     const requestClose = useCallback(() => setClosing(true), []);
 
     const toggleFlat = useCallback(() => setFlat((f) => !f), []);
+
+    /* Continue, extended — the button's own behaviour (flatten the globe into
+       the browse wall, and back) is untouched. Everything added here hangs off
+       which way it just toggled.
+
+       Timers are cleared on every press, so pressing Continue and immediately
+       pressing "Back to globe" cannot leave a pending unmount that fires after
+       the rail has already been asked to return — nor a pending `revealNav`
+       that would put the navbar back up after it has just been dismissed. That
+       ordering is why `clearTimers` runs before anything else here. */
+    const handleContinue = useCallback(() => {
+        const leaving = !flat;
+        toggleFlat();
+        clearTimers();
+
+        if (!leaving) {
+            /* Back to globe — the rail comes back and the navbar goes with the
+               wall it belongs to. No delay on the way in: the rail is already
+               on its way, and the two should read as one exchange. */
+            concealNav();
+            setRailExiting(false);
+            setRailReturning(true);
+            setRailMounted(true);
+            return;
+        }
+
+        setRailExiting(true);
+
+        if (reduced) {
+            setRailMounted(false);
+            revealNav();
+            return;
+        }
+
+        timersRef.current.push(setTimeout(revealNav, NAV_REVEAL_DELAY_MS));
+        timersRef.current.push(setTimeout(() => setRailMounted(false), EXIT_MS));
+    }, [flat, toggleFlat, clearTimers, revealNav, concealNav, reduced]);
+
+    useEffect(() => clearTimers, [clearTimers]);
 
     const onClosed = useCallback(() => {
         setClosing(false);
@@ -138,8 +214,19 @@ export default function Hero() {
                 onStep={step}
                 reduced={reduced}
                 flat={flat}
-                onToggleFlat={toggleFlat}
+                onToggleFlat={handleContinue}
             />
+
+            {/* The globe's own navigation — present whenever the globe is. */}
+            {railMounted && (
+                <LineSidebar
+                    activeId={selectedNav}
+                    onSelect={setSelectedNav}
+                    exiting={railExiting}
+                    returning={railReturning}
+                    reduced={reduced}
+                />
+            )}
 
             {card && (
                 <FocusCard

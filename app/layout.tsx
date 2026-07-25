@@ -16,6 +16,7 @@ import SiteFooter from '@/components/layout/SiteFooter';
 import PageTransition from '@/components/layout/PageTransition';
 import IntroLoader from '@/components/layout/IntroLoader';
 import SmoothScroll from '@/components/providers/SmoothScroll';
+import { HeroNavProvider } from '@/components/providers/HeroNavProvider';
 
 export const metadata = {
     title: 'Country Kids Learning Centre — Rooted in Country, Flourishing Together',
@@ -27,31 +28,34 @@ export const metadata = {
 export const viewport = {
     width: 'device-width',
     initialScale: 1,
-    /* Matches the dark theme's page field, so the mobile browser chrome blends
-       with the site instead of showing the old blue. */
-    themeColor: '#05060A',
+    /* Matches the light theme's cream page field, so the mobile browser chrome
+       blends with the site the visitor actually gets by default. */
+    themeColor: '#FFFDD0',
 };
 
 /* Runs before paint to prevent a flash of the wrong theme (FOUC). Default =
-   DARK for every first-time visitor; only an explicit toggle (saved to
-   localStorage under 'ckTheme') flips to light on later visits.
+   LIGHT for every first-time visitor; only an explicit toggle (saved to
+   localStorage under 'ckTheme') flips to dark on later visits.
 
-   Note the inverted test: anything other than an explicit stored 'light' means
-   dark, so a missing or corrupt value falls back to the default rather than to
-   the toggled state. */
+   Note the inverted test: anything other than an explicit stored 'dark' means
+   light, so a missing or corrupt value falls back to the default rather than to
+   the toggled state.
+
+   prefers-color-scheme is still deliberately ignored — the site has one default
+   and one explicit switch, not three states. */
 const THEME_INIT = `(function () {
     try {
         var stored = localStorage.getItem('ckTheme');
-        var theme = stored === 'light' ? 'light' : 'dark';
+        var theme = stored === 'dark' ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', theme);
     } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.setAttribute('data-theme', 'light');
     }
 })();`;
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" data-theme="dark" suppressHydrationWarning>
+        <html lang="en" data-theme="light" suppressHydrationWarning>
             <head>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
@@ -92,8 +96,13 @@ export default function RootLayout({ children }) {
                         <IntroLoader />
 
                         <PageTransition />
-                        <SiteHeader />
-                        {children}
+                        {/* The navbar and the hero live in different subtrees
+                            but share one fact: whether the home page's
+                            pre-entry experience has been dismissed. */}
+                        <HeroNavProvider>
+                            <SiteHeader />
+                            {children}
+                        </HeroNavProvider>
                         <SiteFooter />
                     </TranslationProvider>
                 </ThemeProvider>

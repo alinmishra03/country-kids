@@ -1,0 +1,346 @@
+/* ─── LINE SIDEBAR ───────────────────────────────────────────────────────
+   The hero's pre-entry navigation: a vertical rail of thin rules on the right
+   edge of the stage, one per destination. Lives only until "Continue" is
+   pressed, then leaves and hands over to the real navbar.
+
+   LAYERING — the hero stack is bg(0) · canvas(1) · veil(2) · overlay(3) ·
+   focus card(5). The rail sits at 4: above the copy it must never collide
+   with, below the focused card that is meant to own the screen.
+
+   POINTER MODEL — the rail matches the hero's rule. The full-height wrapper is
+   transparent to the pointer so a drag started anywhere beside the panel still
+   rotates the globe; only the panel itself takes events. The wrapper is
+   full-height purely so `align-items: center` can do the vertical centring —
+   which keeps `transform` free for the exit, instead of spending it on a
+   translateY(-50%) the exit would then have to preserve.
+
+   MOTION OWNERSHIP — `--p` (0 → 1 proximity) is written per item by the JS
+   engine in LineSidebar.tsx and every proximity response below is derived from
+   it. There is deliberately NO transition on those properties: the easing is
+   the rAF lerp, and a CSS transition on top would double-smooth it into lag.
+   The `:hover` fallback further down only takes effect when the engine never
+   runs (coarse pointer, reduced motion) — an inline custom property outranks
+   any selector, so on a fine pointer the engine always wins.
+
+   The entrance uses `backwards`, NOT `both`. A finished animation with `both`
+   holds its end values above inline styles and would silently outrank the exit
+   transition — the same trap the hero overlay hit. `backwards` holds only the
+   pre-delay state and releases everything once it ends. */
+
+.line-sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: clamp(1.5rem, 3.2vw, 3.25rem);
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+}
+
+.ls-panel {
+    --ls-line-min: 14px;
+    --ls-line-max: 52px;
+    --ls-ink: var(--hero-ink, #fff);
+    --ls-accent: var(--hero-accent, #9DBEC3);
+
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.15rem;
+    padding: 1.5rem 1.35rem 1.35rem;
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    backdrop-filter: blur(18px) saturate(140%);
+    box-shadow:
+        0 1px 0 0 rgba(255, 255, 255, 0.07) inset,
+        0 30px 70px -40px rgba(0, 0, 0, 0.9);
+    /* Only opacity + transform animate on exit — both compositor-only. */
+    will-change: opacity, transform;
+    transition:
+        opacity 0.8s var(--ease-out),
+        transform 0.8s var(--ease-out);
+    animation: ls-enter 0.9s var(--ease-out) 0.55s backwards;
+}
+
+@keyframes ls-enter {
+    from {
+        opacity: 0;
+        transform: translate3d(26px, 0, 0);
+    }
+}
+
+/* Coming back from the browse wall. The long delay exists to let the hero copy
+   land first on a cold load; on a return there is nothing to wait behind. */
+.line-sidebar.is-returning .ls-panel {
+    animation-delay: 0s;
+    animation-duration: 0.7s;
+}
+
+/* ── Exit — fade while drifting right, per the handover choreography ── */
+.line-sidebar.is-exiting .ls-panel {
+    opacity: 0;
+    transform: translate3d(34px, 0, 0);
+    pointer-events: none;
+}
+
+/* While a globe card is focused the rail steps aside, exactly as the hero copy
+   does — the focused card is the only thing meant to be read. */
+.hero.is-focused .ls-panel {
+    opacity: 0;
+    transform: translate3d(18px, 0, 0);
+    pointer-events: none;
+    transition:
+        opacity 0.4s var(--ease-out),
+        transform 0.5s var(--ease-out);
+}
+
+/* ── Eyebrow ── */
+.ls-eyebrow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.55rem;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.42);
+}
+.ls-eyebrow-rule {
+    width: 18px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35));
+}
+
+/* ── List ── */
+.ls-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.ls-item {
+    --p: 0;
+}
+
+/* An anchor, not a button — clicking a destination goes there. The reset is the
+   anchor reset (colour + underline), since the site's link styles would
+   otherwise paint over the rail's own treatment. */
+.ls-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.42rem 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: inherit;
+    text-decoration: none;
+    text-align: right;
+    /* Growing the rule pushes the label left — the proximity "shift" is a
+       consequence of the layout, not a second animated property. */
+    transform: translate3d(calc(var(--p) * -4px), 0, 0);
+}
+
+.ls-label {
+    font-family: var(--font-body);
+    font-size: 0.79rem;
+    font-weight: var(--fw-light);
+    letter-spacing: 0.035em;
+    white-space: nowrap;
+    color: var(--ls-ink);
+    /* Brightness, not colour, carries the proximity — one composited property
+       instead of a repaint per frame. */
+    opacity: calc(0.44 + 0.56 * var(--p));
+}
+
+.ls-line {
+    flex-shrink: 0;
+    height: 1px;
+    width: calc(var(--ls-line-min) + (var(--ls-line-max) - var(--ls-line-min)) * var(--p));
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0.12),
+        rgba(255, 255, 255, calc(0.34 + 0.5 * var(--p)))
+    );
+}
+
+/* ── Active — the armed destination ──
+   Held bright regardless of the pointer, with a soft accent glow, so the choice
+   stays legible after the pointer has moved on. */
+.ls-item.is-active .ls-label {
+    opacity: 1;
+    font-weight: var(--fw-regular);
+    text-shadow: 0 0 18px rgba(var(--gold-rgb), 0.55);
+}
+.ls-item.is-active .ls-line {
+    width: calc(var(--ls-line-max) + 8px);
+    background: linear-gradient(90deg, rgba(var(--gold-rgb), 0.15), var(--ls-accent));
+    box-shadow: 0 0 12px rgba(var(--gold-rgb), 0.75);
+}
+/* A slow highlight travelling the length of the active rule. Transform-only,
+   so it composites without ever repainting the gradient. */
+.ls-item.is-active .ls-line {
+    position: relative;
+    overflow: hidden;
+}
+.ls-item.is-active .ls-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, #fff, transparent);
+    transform: translate3d(-100%, 0, 0);
+    animation: ls-sheen 2.8s var(--ease-soft) infinite;
+}
+@keyframes ls-sheen {
+    0%   { transform: translate3d(-100%, 0, 0); }
+    55%  { transform: translate3d(100%, 0, 0); }
+    100% { transform: translate3d(100%, 0, 0); }
+}
+
+/* ── Focus ── */
+.ls-btn:focus-visible {
+    outline: none;
+}
+.ls-btn:focus-visible .ls-label {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 5px;
+    text-decoration-color: var(--ls-accent);
+}
+.ls-btn:focus-visible .ls-line {
+    background: linear-gradient(90deg, rgba(var(--gold-rgb), 0.2), var(--ls-accent));
+}
+
+/* Static fallback for pointers the proximity engine does not serve (coarse) and
+   for reduced motion. An inline `--p` from the engine outranks this, so on a
+   fine pointer it never applies. */
+.ls-item:hover {
+    --p: 1;
+}
+
+/* ── Hint ──
+   The rail is a shortcut, not the only way in — this points back at the
+   Continue button for anyone who would rather stay and explore the globe. */
+.ls-hint {
+    max-width: 12ch;
+    margin: 0 0 0 auto;
+    padding-top: 0.9rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.09);
+    font-family: var(--font-body);
+    font-size: 0.63rem;
+    font-weight: var(--fw-light);
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    text-align: right;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* ─── Tablet ──────────────────────────────────────────────────────────────
+   Same rail, tightened: shorter rules, less air, smaller type — still the full
+   label, because an unreadable nav is not a nav. */
+@media (max-width: 1279px) {
+    .line-sidebar {
+        right: clamp(1rem, 2.4vw, 1.75rem);
+    }
+    .ls-panel {
+        --ls-line-min: 10px;
+        --ls-line-max: 32px;
+        gap: 0.9rem;
+        padding: 1.2rem 1.05rem 1.1rem;
+    }
+    .ls-btn {
+        gap: 0.6rem;
+        padding: 0.34rem 0;
+    }
+    .ls-label {
+        font-size: 0.73rem;
+    }
+    .ls-hint {
+        padding-top: 0.75rem;
+        font-size: 0.6rem;
+    }
+}
+
+/* ─── Mobile ──────────────────────────────────────────────────────────────
+   A compact floating column near the bottom-right of the hero. The hero copy is
+   a centred column and the Continue button is centred with it, so a narrow rail
+   pinned to the right edge clears both. Touch targets stay at 34px of hit area
+   with the label as the whole target. */
+@media (max-width: 1023px) {
+    .line-sidebar {
+        top: auto;
+        bottom: clamp(0.75rem, 3vh, 1.75rem);
+        right: clamp(0.5rem, 2vw, 1rem);
+        align-items: flex-end;
+    }
+    .ls-panel {
+        --ls-line-min: 8px;
+        --ls-line-max: 20px;
+        gap: 0;
+        padding: 0.6rem 0.75rem;
+        border-radius: var(--radius-sm);
+        background: rgba(255, 255, 255, 0.055);
+    }
+    /* The rail is the whole affordance here — no room for framing copy. */
+    .ls-eyebrow {
+        display: none;
+    }
+    .ls-btn {
+        gap: 0.5rem;
+        padding: 0.4rem 0;
+        min-height: 34px;
+    }
+    .ls-label {
+        font-size: 0.7rem;
+        opacity: calc(0.62 + 0.38 * var(--p));
+    }
+    /* No vertical budget for framing copy on a phone. */
+    .ls-hint {
+        display: none;
+    }
+    .line-sidebar.is-exiting .ls-panel {
+        transform: translate3d(22px, 0, 0);
+    }
+}
+
+/* Very short viewports: the eight items still have to fit above the fold. */
+@media (max-height: 620px) and (max-width: 1023px) {
+    .ls-btn {
+        padding: 0.26rem 0;
+        min-height: 28px;
+    }
+    .ls-label {
+        font-size: 0.66rem;
+    }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────────────────────
+   The proximity engine is skipped in JS; here the entrance, the sheen and the
+   exit drift go. Selecting and Continue still work — those are direct responses
+   to the user, not decoration. */
+@media (prefers-reduced-motion: reduce) {
+    .ls-panel {
+        animation: none;
+        transition: opacity 0.2s linear;
+    }
+    .line-sidebar.is-exiting .ls-panel,
+    .hero.is-focused .ls-panel {
+        transform: none;
+    }
+    .ls-item.is-active .ls-line::after {
+        animation: none;
+        display: none;
+    }
+}

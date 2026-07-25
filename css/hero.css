@@ -342,10 +342,19 @@ body[data-hero-hover="1"] .hero-veil {
 
 /* ─── Navigation over the hero ───────────────────────────────────────────
    The hero is dark in both themes, so the unscrolled nav paints white in both.
-   (The previous light hero needed the opposite override; it is gone.) */
-#navbar:not(.scrolled) .logo-text,
-#navbar:not(.scrolled) .pill-label,
-#navbar:not(.scrolled) .pill-caret-btn {
+   (The previous light hero needed the opposite override; it is gone.)
+
+   The pills set --pill-ink rather than `color` here. Setting `color` on
+   `.pill-label` from this file was the second half of the bug nav.css
+   describes: this rule loads after nav-polish.css and outranks
+   `.pill-label--alt`, so it repainted the swapped-in label too and the hover
+   state lost its on-fill colour. Handing the bar a token instead lets the
+   filled-pill rule in nav.css override it per item, which is the whole
+   point. */
+#navbar:not(.scrolled) {
+    --pill-ink: #FFFFFF;
+}
+#navbar:not(.scrolled) .logo-text {
     color: #FFFFFF;
 }
 #navbar:not(.scrolled) .logo-text em { color: rgba(255, 255, 255, 0.72); }
@@ -384,19 +393,43 @@ body[data-hero-hover="1"] .hero-veil {
     .hero-controls { margin-top: clamp(1.75rem, 4vh, 2.5rem); }
 }
 
+/* ── The pre-entry rail's breakpoint ──
+   At 1023px and below the LineSidebar stops being a right-edge rail and becomes
+   a compact column pinned to the BOTTOM right of the hero, directly under the
+   centred copy. Eight items at a 34px touch target is roughly 290px of screen,
+   so on a phone it owns the lower half outright.
+
+   The overlay is centred by auto margins rather than by the section's
+   align-items (see below), which means reserving that space as padding is
+   enough to push the copy into the room that is left — no absolute positioning,
+   and it degrades gracefully when the rail is gone. */
+@media (max-width: 1023px) {
+    .hero-overlay { padding-bottom: clamp(16rem, 40vh, 22rem); }
+}
+
 @media (max-width: 600px) {
     .hero {
         /* A tall stack on a short phone must grow the section, never clip it. */
         align-items: flex-start;
         min-height: 100svh;
     }
+    /* Auto margins, not `align-items: center`, are what make this both centred
+       AND safe. Flex centring overflows in both directions when the content is
+       taller than the box, putting the top of the headline above the viewport
+       where it cannot be scrolled back to; auto margins collapse to zero
+       instead, so a cramped phone falls back to top-aligned rather than
+       clipped. */
+    .hero-overlay { margin-block: auto; }
     .hero-title { font-size: clamp(2.2rem, 10vw, 3rem); }
     .hero-eyebrow { font-size: 0.68rem; letter-spacing: 0.1em; padding: 0.45rem 0.9rem; }
-    /* Full-width stacked CTAs with a real 52px touch target. */
+    /* Full-width stacked CTAs, at the shared button's full touch height. */
     .hero-cta { width: 100%; flex-direction: column; }
     .hero-cta .btn-gold,
-    .hero-cta .btn-outline { width: 100%; min-height: 52px; }
+    .hero-cta .btn-outline { width: 100%; }
     .hero-back { width: 100%; }
+    /* Continue is the primary action of the whole pre-entry layer and was a
+       35px-tall text button — under the 44px minimum for a touch target. */
+    .hero-continue { min-height: 44px; padding-inline: 1.4rem; }
     .hero-arrow { width: 42px; height: 42px; }
     /* The centre scrim has to work much harder over a full-bleed globe. */
     .hero-veil {
@@ -406,10 +439,26 @@ body[data-hero-hover="1"] .hero-veil {
     }
 }
 
-/* Landscape phones: almost no vertical room. */
+/* Narrow phones. The overlay's own gutter is a clamp that bottoms out at
+   1.5rem, which is generous at 360px once the rail is also taking width off
+   the right — the headline gets the difference. */
+@media (max-width: 380px) {
+    .hero-overlay { width: calc(100% - 2rem); }
+    .hero-title { font-size: clamp(2rem, 9.4vw, 2.5rem); letter-spacing: -0.024em; }
+    .hero-eyebrow { font-size: 0.64rem; padding: 0.4rem 0.75rem; gap: 0.45rem; }
+    .hero-continue { font-size: 0.78rem; letter-spacing: 0.04em; }
+}
+
+/* Landscape phones: almost no vertical room. The rail's bottom-right column
+   does not fit under the copy here, so the reserved space from the 1023px
+   block is given back and the two share the width instead. */
 @media (max-height: 520px) and (orientation: landscape) {
     .hero { min-height: auto; }
-    .hero-overlay { padding-block: calc(var(--nav-h) + 1rem) 2rem; }
+    .hero-overlay {
+        margin-block: 0;
+        padding-block: calc(var(--nav-h) + 1rem) 2rem;
+        width: min(58rem, calc(100% - 2 * clamp(1.5rem, 5vw, 4rem) - 9rem));
+    }
     .hero-title { font-size: clamp(1.8rem, 5vw, 2.4rem); }
     .hero-controls { margin-top: 1.25rem; }
 }

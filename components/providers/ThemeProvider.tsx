@@ -4,28 +4,29 @@
 
    - localStorage key 'ckTheme', values 'dark' | 'light'
    - writes data-theme on <html>; all theming is CSS vars keyed off [data-theme]
-   - default is DARK; prefers-color-scheme is deliberately ignored, only an
-     explicit toggle produces light
-   - the pre-paint inline script in app/layout.js sets data-theme before first
+   - default is LIGHT; prefers-color-scheme is deliberately ignored, only an
+     explicit toggle produces dark
+   - the pre-paint inline script in app/layout.tsx sets data-theme before first
      paint (FOUC guard); this provider re-syncs after hydration, which is why the
-     initial state is 'dark' rather than a localStorage read. */
+     initial state is 'light' rather than a localStorage read. It must match the
+     script's default or the first client render disagrees with the server. */
 
 import { createContext, useContext, useCallback, useEffect, useState } from 'react';
 
 type ThemeContextValue = { theme: string; setTheme: (next: string) => void; toggle: () => void };
 
 const ThemeContext = createContext<ThemeContextValue>({
-    theme: 'dark',
+    theme: 'light',
     setTheme: () => {},
     toggle: () => {},
 });
 
 export function ThemeProvider({ children }: any) {
-    const [theme, setThemeState] = useState('dark');
+    const [theme, setThemeState] = useState('light');
 
     useEffect(() => {
         const current = document.documentElement.getAttribute('data-theme');
-        if (current === 'light') setThemeState('light');
+        if (current === 'dark') setThemeState('dark');
     }, []);
 
     const setTheme = useCallback((next) => {

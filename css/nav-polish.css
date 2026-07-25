@@ -28,34 +28,43 @@
 
 /* ── Sliding underline on the nav links ──
    A scaleX transform on a pseudo-element: no layout, no repaint of the label,
-   and it composes with the existing colour change on hover. */
-.pill-label {
+   and it composes with the existing colour change on hover.
+
+   It hangs off .pill, NOT off .pill-label. On the label it never rendered at
+   all: .pill-labels is the clip that makes the two-label swap work
+   (height: 1.35em; overflow: hidden), and an underline sitting 0.32em below
+   the label's box is exactly the thing that clip exists to cut off. .pill is
+   the nearest ancestor with room for it — hence --pill-pad-x in nav.css, so
+   the stroke still starts and ends on the label's edges rather than the
+   pill's.
+
+   The pill is filled by the time this is visible, so it takes the on-fill ink
+   rather than the accent gradient it used to ask for — a gradient stroke on a
+   gradient fill is not a stroke. */
+.pill {
     position: relative;
 }
-.pill-label::after {
+.pill::after {
     content: "";
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -0.32em;
+    inset-inline: var(--pill-pad-x);
+    bottom: 0.3rem;
     height: 1.5px;
     border-radius: 999px;
-    background: var(--gold-gradient);
+    background: var(--pill-ink-on-fill);
+    opacity: 0.85;
     transform: scaleX(0);
     transform-origin: right center;
     transition: transform 0.45s var(--ease-out);
 }
-.pill-item:hover .pill-label::after,
-.pill-link:focus-visible .pill-label::after,
-.pill-item.is-active .pill-label::after {
+.pill-item:hover .pill::after,
+.pill-link:focus-visible .pill::after,
+.pill-item.is-active .pill::after {
     transform: scaleX(1);
     /* Grows from the left on the way IN and retracts to the right on the way
        out, which is what makes it read as a stroke rather than a bar. */
     transform-origin: left center;
 }
-
-/* The alt label in the swap pair must not carry a second underline. */
-.pill-label--alt::after { content: none; }
 
 /* ── Magnetic CTA ──
    useMagnetic writes --mx/--my; the shared button transform in base.css
@@ -88,6 +97,26 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pill-label::after { transition: none; }
+    .pill::after { transition: none; }
+    .has-dropdown .pill-split::before { transition: none; }
     .nav-cta { transform: none; transition: background-color 0.3s ease; }
+}
+
+/* ── Concealed state (home page, before "Continue") ──
+   The home page opens on a pre-entry experience that owns navigation, so the
+   real bar ships hidden in the server HTML and is revealed by the handover.
+
+   Nothing here is a restyle: the bar's appearance, height, glass state and
+   behaviour are untouched — this only takes it off screen. It is the FIRST
+   PAINT state only. Once GSAP has run the reveal it writes inline transform and
+   opacity, which outrank this block; re-concealing (returning to home) is
+   therefore done by GSAP too, in SiteHeader.
+
+   visibility, not just opacity: a bar that is merely transparent still takes
+   focus and is still announced. */
+#navbar.nav-concealed {
+    transform: translate3d(0, -104%, 0);
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
 }

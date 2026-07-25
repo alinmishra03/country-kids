@@ -5,6 +5,20 @@
    so page top-padding across the site is unaffected. */
 
 #navbar {
+    /* ── Nav ink ──
+       The pills change colour for three independent reasons: the bar is over
+       the dark hero or scrolled onto a light surface, and separately whether a
+       given pill is currently filled with the accent. Expressing that as two
+       inherited custom properties instead of as `color` declarations is what
+       keeps it correct: `#navbar.scrolled .pill-label` outranks
+       `.pill-label--alt`, so the swapped-in label used to lose its on-fill
+       colour the moment the bar went glass — the hover label read navy over
+       the accent fill at the top of the page and white further down. A custom
+       property has no such fight: whoever sets --pill-ink last for a given
+       element wins, and both labels and the caret read from it. */
+    --pill-ink: #FFFFFF;
+    --pill-ink-on-fill: var(--btn-text-gold);
+
     position: fixed;
     top: 0;
     inset-inline: 0;
@@ -18,6 +32,7 @@
     will-change: transform;
 }
 #navbar.scrolled {
+    --pill-ink: var(--text-primary);
     height: 68px;
     background: color-mix(in srgb, var(--surface-elevated) 85%, transparent);
     -webkit-backdrop-filter: saturate(160%) blur(14px);
@@ -92,6 +107,10 @@
 .pill-link { display: inline-flex; text-decoration: none; border-radius: var(--radius-pill); }
 
 .pill {
+    /* Published as a token because nav-polish.css's sliding underline has to
+       line up with the label's box, and it can only do that if it insets by
+       exactly this value. */
+    --pill-pad-x: clamp(0.45rem, -0.75rem + 1.78vw, 0.85rem);
     position: relative;
     overflow: hidden;
     display: inline-flex;
@@ -102,7 +121,7 @@
        to full size at 1440px. Interpolating rather than stepping means the row
        can never overflow at an in-between width. */
     padding-block: 0.5rem;
-    padding-inline: clamp(0.45rem, -0.75rem + 1.78vw, 0.85rem);
+    padding-inline: var(--pill-pad-x);
     border-radius: var(--radius-pill);
     font-family: var(--font-body);
     font-weight: var(--fw-medium);
@@ -129,16 +148,23 @@
 }
 .pill-label {
     display: block;
-    color: #fff;
+    color: var(--pill-ink);
     transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .pill-label--alt {
     position: absolute;
     top: 100%;
     inset-inline: 0;
-    color: var(--btn-text-gold);
+    color: var(--pill-ink-on-fill);
 }
-#navbar.scrolled .pill-label { color: var(--text-primary); }
+
+/* A filled pill carries the on-fill ink for everything inside it — the
+   swapped-in label, the caret and the underline — so the accent fill never
+   has to host two different text colours. */
+.pill-item:hover,
+.pill-item.is-active { --pill-ink: var(--pill-ink-on-fill); }
+/* Split out: an unsupported :has() would invalidate the whole rule above. */
+.pill-item:has(:focus-visible) { --pill-ink: var(--pill-ink-on-fill); }
 
 /* Fill + swap on hover, keyboard focus, or active route. */
 .pill-item:hover .pill-circle,
@@ -152,6 +178,40 @@
     transform: translateY(-100%);
 }
 
+/* ── Dropdown pill (Rooms) ──
+   The caret is a sibling of .pill, OUTSIDE the element that holds the fill, so
+   this one pill used to fill only under its label and leave the caret sitting
+   on the bare bar — the odd one out among eight. The fill therefore moves up
+   to .pill-split, which wraps both, and the inner circle stands down. No
+   markup change: the split already exists to group them. */
+.has-dropdown .pill-split {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+}
+.has-dropdown .pill-split::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: var(--radius-pill);
+    background: var(--gold-gradient);
+    transform: scaleY(0);
+    transform-origin: 50% 100%;
+    transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.has-dropdown:hover .pill-split::before,
+.has-dropdown.is-active .pill-split::before,
+.has-dropdown.open .pill-split::before { transform: scaleY(1); }
+.has-dropdown:focus-within .pill-split::before { transform: scaleY(1); }
+/* Would otherwise double up with the split's fill. */
+.has-dropdown .pill-circle { display: none; }
+/* The caret is part of the fill now, so it swaps ink with the label. */
+.has-dropdown.open,
+.has-dropdown:focus-within { --pill-ink: var(--pill-ink-on-fill); }
+.has-dropdown.open .pill-label,
+.has-dropdown:focus-within .pill-label { transform: translateY(-100%); }
+
 /* Dropdown caret (Rooms). */
 .pill-caret-btn {
     display: inline-grid;
@@ -160,9 +220,8 @@
     border: none;
     cursor: pointer;
     padding: 0.5rem 0.55rem 0.5rem 0.1rem;
-    color: #fff;
+    color: var(--pill-ink);
 }
-#navbar.scrolled .pill-caret-btn { color: var(--text-primary); }
 .caret {
     width: 0;
     height: 0;
@@ -175,6 +234,18 @@
 
 /* ── Dropdown panel (glass) ── */
 .has-dropdown { position: relative; }
+/* The panel hangs 6px below the pill, and those 6px belonged to neither
+   element: crossing them dropped :hover, which started the panel's 0.22s fade
+   out from under the pointer. The bridge makes the gap part of the panel's own
+   hit area, so the pointer never leaves the item on the way down. It is
+   transparent and sits behind the panel, so nothing about the look changes. */
+.dropdown::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: -8px;
+    height: 8px;
+}
 .dropdown {
     position: absolute;
     top: calc(100% + 6px);
@@ -193,7 +264,10 @@
     z-index: 20;
 }
 .pill-item.has-dropdown:hover .dropdown,
-.has-dropdown.open .dropdown {
+.has-dropdown.open .dropdown,
+/* Keyboard parity: tabbing onto the caret opens the panel the same way
+   hovering does, instead of requiring a click to reach the room links. */
+.has-dropdown:focus-within .dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
@@ -220,8 +294,12 @@
    bar; the outline-fills-on-hover look + sliding arrow come from the global
    button. */
 .nav-cta {
-    padding: 0.55rem 1.3rem;
-    font-size: 0.95rem;
+    /* Size only, and only through the tokens — the 52px content button would
+       not fit a 60px bar. Everything else is the shared button. */
+    --btn-pad-y: 0.5rem;
+    --btn-pad-x: 1.35rem;
+    --btn-fs: 0.92rem;
+    --btn-min-h: 42px;
 }
 
 /* Theme toggle — glass over the hero, solid once scrolled. */

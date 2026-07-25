@@ -149,33 +149,38 @@
 .newsletter-input:focus { outline: none; }
 .newsletter-input:disabled { opacity: 0.6; }
 
-/* Solid gold Subscribe button — the site's filled-CTA treatment (à la .nav-cta):
-   gold gradient, navy ink, arrow slides on hover. */
+/* Subscribe — the shared site button (base.css). Everything structural comes
+   from there; this sets only the colour and the size it has to be to sit
+   inside the input pill, and it sets the size by retuning the --btn-* tokens
+   rather than by redeclaring padding, so it stays inside the button system.
+
+   It keeps the accent fill rather than the navy primary for the same reason
+   the hero's buttons invert: the footer is a dark band, and navy-on-navy is
+   not a button. */
 .newsletter-submit {
+    --btn-pad-y: 0;
+    --btn-pad-x: 1.6rem;
+    --btn-fs: 1rem;
+    --btn-min-h: 52px;
+    --btn-gap: 0.5rem;
     flex: 0 0 auto;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    height: 52px;
-    padding: 0 1.6rem;
     border: none;
-    border-radius: var(--radius-pill);
     background: var(--gold-gradient);
     color: var(--btn-text-gold);
-    font-family: var(--font-body);
-    font-weight: var(--fw-medium);
-    font-size: 1rem;
     white-space: nowrap;
-    cursor: pointer;
     box-shadow: 0 8px 20px -10px rgba(var(--gold-rgb), 0.55);
-    transition: filter 0.25s ease, box-shadow 0.25s ease, transform 0.12s ease;
 }
-.newsletter-submit svg { width: 1.05em; height: 1.05em; transition: transform 0.3s var(--ease-out); }
-.newsletter-submit:hover { filter: brightness(1.05); box-shadow: 0 12px 26px -10px rgba(var(--gold-rgb), 0.7); }
-.newsletter-submit:hover svg { transform: translateX(4px); }
-.newsletter-submit:active { transform: translateY(1px); }
-.newsletter-submit:disabled { cursor: progress; filter: saturate(0.85) brightness(0.97); }
+/* The shared wipe, in the footer's colours. */
+.newsletter-submit::before {
+    background: linear-gradient(100deg, var(--gold-light) 0%, var(--gold) 100%);
+}
+.newsletter-submit:hover {
+    color: var(--brand-navy);
+    box-shadow: 0 12px 26px -10px rgba(var(--gold-rgb), 0.7);
+}
+/* Submitting, not refusing — keep the progress cursor rather than the shared
+   not-allowed one. */
+.newsletter-submit:disabled { cursor: progress; }
 
 /* Loading spinner inside the button. */
 .btn-spinner {
@@ -249,7 +254,9 @@
         border-color: var(--gold);
         box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
     }
-    .newsletter-submit { width: 100%; height: 56px; }
+    /* Stacked under the input on a phone — size still goes through the token,
+       so `height` can never fight the shared button's min-height. */
+    .newsletter-submit { --btn-min-h: 56px; width: 100%; }
 }
 
 @media (prefers-reduced-motion: reduce) {

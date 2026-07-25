@@ -23,10 +23,18 @@ import {
     useState,
 } from 'react';
 import { gsap } from 'gsap';
+import { CustomEase } from 'gsap/CustomEase';
 import Icon from '@/components/shared/Icon';
 import ThemeToggle from './ThemeToggle';
 import { NAV_GROUP_FOR_ROUTE, routeIdFromPathname } from '@/lib/routes';
 import { PRIMARY_NAV } from '@/lib/nav-data';
+import { useHeroNav } from '@/components/providers/HeroNavProvider';
+
+/* The site's --ease-out, expressed for GSAP. The reveal below is the one place
+   the navbar animates on the same curve as the hero's pre-entry layer, so the
+   handover reads as a single movement rather than two. */
+gsap.registerPlugin(CustomEase);
+const EASE_OUT = CustomEase.create('ckEaseOut', 'M0,0 C0.22,1 0.36,1 1,1');
 
 /* Runs before paint on the client, no-ops on the server (avoids the SSR warning
    while preventing a reveal flash). */
@@ -53,6 +61,10 @@ function PillLabel({ label }: { label: string }) {
 
 export default function SiteHeader() {
     const pathname = usePathname();
+    /* On the home page the bar starts concealed: the hero owns navigation until
+       "Continue" is pressed. Everywhere else this is true from the first render,
+       so nothing below changes on any other route. */
+    const { navRevealed } = useHeroNav();
     const [scrolled, setScrolled] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [mobileOpen, setMobileOpen] = useState(false);
@@ -72,6 +84,14 @@ export default function SiteHeader() {
     const hamburgerTl = useRef<gsap.core.Timeline | null>(null);
     const mobileTl = useRef<gsap.core.Timeline | null>(null);
     const mobileOpenRef = useRef(false);
+    /* Read by the scroll handler, which is bound once and must not capture a
+       stale value of the reveal flag. */
+    const revealedRef = useRef(navRevealed);
+    revealedRef.current = navRevealed;
+    /* Whether the bar was already on screen when this mounted — the difference
+       between "the site loaded" and "the hero handed over". */
+    const mountedRevealedRef = useRef(navRevealed);
+    const lastRevealedRef = useRef(navRevealed);
 
     /* ── Scroll: toggle glass state (only on change) + hide on down / show on up ── */
     useEffect(() => {
@@ -91,7 +111,9 @@ export default function SiteHeader() {
                 scrolledState = nextScrolled;
                 setScrolled(nextScrolled);
             }
-            if (!nav || reduced || mobileOpenRef.current) {
+            /* A concealed bar has no show/hide behaviour to run — the reveal
+               effect owns its transform until the hero hands over. */
+            if (!nav || reduced || mobileOpenRef.current || !revealedRef.current) {
                 lastY = y;
                 return;
             }
@@ -114,8 +136,13 @@ export default function SiteHeader() {
         return () => window.removeEventListener('scroll', onScroll);
     }, []);
 
-    /* ── Initial load reveal (logo + pills + actions) ── */
+    /* ── Initial load reveal (logo + pills + actions) ──
+       Unchanged for every route that ships its navbar visible. Skipped when the
+       bar mounts concealed: it would play behind a hidden element and be spent
+       before anyone could see it. The handover effect below plays the same
+       stagger at the moment it is worth watching. */
     useIsoLayoutEffect(() => {
+        if (!mountedRevealedRef.current) return;
         if (prefersReduced() || !navRef.current) return;
         const ctx = gsap.context(() => {
             gsap.from('.nav-reveal', {
@@ -129,6 +156,79 @@ export default function SiteHeader() {
         }, navRef);
         return () => ctx.revert();
     }, []);
+
+    /* ── Handover: the hero's Continue button reveals the bar, "Back to globe"
+       and any route change back to home take it away again ──
+       A layout effect, not a plain one: React has already dropped the
+       `.nav-concealed` class in the render that flipped the flag, so the inline
+       concealed state has to be written back before the browser paints or the
+       bar flashes in at full opacity for one frame.
+
+       Inline styles are also why the class alone cannot conceal it again on the
+       way back: once GSAP has written a transform, only GSAP can take it away.
+
+       Nothing here runs on any route that mounts revealed. */
+    useIsoLayoutEffect(() => {
+        const nav = navRef.current;
+        if (!nav) return;
+        if (lastRevealedRef.current === navRevealed) return;
+        lastRevealedRef.current = navRevealed;
+
+        /* Going back to the globe — or to home from another route — re-arms the
+           pre-entry experience. Animated rather than snapped, because on "Back
+           to globe" this is on screen and needs to leave the way it arrived; on
+           a route change it plays under the page wipe, where it costs nothing.
+
+           The mobile menu is closed alongside it: the panel is a sibling of the
+           bar, so hiding one would otherwise strand the other. */
+        if (!navRevealed) {
+            setMobileOpen(false);
+            if (prefersReduced()) {
+                gsap.set(nav, { yPercent: -104, autoAlpha: 0 });
+                return;
+            }
+            const out = gsap.to(nav, {
+                yPercent: -104,
+                autoAlpha: 0,
+                duration: 0.55,
+                ease: EASE_OUT,
+            });
+            return () => {
+                out.kill();
+            };
+        }
+
+        if (prefersReduced()) {
+            gsap.set(nav, { yPercent: 0, autoAlpha: 1 });
+            return;
+        }
+
+        gsap.set(nav, { yPercent: -104, autoAlpha: 0 });
+        /* Killed rather than reverted on cleanup: reverting would hand `yPercent`
+           back to a recorded value, and that property belongs to the scroll
+           hide/show handler once this has finished. */
+        const tl = gsap
+            .timeline()
+            .to(nav, { yPercent: 0, autoAlpha: 1, duration: 0.85, ease: EASE_OUT })
+            .from(
+                nav.querySelectorAll('.nav-reveal'),
+                {
+                    y: -14,
+                    opacity: 0,
+                    duration: 0.6,
+                    ease: EASE_OUT,
+                    stagger: 0.07,
+                    /* A killed `from` tween does not restore what it overwrote.
+                       Without this, navigating away mid-reveal could leave the
+                       logo and pills stranded at opacity 0. */
+                    clearProps: 'opacity,transform',
+                },
+                0.18
+            );
+        return () => {
+            tl.kill();
+        };
+    }, [navRevealed]);
 
     /* ── Hamburger → X morph timeline (built once) ── */
     useIsoLayoutEffect(() => {
@@ -274,7 +374,15 @@ export default function SiteHeader() {
             <nav
                 id="navbar"
                 ref={navRef}
-                className={scrolled ? 'scrolled' : undefined}
+                /* `nav-concealed` is rendered, not applied by an effect, so the
+                   home page's server HTML already ships the bar hidden — there
+                   is no frame in which it exists on screen before the pre-entry
+                   layer takes over. */
+                className={
+                    [scrolled ? 'scrolled' : '', navRevealed ? '' : 'nav-concealed']
+                        .filter(Boolean)
+                        .join(' ') || undefined
+                }
                 aria-label="Primary"
             >
                 <div className="nav-inner">
