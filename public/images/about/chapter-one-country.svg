@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 2000" width="1600" height="2000" role="img" aria-label="Chapter One · Country placeholder">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0A2E63"/>
+      <stop offset="55%" stop-color="#05204A"/>
+      <stop offset="100%" stop-color="#08182F"/>
+    </linearGradient>
+    <radialGradient id="r1" cx="72%" cy="24%" r="70%">
+      <stop offset="0%" stop-color="#6C969D" stop-opacity=".38"/>
+      <stop offset="100%" stop-color="#6C969D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="l1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8AB2B8"/><stop offset="100%" stop-color="#4F757B"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="2000" fill="url(#g1)"/>
+  <rect width="1600" height="2000" fill="url(#r1)"/>
+  <g fill="none" stroke="#9DBEC3" stroke-opacity=".16" stroke-width="5.6000000000000005">
+    <circle cx="288" cy="1560" r="480"/>
+    <circle cx="1344" cy="400" r="352"/>
+    <path d="M0 1320 C 448.00000000000006 1000, 832 1720, 1600 1200"/>
+    <path d="M0 1600 C 480 1320, 896.0000000000001 1960, 1600 1480"/>
+  </g>
+  <g transform="translate(800 904)">
+    <path d="M0 -160 C 136 -80, 136 88, 0 168
+             C -136 88, -136 -80, 0 -160 Z"
+          fill="none" stroke="#9DBEC3" stroke-opacity=".55" stroke-width="8"/>
+    <path d="M0 -120 L0 136" stroke="#9DBEC3" stroke-opacity=".4" stroke-width="6.4"/>
+  </g>
+  <rect x="704" y="1160" width="192" height="9.6" rx="2" fill="url(#l1)"/>
+  <text x="800" y="1320" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="61" fill="#F5F1E6" fill-opacity=".82">Chapter One · Country</text>
+  <text x="800" y="1411.5" text-anchor="middle"
+        font-family="system-ui, sans-serif" font-size="37" letter-spacing="5.49"
+        fill="#9DBEC3" fill-opacity=".7">PLACEHOLDER · 1600×2000</text>
+</svg>

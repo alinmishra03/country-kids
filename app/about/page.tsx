@@ -1,50 +1,61 @@
 'use client';
 
-/* OUR STORY (app/about) — "A Dream, Rooted in Country". The six-chapter origin
-   narrative with a timeline rail, pull-quotes, the "what we planted" pillars and
-   a signed closing. Content from lib/story-data.js.
+/* OUR STORY (app/about) — "A Dream, Rooted in Country".
+   ────────────────────────────────────────────────────────────────────────────
+   An editorial, image-led telling of the six-chapter origin narrative. EVERY
+   word still comes from lib/story-data.ts and is rendered verbatim: nothing is
+   shortened, re-ordered inside a chapter, summarised or invented. What changed
+   is the composition around the words.
 
-   Motion (all content and copy unchanged):
-     · chapter headings use the masked word reveal;
-     · each chapter is a stagger container, so its index, paragraphs, quote and
-       pillars arrive in sequence rather than as one block;
-     · the vertical rail linking the chapters DRAWS ITSELF as you scroll. The
-       rail is a ::before pseudo-element and cannot be targeted by GSAP, so the
-       tween scrubs a --rail custom property on the chapter and CSS scales the
-       rail from it. */
+   Structure:
+     · an editorial page hero with a scroll-parallaxed photograph;
+     · a chapter rail that tracks reading position (components/story/
+       SectionProgress) and hides itself outside the story;
+     · six chapters, each a section of its own so css/surfaces.css alternates
+       the cream / white band rhythm down the page, and each on a different
+       composition — copy-left, copy-right, centred, and an overlapping panel;
+     · Chapter Two's pull quote lifted out into a full-width navy band;
+     · Chapter Four's three figures as count-up cards;
+     · the closing message over a full-width photograph;
+     · the existing tour call to action, given a split layout.
 
-import { useRef } from 'react';
+   The banding is positional (`.page > .section:nth-of-type(odd|even)` in
+   css/surfaces.css), which is why every chapter is a direct child section of
+   the page rather than one long section with dividers.
+
+   Motion: chapter copy is a stagger container so its label, heading, rule and
+   paragraphs arrive in sequence rather than as one block; headings use the
+   masked word reveal; photographs wipe in and drift; the figures count up. All
+   of it is skipped under prefers-reduced-motion by the shared Reveal /
+   TextReveal / useGsap layer. */
+
+import { Fragment, useRef } from 'react';
 import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import CTASection from '@/components/shared/CTASection';
 import Reveal from '@/components/shared/Reveal';
-import TextReveal from '@/components/shared/TextReveal';
-import useGsap from '@/hooks/useGsap';
+import ImageReveal from '@/components/story/ImageReveal';
+import StoryChapter from '@/components/story/StoryChapter';
+import EditorialQuote from '@/components/story/EditorialQuote';
+import AnimatedStatCard from '@/components/story/AnimatedStatCard';
+import SectionProgress, { type ProgressItem } from '@/components/story/SectionProgress';
+import useCountUp from '@/hooks/useCountUp';
 import { STORY_INTRO, STORY_CHAPTERS, STORY_CLOSING } from '@/lib/story-data';
-import { PHOTOS } from '@/lib/images';
+import { CHAPTER_MEDIA, STORY_IMAGES } from '@/lib/story-media';
+
+/* The rail's entries are derived from the chapters themselves, so adding or
+   re-ordering a chapter can never leave the navigation out of step. */
+const RAIL: ProgressItem[] = STORY_CHAPTERS.map((ch: any) => {
+    const m = CHAPTER_MEDIA[ch.n];
+    return { id: m.id, label: ch.n, short: ch.title, numeral: m.numeral };
+});
 
 export default function AboutPage() {
     const rootRef = useRef(null);
 
-    /* Draw the timeline rail as each chapter passes through the viewport. */
-    useGsap(rootRef, (gsap: any) => {
-        gsap.utils.toArray('.story-chapter').forEach((chapter: any) => {
-            gsap.fromTo(
-                chapter,
-                { '--rail': 0 },
-                {
-                    '--rail': 1,
-                    ease: 'none',
-                    scrollTrigger: {
-                        trigger: chapter,
-                        start: 'top 78%',
-                        end: 'bottom 60%',
-                        scrub: 0.6,
-                    },
-                }
-            );
-        });
-    });
+    /* Chapter Four's figures count up when they reach the viewport. The hook
+       finds .stat-number[data-count] anywhere inside the page. */
+    useCountUp(rootRef);
 
     return (
         <Page id="about" innerRef={rootRef}>
@@ -52,51 +63,50 @@ export default function AboutPage() {
                 kicker={STORY_INTRO.kicker}
                 title={STORY_INTRO.title}
                 lead={STORY_INTRO.lead}
-                image={PHOTOS.pageHeroAbout}
+                image={STORY_IMAGES.hero.src}
+                fallbackImage={STORY_IMAGES.hero.fallback}
                 badges={['Not-for-Profit', 'Ravenhall, Victoria', 'Est. 2026']}
+                variant="editorial"
+                parallax
             />
 
-            <section className="section">
-                <div className="container story">
-                    {STORY_CHAPTERS.map((ch: any) => (
-                        <Reveal as="article" className="story-chapter" stagger key={ch.n}>
-                            <Reveal as="span" variant="item" className="story-chapter-index">
-                                {ch.n}
-                            </Reveal>
+            <SectionProgress items={RAIL} />
 
-                            <TextReveal as="h2">{ch.title}</TextReveal>
+            {STORY_CHAPTERS.map((ch: any) => {
+                const media = CHAPTER_MEDIA[ch.n];
 
-                            {ch.paras.map((p: string, i: number) => (
-                                <Reveal as="p" variant="item" key={i}>
-                                    {p}
-                                </Reveal>
-                            ))}
-
-                            {ch.quote ? (
-                                <Reveal as="blockquote" variant="item" className="story-quote">
-                                    {ch.quote}
-                                </Reveal>
-                            ) : null}
-
+                return (
+                    /* A Fragment, NOT a wrapper element: css/surfaces.css bands
+                       the page with `.page > .section:nth-of-type(...)`, so
+                       every chapter has to stay a DIRECT child of the page
+                       shell or the whole cream/white rhythm collapses. */
+                    <Fragment key={ch.n}>
+                        <StoryChapter chapter={ch} media={media}>
                             {ch.pillars ? (
                                 <Reveal className="story-pillars" stagger>
                                     {ch.pillars.map((pl: any) => (
-                                        <Reveal
-                                            as="div"
-                                            variant="item"
-                                            className="story-pillar"
-                                            key={pl.title}
-                                        >
-                                            <div className="story-pillar-stat">{pl.stat}</div>
-                                            <h3>{pl.title}</h3>
-                                            <p>{pl.text}</p>
-                                        </Reveal>
+                                        <AnimatedStatCard pillar={pl} key={pl.title} />
                                     ))}
                                 </Reveal>
                             ) : null}
-                        </Reveal>
-                    ))}
+                        </StoryChapter>
 
+                        {/* Chapter Two's quote, presented as its own band. The
+                            text is unchanged and still lives in story-data. */}
+                        {media.quoteBand && ch.quote ? <EditorialQuote quote={ch.quote} /> : null}
+                    </Fragment>
+                );
+            })}
+
+            <section className="section story-closing-section" aria-label="Closing message">
+                <ImageReveal
+                    image={STORY_IMAGES.closing}
+                    ratio="21 / 9"
+                    className="story-closing-media"
+                    strength={6}
+                />
+
+                <div className="container">
                     <Reveal className="story-closing" stagger>
                         {STORY_CLOSING.paras.map((p: string, i: number) => (
                             <Reveal as="p" variant="item" key={i}>
@@ -113,6 +123,7 @@ export default function AboutPage() {
             <CTASection
                 title="Come and be part of the story"
                 text="Every family adds a new chapter. Book a free tour and see where your child's story could begin."
+                image={STORY_IMAGES.cta}
             />
         </Page>
     );

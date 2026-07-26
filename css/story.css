@@ -1,116 +1,661 @@
-/* Our Story page (app/about) — the six-chapter origin narrative "A Dream, Rooted
-   in Country", with a timeline rail, pull-quotes, a pillar grid and a signed
-   closing. */
+/* ─── OUR STORY (app/about) ──────────────────────────────────────────────
+   "A Dream, Rooted in Country" — the six-chapter origin narrative, told as an
+   editorial page: alternating split compositions, a full-width pull quote, the
+   "what we planted" figures, an overlapping community panel and a closing
+   message over a full-bleed photograph.
 
-.story { max-width: 820px; margin-inline: auto; }
+   Two structural facts this file is written around:
 
-.story-chapter { position: relative; padding-inline-start: 2.5rem; }
-.story-chapter + .story-chapter { margin-top: 3.5rem; }
+     1. Each chapter is a DIRECT child section of the page shell, so the
+        positional band rhythm in css/surfaces.css alternates cream and white
+        down the page on its own. Nothing here sets a section background —
+        those rules carry an id in a :not() and would win anyway.
+     2. The quote band takes `.section-alt`, which css/surfaces.css paints navy.
+        This file therefore only adds texture and typography on top of it.
 
-/* Vertical rail linking the chapters, with a gold node per chapter. */
-/* The rail draws itself downward as the chapter scrolls through the viewport.
-   A pseudo-element cannot be tweened directly, so app/about/page.tsx scrubs the
-   --rail custom property on .story-chapter and this scales from it. Defaults to
-   1 (fully drawn), so with JS off or motion reduced the rail is simply there. */
-.story-chapter::before {
-    content: "";
-    position: absolute;
-    inset-inline-start: 7px;
-    top: 0.65rem;
-    bottom: -3.5rem;
-    width: 2px;
-    background: var(--border-subtle);
-    transform: scaleY(var(--rail, 1));
-    transform-origin: top center;
+   Everything is token-driven, so both themes come out of the same rules. */
+
+/* ── Shared measure ──────────────────────────────────────────────────────
+   Prose never runs wider than this, whatever the composition. Long lines are
+   the fastest way to make a beautiful page unreadable. */
+.story-copy { --story-measure: 60ch; }
+
+/* ═══ 1. CHAPTER SCAFFOLD ════════════════════════════════════════════════ */
+
+.story-section { position: relative; overflow: hidden; }
+
+.story-layout {
+    display: grid;
+    gap: clamp(2.25rem, 5vw, 4.5rem);
+    align-items: center;
 }
-.story-chapter:last-child::before { display: none; }
-.story-chapter::after {
-    content: "";
-    position: absolute;
-    inset-inline-start: 0;
-    top: 0.35rem;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--gold-gradient);
-    box-shadow: 0 0 0 4px var(--surface-1);
-}
+
+/* Copy block — the same piece in every composition. */
+.story-copy { max-width: var(--story-measure); }
+.story-copy > p:last-child { margin-bottom: 0; }
 
 .story-chapter-index {
-    display: inline-block;
+    display: flex;
+    align-items: baseline;
+    gap: 0.85rem;
+    margin: 0 0 0.9rem;
+}
+/* The decorative numeral. Large, hairline-weight and low contrast — a mark on
+   the page rather than a heading competing with the real one. */
+.story-chapter-numeral {
     font-family: var(--font-display);
-    font-size: 0.8rem;
+    font-size: clamp(2.6rem, 6vw, 4rem);
+    font-weight: var(--fw-light);
+    line-height: 0.8;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(var(--gold-rgb), 0.55);
+    letter-spacing: -0.02em;
+}
+/* Without text-stroke support the numeral would be invisible, so fall back to
+   a low-contrast fill rather than to nothing. */
+@supports not (-webkit-text-stroke: 1px currentColor) {
+    .story-chapter-numeral { color: rgba(var(--gold-rgb), 0.4); }
+}
+.story-chapter-label {
+    font-family: var(--font-body);
+    font-size: 0.72rem;
     font-weight: var(--fw-medium);
-    letter-spacing: 1.5px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--gold-deep);
-    margin-bottom: 0.5rem;
-}
-.story-chapter h2 { font-size: clamp(1.6rem, 3.2vw, 2.1rem); margin-bottom: 1rem; }
-.story-chapter p {
-    color: var(--mid);
-    font-size: 1.08rem;
-    line-height: 1.8;
-    margin-bottom: 1.1rem;
 }
 
-.story-quote {
-    margin: 1.6rem 0 0.5rem;
-    padding: 1.3rem 1.6rem;
-    border-inline-start: 4px solid var(--gold);
-    background: var(--surface-2);
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-style: italic;
-    line-height: 1.6;
+.story-chapter-title {
+    font-size: clamp(1.85rem, 3.6vw, 2.9rem);
+    line-height: 1.15;
+    margin: 0 0 1.15rem;
+}
+
+/* The rule under each chapter heading. Grows open on entry (the `lineGrow`
+   variant in lib/motion.ts) and defaults to drawn, so reduced motion and a
+   JS-free render both show a finished line. */
+.story-rule {
+    display: block;
+    width: 74px;
+    height: 2px;
+    margin: 0 0 1.6rem;
+    border-radius: 2px;
+    background: var(--gold-gradient);
+    transform-origin: left center;
+}
+
+.story-copy p {
+    color: var(--mid);
+    font-size: clamp(1rem, 1.05vw, 1.08rem);
+    line-height: 1.85;
+    margin-bottom: 1.15rem;
+}
+/* The chapter's opening sentence carries a touch more presence — a standard
+   editorial lead-in, and the cheapest possible typographic hierarchy. The
+   chapter label is a <div>, so :first-of-type is genuinely the first
+   paragraph of prose. */
+.story-copy > p:first-of-type {
+    font-size: clamp(1.06rem, 1.2vw, 1.16rem);
     color: var(--accent-ink);
 }
 
-/* Chapter Four's "what we planted" pillars. */
-/* Surface/shadow/hover come from the shared card system in section-commons.css. */
-.story-pillars {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.25rem;
-    margin-top: 1.75rem;
+/* ── Composition: copy left, image right ── */
+.story-section--split-right .story-layout,
+.story-section--split-left .story-layout {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
 }
-.story-pillar { padding: var(--card-pad-sm) 1.35rem; }
+/* Copy is always FIRST in the DOM. `order` moves the picture visually without
+   changing reading order for a screen reader or for the stacked phone layout. */
+.story-section--split-left .story-media { order: -1; }
+
+/* ── Composition: centred editorial column, wide image beneath ── */
+.story-section--centered .story-layout { grid-template-columns: minmax(0, 1fr); }
+.story-section--centered .story-copy {
+    max-width: 68ch;
+    margin-inline: auto;
+    text-align: center;
+}
+.story-section--centered .story-chapter-index { justify-content: center; }
+.story-section--centered .story-rule { margin-inline: auto; transform-origin: center; }
+
+/* ── Composition: image with an overlapping navy panel (Chapter Six) ── */
+.story-section--overlap .story-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+}
+/* The photograph has to render ABOVE the panel for the panel to overlap it.
+   Copy stays first in the DOM (reading order), so the picture is pulled up
+   visually with `order` — without this the negative margin on the panel pulls
+   it up over nothing and the composition collapses into two stacked blocks. */
+.story-section--overlap .story-media { order: -1; }
+.story-section--overlap .story-copy {
+    position: relative;
+    z-index: 2;
+    max-width: 68ch;
+    margin-inline: auto;
+    /* The overlap itself. Kept modest so the photograph is never reduced to a
+       strip behind a panel. */
+    margin-top: clamp(-6rem, -6vw, -2.5rem);
+    padding: clamp(2rem, 4vw, 3.25rem);
+    background: var(--blue-gradient);
+    /* Asymmetric corners — a landscape contour rather than a rounded box. */
+    border-radius: var(--radius-xl) var(--radius-sm) var(--radius-xl) var(--radius-sm);
+    box-shadow: var(--shadow-elevation);
+    overflow: hidden;
+}
+/* Soft sage contour washing across the panel. */
+.story-section--overlap .story-copy::after {
+    content: "";
+    position: absolute;
+    inset-inline-end: -18%;
+    top: -55%;
+    width: 62%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.30) 0%, transparent 66%);
+    pointer-events: none;
+}
+.story-section--overlap .story-copy > * { position: relative; z-index: 1; }
+.story-section--overlap .story-chapter-label { color: var(--gold-light); }
+.story-section--overlap .story-chapter-numeral { -webkit-text-stroke-color: rgba(255, 255, 255, 0.45); }
+.story-section--overlap .story-chapter-title { color: #fff; }
+.story-section--overlap .story-copy p { color: rgba(255, 255, 255, 0.86); }
+
+/* ── Chapter Five: the compliance promise, as a formal card ── */
+.story-copy--card {
+    max-width: none;
+    padding: clamp(1.75rem, 3.5vw, 2.75rem);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    /* A single gold edge — the "signed undertaking" tell, restrained. */
+    border-inline-start: 3px solid var(--gold);
+}
+.story-copy-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1.1rem;
+    border-radius: 50%;
+    color: var(--gold-deep);
+    background: var(--green-pale);
+}
+
+/* ═══ 2. IMAGE REVEAL ════════════════════════════════════════════════════
+   The frame reserves its box from the asset's own dimensions, so a photograph
+   arriving late cannot shift the page. The wipe and drift come from
+   <ParallaxMedia> (.pm / .pm-inner in css/motion-system.css). */
+
+.ir { margin: 0; }
+.ir-frame {
+    aspect-ratio: var(--ir-ratio, 4 / 3);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevation);
+    background: var(--surface-2);
+}
+.ir-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.ir-caption {
+    margin-top: 0.85rem;
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--mid);
+}
+
+/* Centred compositions give their picture the full shell width. */
+.ir--centered .ir-frame { aspect-ratio: var(--ir-ratio, 2 / 1); }
+.ir--overlap .ir-frame { border-radius: var(--radius-xl); }
+
+/* ═══ 3. FEATURED QUOTE BAND ═════════════════════════════════════════════ */
+
+.story-quote-band {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+/* Botanical texture: a scattered seed field, drawn once as a data URI so it
+   costs no request and tiles at any size. Low opacity — it should register as
+   grain, not as pattern. */
+.story-quote-texture {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0.16;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cg fill='none' stroke='%236C969D' stroke-width='1.4'%3E%3Cpath d='M30 22c9 6 9 18 0 24-9-6-9-18 0-24z'/%3E%3Cpath d='M30 26v16'/%3E%3Cpath d='M118 62c9 6 9 18 0 24-9-6-9-18 0-24z'/%3E%3Cpath d='M118 66v16'/%3E%3Cpath d='M74 128c9 6 9 18 0 24-9-6-9-18 0-24z'/%3E%3Cpath d='M74 132v16'/%3E%3Ccircle cx='150' cy='140' r='4'/%3E%3Ccircle cx='58' cy='72' r='3'/%3E%3Ccircle cx='14' cy='118' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat: repeat;
+    /* Fade the texture out at the edges so the tile seams never read. */
+    -webkit-mask-image: radial-gradient(ellipse at center, #000 20%, transparent 78%);
+    mask-image: radial-gradient(ellipse at center, #000 20%, transparent 78%);
+}
+.story-quote-band > .container { position: relative; z-index: 1; }
+
+.story-quote-figure { margin: 0 auto; }
+.story-quote-seed {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    color: var(--gold-light);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+}
+.story-quote-rule {
+    display: block;
+    width: 60px;
+    height: 1px;
+    margin: 1.6rem auto;
+    background: var(--gold-gradient);
+    transform-origin: center;
+}
+.story-quote-text { margin: 0; }
+/* The measure lives HERE, not on the figure. `ch` resolves against the
+   element's OWN font, so 24ch on the figure (inheriting ~1rem body text) came
+   out around 210px and crushed the quote into a ribbon. On the paragraph, at
+   its display size, 30ch is the ~3 lines this quote wants. */
+.story-quote-text p {
+    max-width: 30ch;
+    margin: 0 auto;
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-style: italic;
+    font-size: clamp(1.6rem, 4.2vw, 3rem);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+    color: #fff;
+    text-wrap: balance;
+}
+
+/* ═══ 4. "WHAT WE PLANTED" FIGURES ═══════════════════════════════════════
+   Surface, radius, shadow and the hover lift all come from the shared card
+   system in css/section-commons.css (.story-pillar is already in its selector
+   list). Only what is unique to these cards lives here. */
+
+.story-pillars {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--card-gap);
+    margin-top: clamp(2rem, 4vw, 3.25rem);
+}
+.story-pillar {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.story-pillar-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 1.1rem;
+    border-radius: 50%;
+    color: var(--gold-deep);
+    background: var(--green-pale);
+    transition: transform 0.5s var(--ease-out), background-color 0.4s ease;
+}
+.story-pillar:hover .story-pillar-icon,
+.story-pillar:focus-within .story-pillar-icon { transform: scale(1.08); }
+
 .story-pillar-stat {
     font-family: var(--font-display);
-    font-size: 2.4rem;
+    font-weight: var(--fw-light);
+    font-size: clamp(2.6rem, 5vw, 3.4rem);
     line-height: 1;
+    margin: 0 0 0.7rem;
     color: var(--blue);
-    margin-bottom: 0.6rem;
+    /* The count-up rewrites this node's text every frame; a fixed tabular
+       figure width stops the card from twitching as digits change. */
+    font-variant-numeric: tabular-nums;
 }
-.story-pillar h3 { font-size: 1.05rem; margin-bottom: 0.5rem; }
-.story-pillar p { font-size: 0.92rem; color: var(--mid); line-height: 1.6; margin: 0; }
+.story-pillar h3 {
+    font-size: 1.08rem;
+    line-height: 1.4;
+    margin: 0 0 0.55rem;
+}
+.story-pillar-text {
+    font-size: 0.94rem;
+    color: var(--mid);
+    line-height: 1.7;
+    margin: 0;
+}
 
-/* Signed closing card. */
+/* Nature-inspired hairline along the foot of the card, drawn on hover. */
+.story-pillar-sprig {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 3px;
+    background: var(--gold-gradient);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.55s var(--ease-out);
+}
+.story-pillar:hover .story-pillar-sprig,
+.story-pillar:focus-within .story-pillar-sprig { transform: scaleX(1); }
+
+/* The cards carry no tabindex — they are not interactive, and a static panel
+   in the tab order is a stop with nothing behind it. This keeps the treatment
+   correct for the day a link IS added inside one. */
+.story-pillar:focus-within {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+}
+
+/* ═══ 5. CLOSING ═════════════════════════════════════════════════════════ */
+
+.story-closing-section {
+    position: relative;
+    /* The photograph runs to the section's own top edge. */
+    padding-top: 0;
+}
+/* NB: the ratio is set as an INLINE custom property by <ImageReveal>, so it
+   cannot be re-declared from a stylesheet. Anything that needs to change the
+   crop has to set `aspect-ratio` on the frame directly — see the phone
+   breakpoint below. */
+.story-closing-media .ir-frame {
+    border-radius: 0;
+    box-shadow: none;
+}
+/* A gradient foot on the photograph so the panel rises out of it rather than
+   sitting on it. */
+.story-closing-media::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 45%;
+    background: linear-gradient(180deg, transparent, rgba(5, 32, 74, 0.55));
+    pointer-events: none;
+}
+.story-closing-media { position: relative; }
+
 .story-closing {
-    margin-top: 4rem;
-    padding: 2.6rem 2rem;
+    position: relative;
+    z-index: 2;
+    /* Overlaps up onto the photograph. */
+    margin: clamp(-8rem, -8vw, -3rem) auto 0;
+    max-width: 74ch;
+    padding: clamp(2.25rem, 4.5vw, 3.5rem);
     text-align: center;
-    background: var(--green-pale);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
     border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-elevation);
 }
 .story-closing p {
-    max-width: 60ch;
-    margin: 0 auto 1rem;
-    font-size: 1.15rem;
+    max-width: 62ch;
+    margin: 0 auto 1.1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.1rem, 1.6vw, 1.32rem);
     line-height: 1.75;
     color: var(--accent-ink);
 }
+.story-closing p:last-of-type { margin-bottom: 0; }
 .story-sign {
     display: inline-block;
-    margin-top: 0.75rem;
+    margin-top: 1.4rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--border-subtle);
     font-family: var(--font-display);
     font-style: italic;
-    font-size: 1.1rem;
-    color: var(--green-deep);
+    font-size: 1.08rem;
+    color: var(--gold-deep);
 }
 
-@media (max-width: 620px) {
-    .story-pillars { grid-template-columns: 1fr; }
-    .story-chapter { padding-inline-start: 2rem; }
+/* ═══ 6. CHAPTER RAIL (components/story/SectionProgress) ═════════════════
+   One list, two presentations. Below the nav (z-index 1000 in css/nav.css) so
+   it can never sit over the site navigation. */
+
+.sprog {
+    position: fixed;
+    z-index: 900;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.45s var(--ease-out), visibility 0.45s;
+    /* Only the buttons take pointer events; the frame never blocks the page. */
+    pointer-events: none;
+}
+.sprog.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+.sprog-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.sprog-btn {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    color: var(--mid);
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color 0.35s ease;
+}
+.sprog-dot {
+    flex: none;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid var(--gold);
+    background: transparent;
+    transition: transform 0.45s var(--ease-out), background-color 0.35s ease;
+}
+.sprog-btn:hover .sprog-dot,
+.sprog-btn:focus-visible .sprog-dot { transform: scale(1.35); }
+.sprog-btn.is-active .sprog-dot {
+    background: var(--gold);
+    transform: scale(1.35);
+}
+.sprog-btn.is-active { color: var(--accent-ink); }
+.sprog-btn:hover { color: var(--accent-ink); }
+.sprog-btn:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+}
+
+.sprog-progress {
+    display: block;
+    background: var(--border-subtle);
+    overflow: hidden;
+}
+.sprog-progress-fill {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: var(--gold-gradient);
+    /* No transition: the value is written every animation frame while
+       scrolling, so the scroll itself is the easing. */
+}
+
+/* ── Desktop: a vertical rail in the right gutter ──
+   1240px, not 1100: the shell is `min(1240px, 90%)`, so below this the gutter
+   is too narrow for the rail to sit beside the text rather than on top of it. */
+@media (min-width: 1240px) {
+    .sprog {
+        top: 50%;
+        inset-inline-end: clamp(0.75rem, 2.2vw, 2rem);
+        transform: translateY(-50%);
+        display: flex;
+        align-items: stretch;
+        gap: 0.9rem;
+    }
+    .sprog-progress {
+        width: 2px;
+        border-radius: 2px;
+    }
+    .sprog-progress-fill {
+        transform: scaleY(var(--sprog-p, 0));
+        transform-origin: top center;
+    }
+    .sprog-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.05rem;
+        padding: 0.6rem 0.7rem;
+        border-radius: var(--radius-md);
+        transition: background-color 0.35s ease, box-shadow 0.35s ease;
+    }
+    /* The names sit over the page, so while they are out the list earns a
+       surface. Without it, dark labels land on a photograph and vanish. */
+    .sprog:hover .sprog-list,
+    .sprog:focus-within .sprog-list {
+        background: rgba(var(--bg-primary-rgb), 0.88);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        box-shadow: var(--shadow-soft);
+    }
+    .sprog-numeral { display: none; }
+    /* Held back until the reader reaches for it — the rail rests as six quiet
+       dots. The CURRENT chapter deliberately does NOT auto-expand: a permanent
+       label would sit over the body text at every width below ~1600px, which
+       is exactly the overlap this breakpoint exists to avoid. */
+    .sprog-label {
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        transform: translateX(-6px);
+        transition:
+            max-width 0.5s var(--ease-out),
+            opacity 0.35s ease,
+            transform 0.5s var(--ease-out);
+    }
+    .sprog:hover .sprog-label,
+    .sprog:focus-within .sprog-label {
+        max-width: 16ch;
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ── Below 1100px: a slim bar along the bottom edge ── */
+@media (max-width: 1239px) {
+    .sprog {
+        inset-inline: 0;
+        bottom: 0;
+        padding: 0.55rem clamp(0.75rem, 4vw, 1.5rem) max(0.55rem, env(safe-area-inset-bottom));
+        background: rgba(var(--bg-primary-rgb), 0.86);
+        -webkit-backdrop-filter: blur(14px);
+        backdrop-filter: blur(14px);
+        border-top: 1px solid var(--border-subtle);
+    }
+    /* The bar is a real surface, so it must catch its own clicks — otherwise
+       links behind the translucent panel are still hittable through it. */
+    .sprog.is-visible { pointer-events: auto; }
+    .sprog-progress {
+        position: absolute;
+        inset-inline: 0;
+        top: 0;
+        height: 2px;
+    }
+    .sprog-progress-fill {
+        transform: scaleX(var(--sprog-p, 0));
+        transform-origin: left center;
+    }
+    .sprog-list {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.25rem;
+    }
+    .sprog-item { flex: 1 1 0; display: flex; justify-content: center; }
+    .sprog-btn {
+        /* 44px minimum target — the whole point of the bar is that it can be
+           tapped accurately with a thumb. */
+        min-width: 44px;
+        min-height: 44px;
+        justify-content: center;
+        gap: 0.4rem;
+        font-size: 0.7rem;
+    }
+    .sprog-label { display: none; }
+    .sprog-dot { display: none; }
+    .sprog-numeral {
+        font-family: var(--font-display);
+        font-size: 0.95rem;
+        letter-spacing: 0.04em;
+        color: var(--mid);
+        transition: color 0.3s ease;
+    }
+    .sprog-btn.is-active .sprog-numeral { color: var(--gold-deep); }
+    /* Colour is not the only signal — the current chapter also gets a rule. */
+    .sprog-btn.is-active::after {
+        content: "";
+        position: absolute;
+        bottom: 6px;
+        width: 16px;
+        height: 2px;
+        border-radius: 2px;
+        background: var(--gold-gradient);
+    }
+    .sprog-btn { position: relative; }
+}
+
+/* ═══ 7. RESPONSIVE ══════════════════════════════════════════════════════ */
+
+/* Tablet landscape and below: split compositions stack. */
+@media (max-width: 900px) {
+    .story-section--split-right .story-layout,
+    .story-section--split-left .story-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+    /* Stacked, the picture reads better after the words it belongs to, so the
+       visual reorder is dropped rather than inverted. */
+    .story-section--split-left .story-media { order: 0; }
+    .story-copy { max-width: none; }
+    .story-section--overlap .story-copy { margin-top: -2.5rem; }
+}
+
+@media (max-width: 760px) {
+    .story-pillars { grid-template-columns: minmax(0, 1fr); }
+    .story-closing { margin-top: -2.5rem; }
+    /* A 21:9 letterbox is far too shallow on a phone, and a 2:1 chapter image
+       too wide. Both are re-cropped on the frame itself. */
+    .ir--centered .ir-frame { aspect-ratio: 3 / 2; }
+    .story-closing-media .ir-frame { aspect-ratio: 16 / 10; }
+    .ir--overlap .ir-frame { aspect-ratio: 4 / 3; }
+}
+
+@media (max-width: 420px) {
+    .story-chapter-index { gap: 0.6rem; }
+    .story-closing { margin-top: -1.75rem; }
+    .story-copy--card { border-inline-start-width: 2px; }
+}
+
+/* ═══ 8. REDUCED MOTION ══════════════════════════════════════════════════
+   The shared Reveal / TextReveal / useGsap layer already opts out of its own
+   animations. These are the CSS-only transitions this file adds. */
+@media (prefers-reduced-motion: reduce) {
+    .sprog,
+    .sprog-btn,
+    .sprog-dot,
+    .sprog-label,
+    .sprog-numeral,
+    .story-pillar-icon,
+    .story-pillar-sprig {
+        transition: none;
+    }
+    /* Anything whose resting state is "drawn open" must simply be open. */
+    .story-rule,
+    .story-quote-rule { transform: none; }
 }

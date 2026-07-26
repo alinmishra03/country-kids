@@ -13,6 +13,16 @@ export function img(id, w = 800, q = 60) {
     return `${BASE}${id}?auto=format&fit=crop&w=${w}&q=${q}`;
 }
 
+/* As img(), but asks for an EXACT w×h crop rather than the photo's own ratio.
+   Editorial layouts pin a frame to a known aspect and cover-fit inside it, so
+   letting the CDN do the crop means the bytes that arrive are the bytes that
+   are shown — no downloading a tall photo to display a letterbox strip of it.
+   Local paths still pass straight through. */
+export function crop(id, w = 1200, h = 900, q = 68) {
+    if (id.startsWith('/') || id.startsWith('http')) return id;
+    return `${BASE}${id}?auto=format&fit=crop&crop=entropy&w=${w}&h=${h}&q=${q}`;
+}
+
 /* Named photos used by page heroes and standalone sections (all verified). */
 export const PHOTOS = {
     heroPoster: '1587616211892-f743fcca64f9',   // bright classroom of children

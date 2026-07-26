@@ -72,6 +72,49 @@
     box-shadow: 0 18px 40px -18px rgba(255, 255, 255, 0.4);
 }
 
+/* ─── SPLIT VARIANT ──────────────────────────────────────────────────────
+   Opt-in, via <CTASection image={…} />. Only pages that pass an image get it;
+   everything else keeps the centred band unchanged. Copy, phone number, button
+   labels and destinations are identical in both forms — this is composition,
+   not content. */
+.cta-band--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 3.5rem);
+    text-align: start;
+    padding: clamp(2.75rem, 5vw, 4rem);
+}
+.cta-band--split .cta-band-title,
+.cta-band--split .cta-band-text { margin-inline: 0; }
+.cta-band--split .cta-band-text { max-width: 46ch; }
+.cta-band--split .cta-band-actions { justify-content: flex-start; }
+/* The glow is a centred halo in the stacked band; off to one side it would sit
+   behind the photograph rather than behind the words. */
+.cta-band--split .cta-band-glow {
+    inset-inline-start: 26%;
+    top: -55%;
+}
+.cta-band-media {
+    position: relative;
+    z-index: 1;
+}
+.cta-band-media .ir-frame {
+    border-radius: var(--radius-lg);
+    box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.55);
+}
+
+@media (max-width: 860px) {
+    .cta-band--split {
+        grid-template-columns: minmax(0, 1fr);
+        text-align: center;
+    }
+    .cta-band--split .cta-band-text { margin-inline: auto; }
+    .cta-band--split .cta-band-actions { justify-content: center; }
+    .cta-band--split .cta-band-glow { inset-inline-start: 50%; top: -40%; }
+}
+
 @media (max-width: 600px) {
     .cta-band-inner { padding: 3rem 1.4rem; }
+    .cta-band--split { padding: 2.5rem 1.4rem; }
 }

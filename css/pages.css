@@ -68,6 +68,116 @@
     .page-hero::before { animation: none; }
 }
 
+/* ─── EDITORIAL HERO VARIANT ─────────────────────────────────────────────
+   Opt-in, via <PageHero variant="editorial" parallax />. Everything below is
+   scoped to the variant classes, so every page that does NOT ask for it keeps
+   exactly the band it had.
+
+   What it changes: a taller band, a deeper multi-stop overlay (so a photograph
+   with a bright sky still carries white type), more room around the content,
+   and a photograph that drifts against the scroll instead of a CSS Ken-Burns. */
+
+.page-hero--editorial {
+    padding: calc(var(--nav-h) + clamp(5rem, 11vh, 8.5rem)) 0 clamp(5rem, 10vh, 8rem);
+    min-height: clamp(520px, 78vh, 780px);
+    display: grid;
+    align-items: center;
+}
+
+/* Overlay depth. A single flat scrim either washes the picture out or leaves
+   the type fighting it; three stops plus a vignette keep the photograph
+   readable AS a photograph while guaranteeing contrast in the centre, where
+   the words are. */
+.page-hero--editorial::before {
+    background-image:
+        radial-gradient(ellipse at 50% 45%, rgba(4, 16, 34, 0.30) 0%, rgba(4, 16, 34, 0.78) 78%),
+        linear-gradient(180deg, rgba(5, 32, 74, 0.72) 0%, rgba(5, 32, 74, 0.52) 42%, rgba(4, 16, 34, 0.90) 100%),
+        var(--page-hero-img, none);
+}
+
+/* With the parallax variant the photograph is a real element (a pseudo cannot
+   be tweened), so the ::before drops its image layer and carries the scrim
+   alone, above the photograph and below the copy. */
+.page-hero--parallax::before {
+    z-index: 1;
+    background-image:
+        radial-gradient(ellipse at 50% 45%, rgba(4, 16, 34, 0.30) 0%, rgba(4, 16, 34, 0.78) 78%),
+        linear-gradient(180deg, rgba(5, 32, 74, 0.72) 0%, rgba(5, 32, 74, 0.52) 42%, rgba(4, 16, 34, 0.90) 100%);
+    animation: none;
+}
+.page-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+/* Over-sized and offset, so the drift can never expose an edge. */
+.page-hero-layer {
+    position: absolute;
+    inset-inline: 0;
+    top: -5%;
+    height: 110%;
+    background-size: cover;
+    background-position: center;
+    will-change: transform;
+}
+
+.page-hero--editorial .page-hero-content { max-width: 100%; }
+.page-hero--editorial h1 {
+    max-width: 18ch;
+    margin-inline: auto;
+    line-height: 1.08;
+    font-size: clamp(2.4rem, 5.4vw, 4rem);
+}
+.page-hero--editorial p {
+    max-width: 56ch;
+    margin-top: 1.4rem;
+    font-size: clamp(1.02rem, 1.3vw, 1.18rem);
+}
+.page-hero--editorial .page-eyebrow { margin-bottom: 1.4rem; }
+
+/* Trust badges — hairline pills on the photograph rather than solid chips, so
+   they read as a caption line under the lead instead of three more buttons. */
+.page-hero--editorial .page-hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: 2rem;
+}
+.page-hero--editorial .page-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.05rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.30);
+    background: rgba(255, 255, 255, 0.10);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
+}
+.page-hero--editorial .page-hero-badge::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold-light);
+    flex: none;
+}
+
+@media (max-width: 767px) {
+    /* No parallax on phones — the layer is simply a static cover image. */
+    .page-hero-layer { transform: none !important; }
+    .page-hero--editorial { min-height: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .page-hero-layer { transform: none !important; }
+}
+
 .page-body { padding: var(--section-y) 0; }
 
 /* Rounded content photo used across interior pages. */

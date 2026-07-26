@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1350" width="2400" height="1350" role="img" aria-label="About hero background placeholder">
+  <defs>
+    <linearGradient id="g0" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0A2E63"/>
+      <stop offset="55%" stop-color="#05204A"/>
+      <stop offset="100%" stop-color="#08182F"/>
+    </linearGradient>
+    <radialGradient id="r0" cx="72%" cy="24%" r="70%">
+      <stop offset="0%" stop-color="#6C969D" stop-opacity=".38"/>
+      <stop offset="100%" stop-color="#6C969D" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="l0" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8AB2B8"/><stop offset="100%" stop-color="#4F757B"/>
+    </linearGradient>
+  </defs>
+  <rect width="2400" height="1350" fill="url(#g0)"/>
+  <rect width="2400" height="1350" fill="url(#r0)"/>
+  <g fill="none" stroke="#9DBEC3" stroke-opacity=".16" stroke-width="4.7250000000000005">
+    <circle cx="432" cy="1053" r="405"/>
+    <circle cx="2016" cy="270" r="297"/>
+    <path d="M0 891 C 672.0000000000001 675, 1248 1161, 2400 810"/>
+    <path d="M0 1080 C 720 891, 1344.0000000000002 1323, 2400 999"/>
+  </g>
+  <g transform="translate(1200 594)">
+    <path d="M0 -135 C 114.75000000000001 -67.5, 114.75000000000001 74.25, 0 141.75
+             C -114.75000000000001 74.25, -114.75000000000001 -67.5, 0 -135 Z"
+          fill="none" stroke="#9DBEC3" stroke-opacity=".55" stroke-width="6.75"/>
+    <path d="M0 -101.25 L0 114.75000000000001" stroke="#9DBEC3" stroke-opacity=".4" stroke-width="5.4"/>
+  </g>
+  <rect x="1119" y="810" width="162" height="8.1" rx="2" fill="url(#l0)"/>
+  <text x="1200" y="945" text-anchor="middle"
+        font-family="Georgia, 'Times New Roman', serif" font-size="51" fill="#F5F1E6" fill-opacity=".82">About hero background</text>
+  <text x="1200" y="1021.5" text-anchor="middle"
+        font-family="system-ui, sans-serif" font-size="31" letter-spacing="4.59"
+        fill="#9DBEC3" fill-opacity=".7">PLACEHOLDER · 2400×1350</text>
+</svg>

@@ -1,0 +1,271 @@
+/* ─── EDITORIAL LAYER (interior pages) ───────────────────────────────────
+   Two things live here:
+
+     1. The <SplitFeature> section (.ef*) — the image-led composition the Our
+        Story page is built from, generalised so every interior page can use it.
+     2. A short alignment / overflow pass on the shared grids those pages
+        already use.
+
+   Loaded AFTER the per-page stylesheets and BEFORE surfaces.css, so it can
+   correct a grid track without fighting the band colours that come later.
+
+   Nothing here touches the home page, the header, the footer or the nav. */
+
+/* ═══ SPLIT FEATURE ══════════════════════════════════════════════════════ */
+
+.ef { position: relative; overflow: hidden; }
+
+.ef-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 1fr);
+    gap: clamp(2.25rem, 5vw, 4.5rem);
+    align-items: center;
+}
+/* Copy stays first in the DOM; only the paint order flips. */
+.ef--reverse .ef-media { order: -1; }
+
+.ef-copy { max-width: 60ch; }
+.ef-copy > p {
+    color: var(--mid);
+    font-size: clamp(1rem, 1.05vw, 1.08rem);
+    line-height: 1.85;
+    margin-bottom: 1.15rem;
+}
+.ef-copy > p:first-of-type {
+    font-size: clamp(1.06rem, 1.2vw, 1.16rem);
+    color: var(--accent-ink);
+}
+.ef-copy > p:last-child { margin-bottom: 0; }
+
+/* Matches the .section-eyebrow pill used by SectionHeader, so a page mixing
+   both reads as one system. */
+.ef-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-body);
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-size: 0.68rem;
+    line-height: 1.5;
+    color: var(--gold-deep);
+    background: var(--blue-pale);
+    border: 1px solid var(--border-subtle);
+    padding: 0.5rem 1.05rem;
+    border-radius: var(--radius-pill);
+    margin-bottom: 1.3rem;
+}
+.ef-kicker::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex: none;
+}
+
+.ef-title {
+    font-size: clamp(1.85rem, 3.6vw, 2.9rem);
+    line-height: 1.15;
+    margin: 0 0 1.15rem;
+}
+
+.ef-rule {
+    display: block;
+    width: 74px;
+    height: 2px;
+    margin: 0 0 1.6rem;
+    border-radius: 2px;
+    background: var(--gold-gradient);
+    transform-origin: left center;
+}
+
+.ef-list {
+    list-style: none;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0.85rem;
+}
+.ef-list li {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr);
+    align-items: start;
+    gap: 0.8rem;
+    color: var(--mid);
+    font-size: 1rem;
+    line-height: 1.65;
+}
+.ef-tick {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    /* Optical alignment with the first line of text, not the top of the box. */
+    margin-top: 0.12em;
+    border-radius: 50%;
+    color: var(--gold-deep);
+    background: var(--green-pale);
+}
+
+.ef-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+    margin-top: 2rem;
+}
+
+/* The accent word in a split title, matching .section-title in
+   section-commons.css so a page mixing both reads as one system. TextReveal's
+   per-word spans are immune: the neutraliser in motion-system.css scores two
+   classes and beats this rule's class + type. */
+.ef-title span {
+    position: relative;
+    color: var(--gold-deep);
+}
+.ef--invert .ef-title span { color: var(--gold-light); }
+
+/* The section's own grid, full width beneath both columns. */
+.ef-extra {
+    grid-column: 1 / -1;
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+
+.ef-media { position: relative; }
+
+/* The floating figure. Anchored to the frame's lower-inline-start corner and
+   pulled outside it, so it reads as sitting in front of the photograph. */
+.ef-badge {
+    position: absolute;
+    inset-inline-start: clamp(-1.25rem, -2vw, -0.5rem);
+    bottom: clamp(-1.25rem, -2vw, -0.5rem);
+    z-index: 2;
+    display: grid;
+    gap: 0.15rem;
+    padding: 1.05rem 1.4rem;
+    border-radius: var(--radius-md);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-elevation);
+    text-align: start;
+}
+.ef-badge-stat {
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-size: clamp(1.6rem, 2.6vw, 2.1rem);
+    line-height: 1;
+    color: var(--blue);
+}
+.ef-badge-label {
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    max-width: 16ch;
+}
+
+/* ── On the navy band ── */
+.ef--invert .ef-title { color: #fff; }
+.ef--invert .ef-copy > p { color: rgba(255, 255, 255, 0.84); }
+.ef--invert .ef-copy > p:first-of-type { color: #fff; }
+.ef--invert .ef-list li { color: rgba(255, 255, 255, 0.84); }
+.ef--invert .ef-kicker {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+.ef--invert .ef-tick {
+    color: var(--gold-light);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 900px) {
+    .ef-layout { grid-template-columns: minmax(0, 1fr); }
+    /* Stacked, the picture belongs after the words it illustrates, so the
+       visual reorder is dropped rather than inverted. */
+    .ef--reverse .ef-media { order: 0; }
+    .ef-copy { max-width: none; }
+}
+@media (max-width: 520px) {
+    /* Pulled-out corners have nowhere to go on a narrow screen. */
+    .ef-badge {
+        position: static;
+        margin-top: 1rem;
+        justify-items: start;
+    }
+}
+
+/* ═══ INTERIOR-PAGE ALIGNMENT PASS ═══════════════════════════════════════ */
+
+/* EVERY rule below is scoped to `.page:not(#page-home)`. None of these classes
+   is on the home page today, but the brief is that the home page is not to be
+   touched, and scoping makes that a property of the stylesheet rather than a
+   fact that happens to hold right now. The `:not()` carries an id, so these
+   also outrank the single-class rules they correct. */
+
+/* Overflow guard. A grid track written as `1fr` has an automatic minimum of
+   min-content, so one long unbreakable string (an email address, a framework
+   acronym, a URL) can push a track wider than its share and force the whole
+   PAGE to scroll sideways. `minmax(0, 1fr)` is the fix, and it changes nothing
+   about how these grids lay out otherwise. */
+.page:not(#page-home) .rooms-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.page:not(#page-home) .curric-cards { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.page:not(#page-home) .fee-steps { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Long words inside cards wrap instead of escaping them. */
+.page:not(#page-home) .curric-card p,
+.page:not(#page-home) .pillar-card p,
+.page:not(#page-home) .fee-step p,
+.page:not(#page-home) .feature-item p,
+.page:not(#page-home) .timeline-card p,
+.page:not(#page-home) .room-card p,
+.page:not(#page-home) .info-card,
+.ef-copy p {
+    overflow-wrap: break-word;
+}
+
+/* The curriculum deck went 3 → 1 in a single step at 900px, so tablets got one
+   very wide card per row with a lake of space beside it. */
+@media (max-width: 1080px) {
+    .page:not(#page-home) .curric-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    .page:not(#page-home) .curric-cards { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 1024px) {
+    .page:not(#page-home) .rooms-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .page:not(#page-home) .fee-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+    .page:not(#page-home) .rooms-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 520px) {
+    .page:not(#page-home) .fee-steps { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The tab row can exceed one line on a phone; the 44px minimum keeps each tab
+   thumb-sized when it does. */
+@media (max-width: 640px) {
+    .page:not(#page-home) .curric-tab {
+        min-height: 44px;
+        font-size: 0.88rem;
+        padding-inline: 1rem;
+    }
+}
+
+/* Selects fill their field rather than sizing to their longest option, so the
+   three estimator controls line up as one row. */
+.page:not(#page-home) .estimator-field select {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Deliberately NOT `overflow-x` on the .page shell. It would be the blunt way
+   to stop sideways scroll, but the chapter rail is position:fixed inside that
+   shell, and an overflow ancestor clips fixed descendants as soon as anything
+   in the chain becomes a containing block — a fragile trade for a symptom.
+   The cause is the auto grid minimum, and that is fixed above; the sections
+   that can genuinely bleed (.ef, .story-section) clip themselves. */

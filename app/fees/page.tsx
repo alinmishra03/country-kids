@@ -9,6 +9,7 @@ import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import SectionHeader from '@/components/shared/SectionHeader';
 import CTASection from '@/components/shared/CTASection';
+import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import {
@@ -19,7 +20,7 @@ import {
     ROOM_GROUPS,
     ESTIMATOR_NOTE,
 } from '@/lib/fees-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 const money = (n) => `$${Math.round(n).toLocaleString('en-AU')}`;
 
@@ -46,28 +47,34 @@ export default function FeesPage() {
                 kicker={FEES_INTRO.kicker}
                 title="Making Quality Care Affordable"
                 lead={FEES_INTRO.lead}
-                image={PHOTOS.pageHeroPrograms}
+                image={PAGE_MEDIA.fees.hero.src}
                 badges={['3-Day CCS Guarantee', 'Kinder Funding · up to $2,500/yr', 'Not-for-Profit']}
+                variant="editorial"
+                parallax
             />
 
-            <section className="section">
-                <div className="container">
-                    <SectionHeader
-                        kicker="How the Subsidy Works"
-                        title={<>Four steps to <span>lower fees</span></>}
-                        lead="The Child Care Subsidy is paid directly to Country Kids, so you only ever pay the gap. Here is how to set it up."
-                    />
-                    <Reveal className="fee-steps" stagger amount={0.1}>
-                        {SUBSIDY_STEPS.map((s) => (
-                            <Reveal as="article" variant="item" className="fee-step" key={s.title}>
-                                <span className="fee-step-icon" aria-hidden="true"><Icon name={s.icon} /></span>
-                                <h3>{s.title}</h3>
-                                <p>{s.text}</p>
-                            </Reveal>
-                        ))}
-                    </Reveal>
-                </div>
-            </section>
+            {/* Existing kicker, title and lead, laid out beside a photograph;
+                the four steps still follow underneath. Nothing about the
+                subsidy wording changed. */}
+            <SplitFeature
+                kicker="How the Subsidy Works"
+                title={<>Four steps to <span>lower fees</span></>}
+                paras={[
+                    'The Child Care Subsidy is paid directly to Country Kids, so you only ever pay the gap. Here is how to set it up.',
+                ]}
+                image={PAGE_MEDIA.fees.feature}
+                reverse
+            >
+                <Reveal className="fee-steps" stagger amount={0.1}>
+                    {SUBSIDY_STEPS.map((s) => (
+                        <Reveal as="article" variant="item" className="fee-step" key={s.title}>
+                            <span className="fee-step-icon" aria-hidden="true"><Icon name={s.icon} /></span>
+                            <h3>{s.title}</h3>
+                            <p>{s.text}</p>
+                        </Reveal>
+                    ))}
+                </Reveal>
+            </SplitFeature>
 
             <section className="section section-alt">
                 <div className="container">

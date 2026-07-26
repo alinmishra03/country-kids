@@ -73,6 +73,14 @@ export const maskReveal = {
     },
 };
 
+/* Line grow — a rule or divider that draws itself open. Pair it with a
+   transform-origin in CSS (left for a rule under a heading, centre for one
+   used as a symmetrical separator). */
+export const lineGrow = {
+    hidden: { opacity: 0, scaleX: 0 },
+    show: { opacity: 1, scaleX: 1, transition: { duration: 0.8, ease: EASE } },
+};
+
 /* Stagger container + item — spread <Reveal variant="item"> children inside a
    <Reveal variant="container">. */
 export const staggerContainer = {
@@ -96,6 +104,7 @@ export const VARIANTS = {
     imageReveal,
     blurReveal,
     maskReveal,
+    lineGrow,
     container: staggerContainer,
     item: staggerItem,
 };

@@ -8,6 +8,7 @@ import { useRef } from 'react';
 import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import SectionHeader from '@/components/shared/SectionHeader';
+import SplitFeature from '@/components/shared/SplitFeature';
 import EnrollForm from '@/components/shared/EnrollForm';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
@@ -19,6 +20,7 @@ import {
 } from '@/lib/enrolment-data';
 import { PHONE, PHONE_HREF, EMAIL, EMAIL_HREF, ADDRESS } from '@/lib/site-data';
 import { img, PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 export default function EnrollPage() {
     const rootRef = useRef(null);
@@ -29,36 +31,42 @@ export default function EnrollPage() {
                 kicker={ENROL_INTRO.kicker}
                 title={ENROL_INTRO.title}
                 lead={ENROL_INTRO.lead}
-                image={PHOTOS.pageHeroEnroll}
+                image={PAGE_MEDIA.enroll.hero.src}
                 badges={['Free tours welcome', 'Responses within 1 business day']}
+                variant="editorial"
+                parallax
             />
 
-            <section className="section">
-                <div className="container">
-                    <SectionHeader
-                        kicker="How Enrolment Works"
-                        title={<>Five gentle steps to <span>your first day</span></>}
-                        lead="Our team guides you through every step — from your first tour to your child settling happily into their named room."
-                    />
-                    <Reveal className="features-grid" stagger amount={0.1}>
-                        {ENROL_STEPS.map((s) => (
-                            <Reveal as="div" variant="item" className="feature-item" key={s.title}>
-                                <div className="feature-icon" aria-hidden="true"><Icon name={s.icon} /></div>
-                                <h3>{s.title}</h3>
-                                <p>{s.text}</p>
-                            </Reveal>
-                        ))}
-                    </Reveal>
+            {/* Existing kicker, title and lead beside a photograph; the five
+                steps and the Kinder callout still follow underneath, unchanged
+                — including the callout's link to #enquire. */}
+            <SplitFeature
+                kicker="How Enrolment Works"
+                title={<>Five gentle steps to <span>your first day</span></>}
+                paras={[
+                    'Our team guides you through every step — from your first tour to your child settling happily into their named room.',
+                ]}
+                image={PAGE_MEDIA.enroll.feature}
+                badge={{ stat: '5', label: 'Steps to your first day' }}
+            >
+                <Reveal className="features-grid" stagger amount={0.1}>
+                    {ENROL_STEPS.map((s) => (
+                        <Reveal as="div" variant="item" className="feature-item" key={s.title}>
+                            <div className="feature-icon" aria-hidden="true"><Icon name={s.icon} /></div>
+                            <h3>{s.title}</h3>
+                            <p>{s.text}</p>
+                        </Reveal>
+                    ))}
+                </Reveal>
 
-                    <Reveal className="sblocks-callout is-spaced" variant="fadeUp">
-                        <div className="sblocks-callout-text">
-                            <h3>{KINDER_CALLOUT.title}</h3>
-                            <p>{KINDER_CALLOUT.text}</p>
-                        </div>
-                        <a className="btn-gold" href="#enquire"><Icon name="graduation" /> Ask about funding</a>
-                    </Reveal>
-                </div>
-            </section>
+                <Reveal className="sblocks-callout is-spaced" variant="fadeUp">
+                    <div className="sblocks-callout-text">
+                        <h3>{KINDER_CALLOUT.title}</h3>
+                        <p>{KINDER_CALLOUT.text}</p>
+                    </div>
+                    <a className="btn-gold" href="#enquire"><Icon name="graduation" /> Ask about funding</a>
+                </Reveal>
+            </SplitFeature>
 
             <section className="section section-alt" id="enquire">
                 <div className="container">

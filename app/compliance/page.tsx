@@ -9,11 +9,12 @@ import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import SectionHeader from '@/components/shared/SectionHeader';
 import CTASection from '@/components/shared/CTASection';
+import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import { COMPLIANCE_INTRO, COMPLIANCE_PILLARS, SECTOR_UPDATES } from '@/lib/compliance-data';
 import { TRUST_BADGES, STARTING_BLOCKS_HREF } from '@/lib/site-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 export default function CompliancePage() {
     const rootRef = useRef(null);
@@ -24,35 +25,39 @@ export default function CompliancePage() {
                 kicker={COMPLIANCE_INTRO.kicker}
                 title="Committed to the Highest Standards"
                 lead={COMPLIANCE_INTRO.lead}
-                image={PHOTOS.pageHeroContact}
+                image={PAGE_MEDIA.compliance.hero.src}
                 badges={TRUST_BADGES.slice(0, 3)}
+                variant="editorial"
+                parallax
             />
 
-            <section className="section">
-                <div className="container">
-                    <SectionHeader
-                        kicker="Four Pillars of Assurance"
-                        title={<>Love, <span>written down where it can be kept</span></>}
-                        lead="Keeping children safe is the quieter part of love — the careful, never-ending work behind every policy and routine. Here is how we hold ourselves accountable."
-                    />
+            {/* Same kicker, title and lead as before — set beside a photograph
+                rather than centred, with the four pillars and the trust badges
+                still beneath. No wording altered, no new claims. */}
+            <SplitFeature
+                kicker="Four Pillars of Assurance"
+                title={<>Love, <span>written down where it can be kept</span></>}
+                paras={[
+                    'Keeping children safe is the quieter part of love — the careful, never-ending work behind every policy and routine. Here is how we hold ourselves accountable.',
+                ]}
+                image={PAGE_MEDIA.compliance.feature}
+            >
+                <Reveal className="pillars-grid" stagger amount={0.1}>
+                    {COMPLIANCE_PILLARS.map((p) => (
+                        <Reveal as="article" variant="item" className="pillar-card" key={p.title}>
+                            <span className="pillar-icon" aria-hidden="true"><Icon name={p.icon} /></span>
+                            <h3>{p.title}</h3>
+                            <p>{p.text}</p>
+                        </Reveal>
+                    ))}
+                </Reveal>
 
-                    <Reveal className="pillars-grid" stagger amount={0.1}>
-                        {COMPLIANCE_PILLARS.map((p) => (
-                            <Reveal as="article" variant="item" className="pillar-card" key={p.title}>
-                                <span className="pillar-icon" aria-hidden="true"><Icon name={p.icon} /></span>
-                                <h3>{p.title}</h3>
-                                <p>{p.text}</p>
-                            </Reveal>
-                        ))}
-                    </Reveal>
-
-                    <Reveal className="trust-badges" variant="fadeUp">
-                        {TRUST_BADGES.map((b) => (
-                            <span className="trust-badge" key={b}><Icon name="badge" /> {b}</span>
-                        ))}
-                    </Reveal>
-                </div>
-            </section>
+                <Reveal className="trust-badges" variant="fadeUp">
+                    {TRUST_BADGES.map((b) => (
+                        <span className="trust-badge" key={b}><Icon name="badge" /> {b}</span>
+                    ))}
+                </Reveal>
+            </SplitFeature>
 
             <section className="section section-alt">
                 <div className="container">

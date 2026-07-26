@@ -40,6 +40,11 @@
 @import url("../css/fees.css");
 @import url("../css/families.css");
 @import url("../css/contact-page.css");
+/* Shared interior-page editorial layer — the SplitFeature section plus a grid
+   alignment / overflow pass. MUST come after EVERY per-page stylesheet it
+   corrects (rooms, curriculum, fees, enroll, contact above) and before
+   surfaces.css, which owns the band colours. */
+@import url("../css/editorial.css");
 @import url("../css/footer.css");
 /* Decorative layer — reusable organic blobs, dots, circles, wave dividers. */
 @import url("../css/decor.css");

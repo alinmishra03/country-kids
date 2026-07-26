@@ -8,12 +8,12 @@
 import { useRef, useState } from 'react';
 import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
-import SectionHeader from '@/components/shared/SectionHeader';
 import CTASection from '@/components/shared/CTASection';
+import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import { CURRICULUM_INTRO, CURRICULUM_SERIES } from '@/lib/curriculum-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 export default function CurriculumPage() {
     const rootRef = useRef(null);
@@ -26,8 +26,22 @@ export default function CurriculumPage() {
                 kicker={CURRICULUM_INTRO.kicker}
                 title="Five Landscapes of Country Kids"
                 lead={CURRICULUM_INTRO.lead}
-                image={PHOTOS.pageHeroEnroll}
+                image={PAGE_MEDIA.curriculum.hero.src}
                 badges={['15 cards · 5 series', 'NQS · VEYLDF · EYLF', 'Child Safe Standards 1–11']}
+                variant="editorial"
+                parallax
+            />
+
+            {/* The intro lead and the frameworks note this page already
+                carried, now set beside the landscape the five series are named
+                for. Both strings are unchanged. */}
+            <SplitFeature
+                kicker={CURRICULUM_INTRO.kicker}
+                title={<>Five landscapes, <span>one curriculum</span></>}
+                paras={[CURRICULUM_INTRO.lead]}
+                image={PAGE_MEDIA.curriculum.feature}
+                badge={{ stat: '5', label: 'Series · 15 practice cards' }}
+                reverse
             />
 
             <section className="section">

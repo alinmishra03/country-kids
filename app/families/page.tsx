@@ -8,10 +8,11 @@ import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import SectionHeader from '@/components/shared/SectionHeader';
 import CTASection from '@/components/shared/CTASection';
+import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import { FAQS } from '@/lib/faq-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 const FAMILY_HIGHLIGHTS = [
     {
@@ -46,28 +47,33 @@ export default function FamiliesPage() {
                 kicker="Families"
                 title="Walking Together, Every Day"
                 lead="A child cannot be raised by a centre alone — it takes a village. Here is how we keep families close, informed, and part of everything we do."
-                image={PHOTOS.aboutHome}
+                image={PAGE_MEDIA.families.hero.src}
                 badges={['Parent communication app', '5 meals daily', 'First & most important teachers']}
+                variant="editorial"
+                parallax
             />
 
-            <section className="section">
-                <div className="container">
-                    <SectionHeader
-                        kicker="Partners in the Journey"
-                        title={<>The world inside &amp; the world <span>beyond, woven as one</span></>}
-                        lead="Children learn most deeply when everything around them makes sense together. That is why we bring families into the everyday life of the centre."
-                    />
-                    <Reveal className="features-grid" stagger amount={0.1}>
-                        {FAMILY_HIGHLIGHTS.map((f) => (
-                            <Reveal as="div" variant="item" className="feature-item" key={f.title}>
-                                <div className="feature-icon" aria-hidden="true"><Icon name={f.icon} /></div>
-                                <h3>{f.title}</h3>
-                                <p>{f.text}</p>
-                            </Reveal>
-                        ))}
-                    </Reveal>
-                </div>
-            </section>
+            {/* Same kicker, title and lead — now beside a photograph, with the
+                four partnership highlights still below it. */}
+            <SplitFeature
+                kicker="Partners in the Journey"
+                title={<>The world inside &amp; the world <span>beyond, woven as one</span></>}
+                paras={[
+                    'Children learn most deeply when everything around them makes sense together. That is why we bring families into the everyday life of the centre.',
+                ]}
+                image={PAGE_MEDIA.families.feature}
+                badge={{ stat: '5', label: 'Fresh meals every day' }}
+            >
+                <Reveal className="features-grid" stagger amount={0.1}>
+                    {FAMILY_HIGHLIGHTS.map((f) => (
+                        <Reveal as="div" variant="item" className="feature-item" key={f.title}>
+                            <div className="feature-icon" aria-hidden="true"><Icon name={f.icon} /></div>
+                            <h3>{f.title}</h3>
+                            <p>{f.text}</p>
+                        </Reveal>
+                    ))}
+                </Reveal>
+            </SplitFeature>
 
             <section className="section section-alt">
                 <div className="container">

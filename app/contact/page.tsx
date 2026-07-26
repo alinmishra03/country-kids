@@ -18,7 +18,7 @@ import {
     HOURS,
     ACKNOWLEDGEMENT,
 } from '@/lib/site-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 const MAP_SRC =
     'https://www.google.com/maps?q=3+Nexus+Street+Ravenhall+VIC+3023&output=embed';
@@ -32,8 +32,10 @@ export default function ContactPage() {
                 kicker="Contact"
                 title={<>We&rsquo;d love to hear from you</>}
                 lead="Questions, tours, or just saying hello — reach us any weekday between 6:30am and 6:30pm."
-                image={PHOTOS.pageHeroContact}
+                image={PAGE_MEDIA.contact.hero.src}
                 badges={['Mon–Fri · 6:30am–6:30pm', 'Ravenhall VIC 3023']}
+                variant="editorial"
+                parallax
             />
 
             <section className="section">

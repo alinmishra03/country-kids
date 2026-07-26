@@ -7,14 +7,14 @@
 import { useRef } from 'react';
 import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
-import SectionHeader from '@/components/shared/SectionHeader';
 import StatsBar from '@/components/home/StatsBar';
 import CTASection from '@/components/shared/CTASection';
+import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import useCountUp from '@/hooks/useCountUp';
 import { PHILOSOPHY_INTRO, PVM, VALUES } from '@/lib/philosophy-data';
-import { PHOTOS } from '@/lib/images';
+import { PAGE_MEDIA } from '@/lib/page-media';
 
 export default function PhilosophyPage() {
     const rootRef = useRef(null);
@@ -26,8 +26,10 @@ export default function PhilosophyPage() {
                 kicker={PHILOSOPHY_INTRO.kicker}
                 title="Rooted in Country. Flourishing Together"
                 lead={PHILOSOPHY_INTRO.lead}
-                image={PHOTOS.pageHeroAbout}
+                image={PAGE_MEDIA.philosophy.hero.src}
                 badges={['Play-based Learning', 'First Nations Perspectives', 'Equity & Anti-Bias']}
+                variant="editorial"
+                parallax
             />
 
             <StatsBar />
@@ -56,23 +58,29 @@ export default function PhilosophyPage() {
                 </div>
             </section>
 
-            <section className="section section-alt">
-                <div className="container">
-                    <SectionHeader
-                        kicker="What We Stand For"
-                        title={<>Seven values, <span>woven through everything</span></>}
-                        lead="These are not words on a wall. They run through every room, every routine, and every relationship we build with children and families."
-                    />
-                    <Reveal className="values-grid" stagger amount={0.1}>
-                        {VALUES.map((v) => (
-                            <Reveal as="div" variant="item" className="value-chip" key={v.label}>
-                                <span className="value-chip-icon" aria-hidden="true"><Icon name={v.icon} /></span>
-                                <span className="value-chip-label">{v.label}</span>
-                            </Reveal>
-                        ))}
-                    </Reveal>
-                </div>
-            </section>
+            {/* The same kicker, title and lead this section always carried —
+                laid out beside a photograph instead of centred above the grid,
+                with the values themselves still below. No copy changed. */}
+            <SplitFeature
+                kicker="What We Stand For"
+                title={<>Seven values, <span>woven through everything</span></>}
+                paras={[
+                    'These are not words on a wall. They run through every room, every routine, and every relationship we build with children and families.',
+                ]}
+                image={PAGE_MEDIA.philosophy.feature}
+                badge={{ stat: '7', label: 'Values, lived daily' }}
+                reverse
+                invert
+            >
+                <Reveal className="values-grid" stagger amount={0.1}>
+                    {VALUES.map((v) => (
+                        <Reveal as="div" variant="item" className="value-chip" key={v.label}>
+                            <span className="value-chip-icon" aria-hidden="true"><Icon name={v.icon} /></span>
+                            <span className="value-chip-label">{v.label}</span>
+                        </Reveal>
+                    ))}
+                </Reveal>
+            </SplitFeature>
 
             <CTASection
                 title="See our philosophy in action"
