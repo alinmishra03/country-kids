@@ -15,6 +15,20 @@
     }
 }
 
+/* ─── Phone: horizontal containment ──────────────────────────────────────
+   base.css already sets `overflow-x: hidden` on <body>, which holds on
+   desktop. It is not enough on a phone: the scroll-reveal layer parks
+   not-yet-revealed elements up to 40px to the side, and iOS Safari will still
+   pan the ROOT for a descendant its body clip does not own — the page rubber-
+   bands sideways over content that is only mid-animation.
+
+   `clip`, not `hidden`, and on <html>: `hidden` would make the root a scroll
+   container, and this site drives scrolling through Lenis. `clip` refuses the
+   overflow without creating one. Vertical scrolling is untouched. */
+@media (max-width: 768px) {
+    html { overflow-x: clip; }
+}
+
 @media (max-width: 720px) {
     html { font-size: 15px; }
     :root {
@@ -25,17 +39,102 @@
         --card-pad: 1.5rem;
         --card-pad-sm: 1.25rem;
     }
-    .hero-main-cta { flex-direction: column; align-items: stretch; }
+    /* One stack rule for both action rows — they had separate, identical
+       blocks. The phone link is listed because it is the one child that is not
+       a .btn-*; everything else in either row is. */
+    .hero-main-cta,
+    .cta-band-actions { flex-direction: column; align-items: stretch; }
     .hero-main-cta .btn-primary,
     .hero-main-cta .btn-gold,
-    .hero-main-cta .btn-outline { width: 100%; }
-    .about-media { min-height: 260px; }
-    /* Full-width phone CTA so it lines up with the stacked buttons above it. */
-    .cta-band-actions { flex-direction: column; align-items: stretch; }
+    .hero-main-cta .btn-outline,
     .cta-band-actions .btn-primary,
     .cta-band-actions .btn-gold,
     .cta-band-actions .btn-outline,
     .cta-band-actions .cta-band-phone { width: 100%; }
+    .about-media { min-height: 260px; }
+}
+
+/* ─── Enrol: the one real horizontal overflow ────────────────────────────
+   The enquiry section is a grid that already collapses to one column on a
+   phone, but a `1fr` track is still floored by its widest item's MIN-content
+   width — and the contact card holds the centre's email address, a single
+   32-character token with nowhere to break. The track was pinned to that
+   token: at 320px the card, the form card beside it in the same column, and
+   the document itself all ran ~35px past the viewport. The fixed header went
+   with them, because its shell is a percentage of a now-wider root, which is
+   why the hamburger sat half off-screen on this page and no other.
+
+   Two lines, addressing cause then class of fault: let the address wrap so
+   min-content is honest, and floor the track at 0 so no future long string
+   can do this again. */
+@media (max-width: 768px) {
+    .enroll-wrap { grid-template-columns: minmax(0, 1fr); }
+    .enroll-info .info-card > span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+    }
+}
+
+/* ─── Phone: tap targets ─────────────────────────────────────────────────
+   Hit area only. Every rule below either grows a control that has room to
+   grow, or projects a transparent pseudo-element over one that does not —
+   nothing here moves, resizes or restyles anything the eye can see, and no
+   two targets are allowed to overlap (a target that steals its neighbour's
+   taps is worse than a small one).
+
+   Inline accent links inside sentences are deliberately left alone: WCAG
+   2.5.8 exempts text links in a line of prose, and padding them out would
+   break the line box they sit in. */
+@media (max-width: 768px) {
+    /* The two header controls. Neither box is grown: the hamburger's bars are
+       laid out from its padding edge, so widening it would slide them, and the
+       toggle is a visible 42px ring that resizing would restyle. Both keep
+       their box and gain a transparent 44px target over it.
+       Hamburger 42x36 → 44x44, toggle 42x42 → 44x44. */
+    .hamburger,
+    .theme-toggle { position: relative; }
+    .hamburger::before {
+        content: "";
+        position: absolute;
+        inset: -4px -1px;
+    }
+    .theme-toggle::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+    }
+
+    /* Footer lists sit on a 0.55rem gap. The hit area expands to exactly half
+       that on each side: the column becomes one continuous run of targets with
+       no dead space between them and no overlap. 26px → 34px. */
+    .footer-links a,
+    .footer-contact a { position: relative; }
+    .footer-links a::before,
+    .footer-contact a::before {
+        content: "";
+        position: absolute;
+        inset: -0.275rem 0;
+    }
+
+    /* Last line of a room card, with the card's own padding below it and only
+       body copy above — both non-interactive, so this can take the full 44px.
+       24px → 44px. */
+    .room-link { position: relative; }
+    .room-link::before {
+        content: "";
+        position: absolute;
+        inset: -10px 0;
+    }
+
+    /* Carousel dots are 8x8 on a 0.5rem gap. Vertically there is open space,
+       so they take the full 44px; horizontally they can only take half the gap
+       each side before neighbouring dots would start stealing taps. */
+    .statm-dot { position: relative; }
+    .statm-dot::before {
+        content: "";
+        position: absolute;
+        inset: -18px -0.25rem;
+    }
 }
 
 @media (max-width: 420px) {
