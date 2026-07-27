@@ -13,8 +13,8 @@ export const SITE = {
     state: 'Victoria',
 };
 
-export const PHONE = '03 9360 5409';
-export const PHONE_HREF = 'tel:+61393605409';
+export const PHONE = '1300 025 520';
+export const PHONE_HREF = 'tel:1300025520';
 export const EMAIL = 'hello@countrykidslearning.org.au'; // placeholder — confirm
 export const EMAIL_HREF = 'mailto:hello@countrykidslearning.org.au';
 

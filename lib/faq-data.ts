@@ -7,7 +7,7 @@ export const FAQS = [
     },
     {
         q: 'What are your opening hours and contact details?',
-        a: 'We are open Monday to Friday, 6:30am to 6:30pm. We are closed on Victorian public holidays. Phone: 03 9360 5409. Address: 3 Nexus Street, Ravenhall VIC 3023.',
+        a: 'We are open Monday to Friday, 6:30am to 6:30pm. We are closed on Victorian public holidays. Phone: 1300 025 520. Address: 3 Nexus Street, Ravenhall VIC 3023.',
     },
     {
         q: 'Is kindergarten really free at Country Kids?',

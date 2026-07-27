@@ -80,7 +80,7 @@ export default function FamiliesPage() {
                     <SectionHeader
                         kicker="Frequently Asked Questions"
                         title={<>Everything you <span>might be wondering</span></>}
-                        lead="Can't find your answer here? Call us on 03 9360 5409 or book a tour — we love to talk."
+                        lead="Can't find your answer here? Call us on 1300 025 520 or book a tour — we love to talk."
                     />
                     <div className="faq-list">
                         {FAQS.map((item, i) => {
