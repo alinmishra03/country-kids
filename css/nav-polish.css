@@ -26,45 +26,10 @@
     border-bottom: 0;
 }
 
-/* ── Sliding underline on the nav links ──
-   A scaleX transform on a pseudo-element: no layout, no repaint of the label,
-   and it composes with the existing colour change on hover.
-
-   It hangs off .pill, NOT off .pill-label. On the label it never rendered at
-   all: .pill-labels is the clip that makes the two-label swap work
-   (height: 1.35em; overflow: hidden), and an underline sitting 0.32em below
-   the label's box is exactly the thing that clip exists to cut off. .pill is
-   the nearest ancestor with room for it — hence --pill-pad-x in nav.css, so
-   the stroke still starts and ends on the label's edges rather than the
-   pill's.
-
-   The pill is filled by the time this is visible, so it takes the on-fill ink
-   rather than the accent gradient it used to ask for — a gradient stroke on a
-   gradient fill is not a stroke. */
-.pill {
-    position: relative;
-}
-.pill::after {
-    content: "";
-    position: absolute;
-    inset-inline: var(--pill-pad-x);
-    bottom: 0.3rem;
-    height: 1.5px;
-    border-radius: 999px;
-    background: var(--pill-ink-on-fill);
-    opacity: 0.85;
-    transform: scaleX(0);
-    transform-origin: right center;
-    transition: transform 0.45s var(--ease-out);
-}
-.pill-item:hover .pill::after,
-.pill-link:focus-visible .pill::after,
-.pill-item.is-active .pill::after {
-    transform: scaleX(1);
-    /* Grows from the left on the way IN and retracts to the right on the way
-       out, which is what makes it read as a stroke rather than a bar. */
-    transform-origin: left center;
-}
+/* ── No underline on the nav links ──
+   The pill fill IS the hover affordance — a stroke under a filled pill was two
+   signals for one state. Nothing replaces it: hover, focus and the active
+   route all read as the gold fill plus the label swap (css/nav.css). */
 
 /* ── Magnetic CTA ──
    useMagnetic writes --mx/--my; the shared button transform in base.css
@@ -97,7 +62,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .pill::after { transition: none; }
     .has-dropdown .pill-split::before { transition: none; }
     .nav-cta { transform: none; transition: background-color 0.3s ease; }
 }
