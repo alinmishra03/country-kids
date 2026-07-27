@@ -121,12 +121,56 @@ export const PAGE_MEDIA = {
             1125,
             'A young child absorbed in building with wooden blocks'
         ),
+        /* Was id 1533228100845, captioned "children playing outdoors among
+           trees". That id is a photograph of a phone showing a Google search —
+           it had been sitting on this page behind an alt text describing
+           something else entirely. Replaced with a picture that matches its
+           caption, and the caption checked against the pixels. */
         feature: shot(
-            '1533228100845-08145b01de14',
-            1300,
-            1000,
-            'Children playing together outdoors among trees and open ground'
+            '1587616211892-f743fcca64f9',
+            1200,
+            1500,
+            'A group of children sitting together, dressed up and sharing the moment'
         ),
+        /* One photograph per Philosophy / Vision / Mission row, chosen to carry
+           that row's idea rather than to decorate it: play as the vehicle for
+           learning, Country as the ground everything is rooted in, and growth
+           as what the right soil produces. Each id was loaded and looked at
+           before being written here — several candidates resolved fine and
+           showed adults, a yoga pose and a tray of strawberries. */
+        philosophyRow: shot(
+            '1560421683-6856ea585c78',
+            1400,
+            1050,
+            'A child painting freely with bright colours, hands busy in the work'
+        ),
+        visionRow: shot(
+            '1470071459604-3b5ec3a7fe05',
+            1400,
+            1050,
+            'A wide valley of open country under low cloud, lit by a late sun'
+        ),
+        missionRow: shot(
+            '1518831959646-742c3a14ebf7',
+            1400,
+            1050,
+            'A young child reaching into a wall of flowers in bloom'
+        ),
+        /* One photograph per value, in VALUES order — the accordion cross-fades
+           between them as each value opens, so the array is positional and must
+           stay the same length as VALUES. Every caption below was written after
+           looking at the image, not from its filename: the ids already in this
+           file proved unreliable that way (one captioned "children playing
+           outdoors" is a phone showing a Google search). */
+        valueShots: [
+            shot('1503454537195-1dcabb73ffb9', 1200, 1400, 'A child laughing, face and hands covered in paint'),
+            shot('1497486751825-1233686d5d80', 1200, 1400, 'A group of children standing arm in arm, smiling together'),
+            shot('1587616211892-f743fcca64f9', 1200, 1400, 'Children sitting together, dressed up and sharing the moment'),
+            shot('1587654780291-39c9404d746b', 1200, 1400, 'A deep pile of coloured building bricks waiting to be used'),
+            shot('1425913397330-cf8af2ff40a1', 1200, 1400, 'Tall straight trees in a forest, lit from behind'),
+            shot('1522661067900-ab829854a57f', 1200, 1400, 'A child writing carefully on a large blackboard'),
+            shot('1444927714506-8492d94b4e3d', 1200, 1400, 'Ridges of open country receding into morning mist'),
+        ],
     },
     rooms: {
         hero: shot(

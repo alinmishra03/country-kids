@@ -1,75 +1,372 @@
-/* Philosophy page (app/philosophy) — a large pull-quote band, the three
-   Philosophy / Vision / Mission cards, and the seven-value grid (value-chip
-   styles are shared from home-sections.css). */
+/* ─── PHILOSOPHY PAGE ────────────────────────────────────────────────────
+   Editorial layout for app/philosophy: a cinematic hero, one centred
+   statement, the count-up stat strip, Philosophy / Vision / Mission as
+   alternating full-width rows, and the seven values on a dark panel.
 
-.philosophy-quote-band {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 2.4rem 2.2rem 2.4rem 4rem;
-    position: relative;
-    background: var(--green-pale);
-    border-radius: var(--radius-xl);
+   SCOPE — everything that reaches into a SHARED component (.page-hero) is
+   written under #page-philosophy, which components/shared/Page.tsx puts on
+   this page's root and no other. The hero on About, Rooms, Fees and the rest
+   is therefore untouched by definition rather than by care.
+
+   MOTION — there is none in this file. Every entrance belongs to Reveal /
+   TextReveal / ImageReveal in the markup, which is what gives the page the
+   same easing as the rest of the site and the same reduced-motion opt-out.
+   All this file does is decide where things sit. */
+
+/* ── Hero ──
+   The reference opens on a full-bleed photograph with the title set very large
+   and hung at the bottom of the frame rather than centred in a band. The
+   editorial variant already supplies the picture, the parallax layer and the
+   overlay; this only makes it taller and re-hangs the type. */
+#page-philosophy .page-hero--editorial {
+    min-height: min(88svh, 860px);
+    display: flex;
+    align-items: flex-end;
+}
+#page-philosophy .page-hero--editorial .page-hero-content {
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+/* The shared scrim is weighted for type sitting in the MIDDLE of the band: it
+   ends at 0.90 opacity, which is fine under a centred headline and opaque
+   enough to flatten the photograph into a navy panel once the headline moves
+   to the bottom — which is what this variant does. Rebalanced, not lightened:
+   the darkness is still there, it has just been moved to the last third where
+   the words actually are, so the picture reads as a picture above it. */
+#page-philosophy .page-hero--parallax::before {
+    background-image: linear-gradient(
+        180deg,
+        rgba(4, 16, 34, 0.62) 0%,
+        rgba(4, 16, 34, 0.16) 30%,
+        rgba(4, 16, 34, 0.34) 58%,
+        rgba(4, 16, 34, 0.88) 100%
+    );
+}
+#page-philosophy .page-hero--editorial h1 {
+    font-size: clamp(2.5rem, 7vw, 5.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    max-width: 18ch;
+}
+
+/* ── Statement ──
+   One sentence, set at display size, centred, with air around it. It carries
+   the page on its own, so nothing here competes: no card, no border, no rule.
+   The measure is capped in characters rather than pixels so the line count
+   holds steady as the type scales. */
+.ph-statement { text-align: center; }
+.ph-statement-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    margin-bottom: clamp(1.25rem, 3vw, 2rem);
+    font-family: var(--font-body);
+    font-size: 0.76rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+}
+.ph-statement-kicker svg {
+    width: 20px;
+    height: 20px;
+    color: var(--gold-deep);
+    opacity: 0.8;
+}
+/* Display size, but sized for the LENGTH of this sentence. The reference sets
+   its centred headings at ~3.5rem because they run to six words; this one runs
+   to thirty-four, and at that size it becomes a wall of type six lines deep.
+   Large enough to be the page's statement, small enough to be read. */
+.ph-statement-body {
+    max-width: 34ch;
+    margin-inline: auto;
     font-family: var(--font-display);
-    font-size: clamp(1.2rem, 2.6vw, 1.6rem);
-    line-height: 1.55;
+    font-weight: var(--fw-light);
+    font-size: clamp(1.35rem, 2.9vw, 2.35rem);
+    line-height: 1.35;
+    letter-spacing: -0.018em;
     color: var(--accent-ink);
-    font-style: italic;
-}
-.philosophy-quote-band svg {
-    position: absolute;
-    top: 1.8rem;
-    inset-inline-start: 1.6rem;
-    width: 30px; height: 30px;
-    color: var(--green-deep);
-    opacity: 0.75;
+    text-wrap: balance;
 }
 
-/* Surface/shadow/hover come from the shared card system in section-commons.css. */
-.pvm-grid {
+/* ── Philosophy · Vision · Mission rows ──
+   Two columns that swap sides down the page. `minmax(0, …)` on both tracks
+   because the copy column holds long unbroken paragraphs and the media column
+   a ratio-locked frame — either will push a bare `1fr` past its share. */
+.ph-rows .container {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(4rem, 9vw, 8rem);
+}
+.ph-row {
     display: grid;
-    gap: var(--card-gap);
-    margin-top: var(--section-head-gap);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: center;
 }
-.pvm-card {
-    display: grid;
-    grid-template-columns: 88px 1fr;
-    gap: 1.75rem;
-    align-items: start;
-    border-radius: var(--radius-xl);
-    padding: 2rem;
-}
-.pvm-icon {
-    display: grid; place-items: center;
-    width: 88px; height: 88px;
-    border-radius: var(--radius-xl);
-    background: var(--blue-gradient);
-    color: #fff;
-    box-shadow: 0 14px 30px -14px rgba(var(--accent-rgb), 0.6);
-}
-.pvm-icon svg { width: 40px; height: 40px; }
-.pvm-card:nth-child(2) .pvm-icon { background: var(--gold-gradient); color: var(--btn-text-gold); box-shadow: 0 14px 30px -14px rgba(var(--gold-rgb), 0.6); }
-.pvm-card:nth-child(3) .pvm-icon { background: linear-gradient(135deg, var(--green) 0%, var(--green-deep) 100%); color: #fff; box-shadow: 0 14px 30px -14px rgba(var(--green-rgb), 0.6); }
+/* Source order stays copy-then-picture, so a screen reader and a phone both
+   get the heading before its illustration; only the painted order flips. */
+.ph-row--flip .ph-row-copy { grid-column: 2; grid-row: 1; }
+.ph-row--flip .ph-row-media { grid-column: 1; grid-row: 1; }
 
-.pvm-kicker {
+.ph-row-kicker {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-body);
+    font-size: 0.74rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gold-deep);
+}
+/* The numeral is the only thing marking these as a sequence — the rows have no
+   cards or rules left to number. */
+.ph-row-index {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: var(--fw-light);
+    letter-spacing: 0;
+    color: var(--gold-deep);
+    opacity: 0.45;
+}
+.ph-row-title {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-size: clamp(1.75rem, 3.6vw, 2.9rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--accent-ink);
+    text-wrap: balance;
+}
+.ph-row-text { margin-top: 1.35rem; }
+.ph-row-text p {
+    max-width: 54ch;
+    color: var(--mid);
+    line-height: 1.8;
+    font-size: 1.02rem;
+}
+.ph-row-text p + p { margin-top: 1rem; }
+
+.ph-row-media .ir-frame { border-radius: var(--radius-lg); }
+
+/* ── What We Stand For ──
+   Picture left, accordion right. The reference's section: a hairline between
+   every value, one open at a time revealing a serif headline and a paragraph,
+   and the photograph changing with it.
+
+   The list is the scroll-height driver, so the media column is what stretches
+   to match it — the opposite of the row layout above. */
+.ph-stand-kicker {
     display: block;
     font-family: var(--font-body);
     font-size: 0.74rem;
     font-weight: var(--fw-medium);
-    letter-spacing: 1.4px;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--blue);
-    margin-bottom: 0.5rem;
+    color: var(--gold-deep);
 }
-.pvm-body h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin-bottom: 0.9rem; }
-.pvm-body p { color: var(--mid); line-height: 1.75; margin-bottom: 0.9rem; }
-.pvm-body p:last-child { margin-bottom: 0; }
+.ph-stand-title {
+    margin-top: 0.9rem;
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-size: clamp(1.9rem, 4.2vw, 3.25rem);
+    line-height: 1.08;
+    letter-spacing: -0.024em;
+    color: var(--accent-ink);
+    text-wrap: balance;
+}
+.ph-stand-lead {
+    margin-top: 1.1rem;
+    max-width: 56ch;
+    color: var(--mid);
+    line-height: 1.8;
+}
 
-.values-block { margin-top: var(--section-y); }
+.ph-stand-layout {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(2rem, 5vw, 4.5rem);
+    align-items: start;
+}
 
-@media (max-width: 640px) {
-    .pvm-card { grid-template-columns: 1fr; gap: 1.1rem; padding: var(--card-pad); }
-    .pvm-icon { width: 64px; height: 64px; border-radius: var(--radius-lg); }
-    .pvm-icon svg { width: 30px; height: 30px; }
-    .philosophy-quote-band { padding: 2rem 1.5rem 2rem 1.5rem; }
-    .philosophy-quote-band svg { display: none; }
+/* ── The cross-fading picture ──
+   All seven are stacked in the same box; only opacity changes, which is a
+   compositor-only property, so the swap costs nothing while the accordion is
+   also animating its height. `position: sticky` keeps the picture beside the
+   value being read as the list runs past it. */
+.ph-stand-media {
+    position: sticky;
+    top: calc(var(--nav-h) + 2rem);
+    display: grid;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-elevation);
+    background: var(--surface-2);
+}
+/* The `img.` in these two selectors is load-bearing, not decoration.
+   hooks/useAnimations.ts tags EVERY <img> on the site with .img-fade and adds
+   .img-loaded once it decodes, and css/animations.css then says
+   `.img-fade.img-loaded { opacity: 1 }`. That is specificity (0,2,0) in a file
+   imported AFTER this one, so a plain `.ph-stand-shot.is-current` ties and
+   loses — every photo in the stack decoded, went opaque, and the cross-fade
+   became seven images piled on top of each other with only the last visible.
+   Adding the element selector takes these to (0,2,1) / (0,3,1), which wins
+   outright without an !important. The transition lives here for the same
+   reason: .img-fade sets its own, and it would otherwise override this one. */
+.ph-stand-media img.ph-stand-shot {
+    grid-area: 1 / 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    /* Slightly over-scaled so the incoming frame settles rather than cuts. */
+    transform: scale(1.04);
+    transition: opacity 0.7s var(--ease-out), transform 0.9s var(--ease-out);
+}
+.ph-stand-media img.ph-stand-shot.is-current {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* ── The list ── */
+.ph-stand-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.ph-stand-item {
+    border-top: 1px solid var(--border-subtle);
+}
+.ph-stand-item:last-child {
+    border-bottom: 1px solid var(--border-subtle);
+}
+.ph-stand-item h3 { margin: 0; font: inherit; }
+
+.ph-stand-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.35rem 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: start;
+    color: var(--accent-ink);
+    transition: color 0.3s ease;
+}
+.ph-stand-label {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.01em;
+}
+.ph-stand-trigger:hover .ph-stand-label { color: var(--gold-deep); }
+
+/* A plus that becomes a minus. Two bars, one rotated — the open state just
+   takes the rotation away, so there is nothing to keep in sync. */
+.ph-stand-mark {
+    position: relative;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+}
+.ph-stand-mark::before,
+.ph-stand-mark::after {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    top: 50%;
+    height: 1.5px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 0.4s var(--ease-out), opacity 0.3s ease;
+}
+.ph-stand-mark::after { transform: rotate(90deg); }
+.ph-stand-item.is-open .ph-stand-mark::after { transform: rotate(0deg); opacity: 0; }
+.ph-stand-item.is-open .ph-stand-trigger { color: var(--gold-deep); }
+
+/* ── The panel ──
+   0fr → 1fr animates to the content's real height without JS measuring it.
+   The inner element carries overflow: hidden, because the grid row is what is
+   collapsing and the child has to be clipped by something. */
+.ph-stand-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s var(--ease-out);
+}
+.ph-stand-item.is-open .ph-stand-panel { grid-template-rows: 1fr; }
+.ph-stand-panel-inner {
+    overflow: hidden;
+    /* The copy lifts and fades as the row opens, a beat behind the height so
+       it arrives into space that already exists rather than racing it. */
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out);
+}
+.ph-stand-item.is-open .ph-stand-panel-inner {
+    opacity: 1;
+    transform: none;
+    transition-delay: 0.12s;
+}
+.ph-stand-headline {
+    font-family: var(--font-display);
+    font-weight: var(--fw-light);
+    font-size: clamp(1.4rem, 2.6vw, 2.05rem);
+    line-height: 1.18;
+    letter-spacing: -0.018em;
+    color: var(--accent-ink);
+    text-wrap: balance;
+}
+.ph-stand-text {
+    margin-top: 0.9rem;
+    padding-bottom: 1.6rem;
+    max-width: 54ch;
+    color: var(--mid);
+    line-height: 1.8;
+}
+
+/* Motion off: the accordion still opens and closes, it just stops easing. The
+   picture still swaps — that is the answer to a click, not decoration. */
+@media (prefers-reduced-motion: reduce) {
+    .ph-stand-panel,
+    .ph-stand-panel-inner,
+    .ph-stand-mark::before,
+    .ph-stand-mark::after { transition: none; }
+    .ph-stand-media img.ph-stand-shot { transition: none; transform: none; }
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────
+   One column below 900px, and the picture follows its copy rather than
+   leading it — the flip is a desktop composition, not a reading order. */
+@media (max-width: 900px) {
+    .ph-row,
+    .ph-stand-layout { grid-template-columns: minmax(0, 1fr); }
+    .ph-row--flip .ph-row-copy,
+    .ph-row--flip .ph-row-media { grid-column: 1; grid-row: auto; }
+    /* Stacked, the picture leads the list and stops sticking — a sticky frame
+       in a single column would pin itself over the values it illustrates. */
+    .ph-stand-media {
+        position: static;
+        aspect-ratio: 16 / 10;
+    }
+}
+
+@media (max-width: 768px) {
+    /* A phone-height hero: tall enough to read as cinematic, short enough that
+       the statement below it is still hinted at the fold. */
+    #page-philosophy .page-hero--editorial { min-height: min(76svh, 620px); }
+    #page-philosophy .page-hero--editorial h1 { max-width: none; }
+    .ph-statement-body { max-width: 26ch; }
+}
+
+@media (max-width: 560px) {
+    .ph-row-text p { font-size: 1rem; }
+    /* Was 1.35rem of padding above and below a 1rem label — 22px short of a
+       44px target once the row is only as tall as its own type. */
+    .ph-stand-trigger { padding: 1.1rem 0; min-height: 56px; }
 }
