@@ -1,5 +1,10 @@
 #site-footer {
-    background: var(--surface-2);
+    /* A literal, not --surface-2, which this used to read. That token is also
+       the tinted-panel tone behind pull-quotes, the curriculum note and the
+       acknowledgement panel, so retinting it would have moved four things to
+       change one. Dark mode puts its own surface back (css/theme-dark.css) —
+       this colour is a light-theme decision. */
+    background: #C5B07C;
     border-top: 1px solid var(--border-subtle);
     padding: 0 0 1.5rem;
 }
