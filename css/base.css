@@ -1,6 +1,6 @@
 :root {
     /* ─── LIGHT THEME — CREAM / NAVY / SAGE ───────────────────────────────
-       Background #FFFDD0 (cream) · Cards #FFFFFF · Secondary bands #05204A (navy)
+       Background #C5B07C · Cards #FFFFFF · Secondary bands #05204A (navy)
        Primary brand #05204A · Accent #6C969D · Hover #464D77
 
        The token NAMES are historical (blue / gold / green / orange) and are
@@ -14,7 +14,7 @@
        luxury surface reads as one system, not five. */
 
     /* ── Raw palette ── */
-    --band-cream: #FFFDD0;
+    --band-cream: #C5B07C;
     --band-white: #FFFFFF;
     /* The secondary band is navy, not beige. Kept under the --band-beige name
        because every band selector in css/surfaces.css already reads from it;
@@ -26,8 +26,8 @@
     --brand-hover: #464D77;
 
     /* Core Palette — Light Mode */
-    --bg-light: #FFFDD0;            /* Cream page field */
-    --bg-dark: #FFFDD0;
+    --bg-light: #C5B07C;            /* Page field */
+    --bg-dark: #C5B07C;
     --text-primary: #05204A;        /* Navy — 15:1 on cream */
     --text-on-dark: #05204A;
     --border-gray: #E2DCC0;
@@ -70,7 +70,7 @@
     --fw-medium: 500;
 
     /* Premium Gradients */
-    --hero-gradient: linear-gradient(135deg, #FFFDD0 0%, #F7EFDA 100%);
+    --hero-gradient: linear-gradient(135deg, #C5B07C 0%, #F7EFDA 100%);
 
     /* Remapped surface tokens */
     --black: var(--bg-light);
@@ -105,7 +105,11 @@
     --accent-bg: var(--blue);
     --accent-bg-gradient: var(--blue-gradient);
     --bg-primary: var(--bg-dark);
-    --bg-primary-rgb: 255, 253, 208;
+    /* The same colour as --bg-light, in the form the translucent surfaces need
+       (rgba(var(--bg-primary-rgb), 0.86) and similar). Left at 255,253,208 it
+       would have gone on resolving to the old cream, so the mobile chapter rail
+       would have floated a cream panel over the new field. */
+    --bg-primary-rgb: 197, 176, 124;
 
     --nav-h: 80px;
 

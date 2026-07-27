@@ -5,7 +5,7 @@
 
    Three tones, plus the navy brand bands:
 
-       cream  var(--band-cream)  #FFFDD0   the page field
+       cream  var(--band-cream)  #C5B07C   the page field
        white  var(--band-white)  #FFFFFF   the "lift" band — cards sit flat on it
        navy   var(--band-beige)  #05204A   the dark band — white cards pop off it
        navy   var(--brand-navy)  #05204A   closing CTA, footer
