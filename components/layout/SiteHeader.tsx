@@ -8,8 +8,10 @@
    Motion split for robustness + 60fps:
    - Pill hover (expanding gold circle + vertical label swap) + active pill: CSS
      transitions (transform/opacity only, GPU-composited).
-   - GSAP: initial load reveal, scroll hide/show by direction, hamburger→X morph,
-     and the mobile menu (backdrop + slide-in panel + item stagger).
+   - GSAP: initial load reveal, hamburger→X morph, and the mobile menu
+     (backdrop + slide-in panel + item stagger). The bar does NOT hide on
+     scroll — it is on screen at every scroll position; only its glass state
+     responds to scrolling.
    All motion respects prefers-reduced-motion. The bar is light over the dark hero
    and switches to navy on the glass state when scrolled. */
 
@@ -84,47 +86,33 @@ export default function SiteHeader() {
     const hamburgerTl = useRef<gsap.core.Timeline | null>(null);
     const mobileTl = useRef<gsap.core.Timeline | null>(null);
     const mobileOpenRef = useRef(false);
-    /* Read by the scroll handler, which is bound once and must not capture a
-       stale value of the reveal flag. */
-    const revealedRef = useRef(navRevealed);
-    revealedRef.current = navRevealed;
     /* Whether the bar was already on screen when this mounted — the difference
        between "the site loaded" and "the hero handed over". */
     const mountedRevealedRef = useRef(navRevealed);
     const lastRevealedRef = useRef(navRevealed);
 
-    /* ── Scroll: toggle glass state (only on change) + hide on down / show on up ── */
+    /* ── Scroll: toggle the glass state, and nothing else ──
+       The bar used to hide itself on a downward scroll and slide back on an
+       upward one. It no longer does: the header stays on screen at every scroll
+       position, which is what the rest of this effect now exists to leave
+       alone. Only the glass/solid state still responds to scrolling, because
+       that is a change of appearance rather than of presence.
+
+       The home page's pre-entry conceal is a different mechanism and is
+       untouched — there the hero owns navigation until "Continue" is pressed,
+       and the reveal effect below still runs the handover. */
     useEffect(() => {
-        const nav = navRef.current;
-        const reduced = prefersReduced();
-        let lastY = window.scrollY;
-        let hidden = false;
         let ticking = false;
         let scrolledState = window.scrollY > 40;
         setScrolled(scrolledState);
 
         const update = () => {
             ticking = false;
-            const y = window.scrollY;
-            const nextScrolled = y > 40;
+            const nextScrolled = window.scrollY > 40;
             if (nextScrolled !== scrolledState) {
                 scrolledState = nextScrolled;
                 setScrolled(nextScrolled);
             }
-            /* A concealed bar has no show/hide behaviour to run — the reveal
-               effect owns its transform until the hero hands over. */
-            if (!nav || reduced || mobileOpenRef.current || !revealedRef.current) {
-                lastY = y;
-                return;
-            }
-            if (y > lastY && y > 220 && !hidden) {
-                hidden = true;
-                gsap.to(nav, { yPercent: -100, duration: 0.4, ease: 'power2.out' });
-            } else if ((y < lastY || y <= 220) && hidden) {
-                hidden = false;
-                gsap.to(nav, { yPercent: 0, duration: 0.4, ease: 'power2.out' });
-            }
-            lastY = y;
         };
         const onScroll = () => {
             if (!ticking) {
