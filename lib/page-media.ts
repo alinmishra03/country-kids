@@ -112,7 +112,23 @@ export const STORY_IMAGES = {
 
 /* ── Every other interior page ──
    `hero` is the page-hero background; `feature` is the image-led split section
-   that sits inside the page. */
+   that sits inside the page.
+
+   A page may also carry extra slots beyond those two — /philosophy has one
+   photograph per editorial row and an array of seven for the values accordion.
+   The index signature is what lets it, while `hero` and `feature` stay
+   REQUIRED, so the constraint still catches a page that forgets either. Both
+   declared keys are Media, which conforms to the signature's Media | Media[].
+
+   Without the index signature this is an excess-property error under
+   `satisfies` — and one that only `next build` reports, since `next dev` does
+   not run the full type check. */
+type PageMedia = {
+    hero: Media;
+    feature: Media;
+    [slot: string]: Media | Media[];
+};
+
 export const PAGE_MEDIA = {
     philosophy: {
         hero: shot(
@@ -270,4 +286,4 @@ export const PAGE_MEDIA = {
             'Children busy with arts and crafts at Country Kids'
         ),
     },
-} satisfies Record<string, { hero: Media; feature: Media }>;
+} satisfies Record<string, PageMedia>;
