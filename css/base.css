@@ -76,11 +76,12 @@
     --black: var(--bg-light);
     --dark: var(--bg-dark);
     /* NOT the secondary band (that is --band-beige, now navy). This is the
-       subtle tinted-panel tone: the footer body, pull-quotes, the curriculum
-       note and the acknowledgement panel all sit on it with DARK text, so it
-       has to stay light — navy here would make five more places unreadable.
-       Retinted off the cream so no beige is left anywhere on the site. */
-    --dark2: #F6F2DC;               /* Tinted panel — warm neutral */
+       tinted-panel tone: the footer body, pull-quotes, the curriculum note and
+       the acknowledgement panel all sit on it with DARK text, so it has to stay
+       light enough to read against — navy here would make five places
+       unreadable. Now the same colour as the page field, so those panels no
+       longer read as a separate tint. */
+    --dark2: #C5B07C;               /* Tinted panel */
     --dark3: #FFFFFF;               /* Tertiary band — white */
 
     /* Text Scale */
@@ -105,10 +106,10 @@
     --accent-bg: var(--blue);
     --accent-bg-gradient: var(--blue-gradient);
     --bg-primary: var(--bg-dark);
-    /* The same colour as --bg-light, in the form the translucent surfaces need
-       (rgba(var(--bg-primary-rgb), 0.86) and similar). Left at 255,253,208 it
-       would have gone on resolving to the old cream, so the mobile chapter rail
-       would have floated a cream panel over the new field. */
+    /* --bg-light as a triplet, for the translucent surfaces that need it
+       (rgba(var(--bg-primary-rgb), 0.86) and similar). It has to move whenever
+       --bg-light does, or those panels tint to a colour the page no longer
+       uses. */
     --bg-primary-rgb: 197, 176, 124;
 
     --nav-h: 80px;

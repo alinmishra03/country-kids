@@ -51,11 +51,6 @@
         0 0 0 6px rgba(197, 176, 124, 0.12);
 }
 
-/* The footer is a fixed light-theme colour in css/footer.css. On dark it takes
-   the navy surface back — the footer's own type inverts to near-white there,
-   which on that tan would be about 2:1. */
-[data-theme="dark"] #site-footer { background: var(--surface-2); }
-
 [data-theme="dark"] .gallery-tile { border-color: var(--border-subtle); }
 
 /* Program icons, feature chips, gallery tiles and team avatars derive their
