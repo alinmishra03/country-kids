@@ -4,22 +4,49 @@
        surface for free rather than needing an override. */
     background: var(--surface-2);
     border-top: 1px solid var(--border-subtle);
+    /* No top padding. The newsletter band is the footer's first child and runs
+       full bleed, so padding here opens a strip ABOVE the navy — between the
+       page and the band — which is the wrong side entirely. The space that was
+       wanted is between the band and the columns, and that is the band's own
+       margin-bottom further down. */
     padding: 0 0 1.5rem;
+
+    /* ── Footer ink ──
+       The footer is the one large surface where body copy sits directly on the
+       page colour rather than on a white card, so it is where a dark field
+       shows up first. These two are LOCAL overrides of --mid and --gold-deep,
+       scoped to the footer, deliberately not touched globally: the background
+       is a deliberate brand choice and the rest of the site is unaffected.
+       It buys the footer roughly 4.6:1 against #C5B07C, where the global token
+       gives 3.28:1. */
+    --footer-ink: #33405C;
 }
 
 /* ── Newsletter CTA ────────────────────────────────────────────────────────
-   A FULL-BLEED navy signup band (not a contained box) above the footer columns.
-   Navy (#102A4A) runs edge-to-edge with a soft STATIC radial glow — nothing in
-   the background animates. Content is centred in a single column; the email +
-   Subscribe fuse into one pill. */
+   A FULL-BLEED navy signup band above the footer columns, with a soft STATIC
+   radial glow — nothing in the background animates.
+
+   Two columns from 900px up: the pitch on the left, the form on its own glass
+   card to the right. It used to be one centred stack at var(--section-y) top
+   and bottom, which built a 716px band with a large empty well under the form —
+   a lot of screen for one input. Set side by side the same content is about
+   half the height and reads as a section rather than an interstitial.
+
+   Below 900px it returns to a centred stack, because two columns at phone width
+   is just a stack with extra rules. */
 .newsletter-cta {
     position: relative;
     overflow: hidden;
     isolation: isolate;
     background: var(--brand-navy);
-    padding: var(--section-y) 0;
-    margin-bottom: var(--section-y-sm);
-    text-align: center;
+    padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+    /* The gap between the navy band and the footer columns. The footer's own
+       background fills it, so this reads as the footer breathing rather than as
+       a third colour. Flush at the top on purpose — the band is the transition
+       out of the page, and a strip of footer colour above it would leave the
+       navy floating. */
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+    text-align: start;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 /* Soft, static glow behind the content (no keyframes, no movement). */
@@ -35,9 +62,22 @@
 .newsletter-cta-inner {
     position: relative;
     z-index: 1;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
     align-items: center;
+}
+
+/* The form's own surface. On a dark band a bare input floats; a panel gives it
+   somewhere to sit and lets the whole right column read as one object. */
+.newsletter-action {
+    padding: clamp(1.75rem, 3vw, 2.25rem);
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 30px 60px -34px rgba(0, 0, 0, 0.7);
 }
 
 /* Eyebrow */
@@ -64,7 +104,7 @@
 .newsletter-title-accent {
     display: block;
     width: 60px; height: 4px;
-    margin: 1.1rem auto 0;
+    margin: 1.1rem 0 0;
     border-radius: var(--radius-pill);
     background: var(--gold-gradient);
 }
@@ -72,10 +112,10 @@
 /* Description */
 .newsletter-desc {
     margin-top: 1.4rem;
-    max-width: 560px;
+    max-width: 46ch;
     color: rgba(255, 255, 255, 0.82);
     font-size: 1.05rem;
-    line-height: 1.6;
+    line-height: 1.7;
 }
 
 /* Benefit badges — navy glass, gold icon, white text. */
@@ -83,7 +123,6 @@
     list-style: none;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     gap: 0.6rem;
     margin-top: 1.75rem;
 }
@@ -105,11 +144,9 @@
 
 /* Form — the email + Subscribe fuse into a single pill. */
 .newsletter-form {
-    margin-top: 2rem;
-    width: min(560px, 100%);
+    width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center;
     gap: 0.75rem;
 }
 .newsletter-label {
@@ -121,32 +158,35 @@
     white-space: nowrap;
     border: 0;
 }
+/* Input above button, at every width.
+   These used to fuse into one pill, which worked when the form had the full
+   560px of a centred column. Inside the card it would have about 360px, leaving
+   the input around 190px — a field too short to see the address you just typed.
+   Stacking is what the phone layout already did; it is now simply the layout,
+   and the card is what holds the two together visually. */
 .newsletter-pill {
     width: 100%;
     display: flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 6px;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
-}
-.newsletter-pill:focus-within {
-    border-color: var(--gold);
-    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
-    background: rgba(255, 255, 255, 0.12);
+    flex-direction: column;
+    gap: 0.7rem;
 }
 .newsletter-input {
-    flex: 1 1 auto;
+    width: 100%;
     min-width: 0;
-    height: 52px;
-    padding: 0 1.25rem;
-    background: transparent;
-    border: none;
+    height: 54px;
+    padding: 0 1.15rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     color: #fff;
     font-family: inherit;
     font-size: 1rem;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.newsletter-input:focus {
+    border-color: var(--gold);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
 }
 .newsletter-input::placeholder { color: rgba(255, 255, 255, 0.55); }
 .newsletter-input:focus { outline: none; }
@@ -164,22 +204,28 @@
     --btn-pad-y: 0;
     --btn-pad-x: 1.6rem;
     --btn-fs: 1rem;
-    --btn-min-h: 52px;
+    --btn-min-h: 54px;
     --btn-gap: 0.5rem;
-    flex: 0 0 auto;
+    width: 100%;
     border: none;
-    background: var(--gold-gradient);
-    color: var(--btn-text-gold);
+    /* The brand gold, not var(--gold-gradient). That token is SAGE in light
+       mode — the accent family kept its historical name — so the primary action
+       on this band rendered teal, matching neither the nav's #C5B07C pill fill
+       nor the page field, and putting white on #6C969D at about 2.9:1. This is
+       the same gold the rest of the site now uses, with navy type at 7.3:1. */
+    background: #C5B07C;
+    color: #05204A;
     white-space: nowrap;
-    box-shadow: 0 8px 20px -10px rgba(var(--gold-rgb), 0.55);
+    box-shadow: 0 8px 20px -10px rgba(197, 176, 124, 0.5);
 }
-/* The shared wipe, in the footer's colours. */
+/* The shared wipe, a shade deeper so the fill still reads as a state change
+   under the same navy label. */
 .newsletter-submit::before {
-    background: linear-gradient(100deg, var(--gold-light) 0%, var(--gold) 100%);
+    background: linear-gradient(100deg, #D4C193 0%, #B49A62 100%);
 }
 .newsletter-submit:hover {
-    color: var(--brand-navy);
-    box-shadow: 0 12px 26px -10px rgba(var(--gold-rgb), 0.7);
+    color: #05204A;
+    box-shadow: 0 12px 26px -10px rgba(197, 176, 124, 0.65);
 }
 /* Submitting, not refusing — keep the progress cursor rather than the shared
    not-allowed one. */
@@ -204,12 +250,9 @@
 
 /* Success — fades in when it replaces the form. */
 .newsletter-success {
-    margin-top: 2rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: flex;
+    align-items: flex-start;
     gap: 0.75rem;
-    max-width: 520px;
     color: #fff;
     font-size: 1.02rem;
     line-height: 1.55;
@@ -222,44 +265,47 @@
     to { opacity: 1; transform: none; }
 }
 
-/* Trust text */
+/* Trust text — sits under the form inside the card. */
 .newsletter-trust {
-    margin-top: 1.4rem;
-    color: rgba(255, 255, 255, 0.55);
-    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: 1.1rem;
+    color: rgba(255, 255, 255, 0.62);
+    font-size: 0.82rem;
+}
+.newsletter-trust svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--gold-light);
 }
 
-/* Tablet — vertical padding is token-driven (scales via responsive.css). */
+/* One column below 900px, centred — two columns at this width is a stack with
+   extra rules. The card keeps its surface so the form still reads as its own
+   object rather than dissolving into the band. */
 @media (max-width: 900px) {
-    .newsletter-title { font-size: 36px; }
+    .newsletter-cta { text-align: center; }
+    .newsletter-cta-inner {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 2.25rem;
+        justify-items: center;
+    }
+    .newsletter-title { font-size: 36px; margin-inline: auto; }
+    .newsletter-title-accent { margin-inline: auto; }
+    .newsletter-desc { margin-inline: auto; }
+    .newsletter-badges { justify-content: center; }
+    .newsletter-action { width: min(520px, 100%); }
+    .newsletter-trust { justify-content: center; }
+    .newsletter-success { text-align: start; }
 }
-/* Mobile — the pill unstacks into a full-width input + button; no h-scroll. */
+
 @media (max-width: 560px) {
     .newsletter-title { font-size: 28px; }
     .newsletter-desc { font-size: 1rem; }
-    .newsletter-pill {
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 0;
-        background: transparent;
-        border: none;
-    }
-    .newsletter-pill:focus-within { box-shadow: none; }
-    .newsletter-input {
-        width: 100%;
-        height: 58px;
-        border-radius: var(--radius-pill);
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        transition: border-color 0.25s ease, box-shadow 0.25s ease;
-    }
-    .newsletter-input:focus {
-        border-color: var(--gold);
-        box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.22);
-    }
-    /* Stacked under the input on a phone — size still goes through the token,
-       so `height` can never fight the shared button's min-height. */
-    .newsletter-submit { --btn-min-h: 56px; width: 100%; }
+    /* 54px is already above the 44px target; a phone gets a little more. */
+    .newsletter-input { height: 56px; }
+    .newsletter-submit { --btn-min-h: 56px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -301,10 +347,10 @@
     font-size: 0.62rem;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--mid);
+    color: var(--footer-ink);
     margin-top: 3px;
 }
-.footer-desc { color: var(--mid); max-width: 340px; line-height: 1.7; }
+.footer-desc { color: var(--footer-ink); max-width: 340px; line-height: 1.7; }
 .footer-desc a { color: var(--blue); font-weight: var(--fw-medium); }
 
 .footer-badges { list-style: none; display: grid; gap: 0.45rem; margin-top: 1.25rem; }
@@ -313,7 +359,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.85rem;
-    color: var(--mid);
+    color: var(--footer-ink);
     font-weight: var(--fw-medium);
 }
 .footer-badges li svg { width: 16px; height: 16px; color: var(--green-deep); flex-shrink: 0; }
@@ -325,7 +371,7 @@
     border-radius: 50%;
     background: var(--surface-elevated);
     border: 1px solid var(--border-card);
-    color: var(--mid);
+    color: var(--footer-ink);
 }
 .footer-social a:hover {
     background: var(--blue);
@@ -334,16 +380,32 @@
     transform: translateY(-3px);
 }
 
+/* Column headings carry the same short accent rule the editorial kickers use
+   elsewhere on the site, so the footer reads as part of that language rather
+   than as a plain link dump. */
 .footer-col-title {
     font-family: var(--font-display);
     font-weight: var(--fw-medium);
     color: var(--accent-ink);
-    margin-bottom: 1rem;
+    margin-bottom: 1.15rem;
+    padding-bottom: 0.7rem;
+    position: relative;
+}
+.footer-col-title::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 28px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--accent-ink);
+    opacity: 0.35;
 }
 .footer-links { list-style: none; display: grid; gap: 0.55rem; }
 .footer-links a {
     position: relative;
-    color: var(--mid); font-weight: var(--fw-medium);
+    color: var(--footer-ink); font-weight: var(--fw-medium);
     display: inline-flex; align-items: center; gap: 0.3rem;
     width: fit-content;
 }
@@ -366,36 +428,50 @@
     .footer-links a::after { transition: none; }
 }
 
+/* The address sits at the foot of the About Us column, directly under that
+   column's links. A hairline separates the two so contact details do not read
+   as three more navigation items. */
 .footer-contact {
     margin-top: 1.5rem;
+    padding-top: 1.35rem;
+    border-top: 1px solid var(--border-subtle);
     font-style: normal;
     display: grid;
-    gap: 0.55rem;
+    gap: 0.7rem;
 }
 .footer-contact a,
 .footer-contact span {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--mid);
+    color: var(--footer-ink);
     font-size: 0.9rem;
     font-weight: var(--fw-medium);
 }
 .footer-contact svg { width: 16px; height: 16px; color: var(--blue); flex-shrink: 0; }
 .footer-contact a:hover { color: var(--blue); }
 
+/* Acknowledgement of Country.
+   The panel was --green-pale, a translucent sage. Over a cream field that read
+   as a soft tint; over the current field it goes muddy and the passage — which
+   is the most important text down here — is the hardest thing to read. A light
+   inset instead: it lifts off the field, gives the words a paler ground than
+   the rest of the footer, and takes the sage into the hairline and the leaf
+   rather than the fill. */
 .footer-acknowledgement {
     margin-top: var(--section-head-gap);
     padding: var(--card-pad-sm) var(--card-pad);
-    background: var(--green-pale);
-    border: 1px solid var(--border-card);
+    background: rgba(255, 255, 255, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     border-radius: var(--radius-lg);
     display: flex;
     gap: 1rem;
     align-items: flex-start;
 }
 .footer-acknowledgement svg { width: 24px; height: 24px; color: var(--green-deep); flex-shrink: 0; margin-top: 2px; }
-.footer-acknowledgement p { color: var(--mid); font-size: 0.9rem; line-height: 1.7; margin: 0; }
+/* On the lighter inset the passage can take the full ink rather than the
+   muted footer tone. */
+.footer-acknowledgement p { color: var(--accent-ink); font-size: 0.9rem; line-height: 1.7; margin: 0; }
 
 .footer-bottom {
     margin-top: 2.5rem;
@@ -405,7 +481,7 @@
     justify-content: space-between;
     gap: 1rem;
     flex-wrap: wrap;
-    color: var(--mid);
+    color: var(--footer-ink);
     font-size: 0.85rem;
 }
 

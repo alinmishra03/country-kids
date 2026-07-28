@@ -51,6 +51,14 @@
         0 0 0 6px rgba(197, 176, 124, 0.12);
 }
 
+/* The footer darkens its own ink so body copy clears AA on the light field
+   (css/footer.css). That value is a dark slate, and on the navy footer of this
+   theme it lands at 1.72:1 — so here the token goes back to --mid, which is a
+   near-white tint on dark and reads at 15.8:1. The override has to live in this
+   file rather than in footer.css: --footer-ink is set on #site-footer itself,
+   and only a later stylesheet can outrank it. */
+[data-theme="dark"] #site-footer { --footer-ink: var(--mid); }
+
 [data-theme="dark"] .gallery-tile { border-color: var(--border-subtle); }
 
 /* Program icons, feature chips, gallery tiles and team avatars derive their

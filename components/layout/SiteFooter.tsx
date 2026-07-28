@@ -65,10 +65,16 @@ const NEWSLETTER_BENEFITS = [
     { icon: 'heart-handshake', label: 'Parenting Tips' },
 ];
 
-/* Newsletter CTA. Client-side only (no backend wired yet) — validates the email,
-   shows a loading state, then swaps to a success confirmation. The submit handler
-   currently simulates the request; wire it to your email service where noted
-   without changing the surrounding UI/validation flow. */
+/* Newsletter CTA.
+
+   The submit actually posts to /api/newsletter now — it used to resolve a
+   setTimeout and discard the address, which meant the success message was a
+   lie whenever anything was wrong. Every branch the route can return is handled
+   and surfaced in the visitor's words: a bad address, too many attempts, a
+   provider that is down, and a network that never answered.
+
+   The client-side format check stays. It is not the guard — the route validates
+   independently — it just saves a round trip on an obvious typo. */
 function NewsletterBand() {
     const [email, setEmail] = useState('');
     const [status, setStatus] = useState('idle'); // 'idle' | 'loading' | 'success'
@@ -76,7 +82,7 @@ function NewsletterBand() {
 
     const isValidEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (status === 'loading') return;
         if (!isValidEmail(email)) {
@@ -85,9 +91,30 @@ function NewsletterBand() {
         }
         setError('');
         setStatus('loading');
-        // TODO: POST the email to your newsletter service here, then setStatus on
-        // its resolution. The timeout only simulates that round-trip.
-        window.setTimeout(() => setStatus('success'), 900);
+
+        try {
+            const res = await fetch('/api/newsletter', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() }),
+            });
+
+            if (res.ok) {
+                setStatus('success');
+                return;
+            }
+
+            /* A non-ok response may still not be JSON (a proxy error page, a
+               504 from the platform), so the parse is allowed to fail and fall
+               back to something a person can act on. */
+            const data = await res.json().catch(() => null);
+            setError(data?.error || 'Something went wrong. Please try again.');
+            setStatus('idle');
+        } catch {
+            /* Offline, DNS, connection dropped mid-flight. */
+            setError('Could not reach the server. Please check your connection.');
+            setStatus('idle');
+        }
     };
 
     return (
@@ -100,6 +127,7 @@ function NewsletterBand() {
         >
             <div className="newsletter-cta-glow" aria-hidden="true" />
             <div className="newsletter-cta-inner container">
+                <div className="newsletter-copy">
                     <span className="newsletter-eyebrow">Stay Connected</span>
                     <h2 id="newsletter-heading" className="newsletter-title">
                         Stay in the loop with Country Kids
@@ -117,7 +145,9 @@ function NewsletterBand() {
                             </li>
                         ))}
                     </ul>
+                </div>
 
+                <div className="newsletter-action">
                     {status === 'success' ? (
                         <p className="newsletter-success" role="status">
                             <Icon name="circle-check" />
@@ -175,9 +205,12 @@ function NewsletterBand() {
                         </form>
                     )}
 
-                    <p className="newsletter-trust">No spam · Unsubscribe anytime</p>
+                    <p className="newsletter-trust">
+                        <Icon name="badge" /> No spam · Unsubscribe anytime
+                    </p>
                 </div>
-            </Reveal>
+            </div>
+        </Reveal>
     );
 }
 
