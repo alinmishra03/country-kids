@@ -49,7 +49,19 @@
     text-align: start;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
-/* Soft, static glow behind the content (no keyframes, no movement). */
+/* Photograph + scrim + glow, in one layer behind the content.
+
+   The order matters: the two gradients are painted OVER the photograph because
+   in CSS the first background layer is the topmost. The navy scrim is heavy on
+   purpose — this band carries white type, a white-bordered input and a gold
+   button, and the photograph underneath is a bright, busy nursery scene. At a
+   lighter scrim the placeholder text stops being legible over the pale patches.
+   The band keeps its solid navy underneath as the base layer, so a photograph
+   that fails to load leaves the section exactly as it was.
+
+   The URL is percent-encoded because the file lives in a directory with a space
+   in its name ("other images"); an unencoded space in url() is a parse error in
+   some engines rather than a 404, which fails silently and confusingly. */
 .newsletter-cta-glow {
     position: absolute;
     inset: 0;
@@ -57,7 +69,9 @@
     pointer-events: none;
     background:
         radial-gradient(46% 62% at 50% 0%, rgba(var(--gold-rgb), 0.16), transparent 70%),
-        radial-gradient(60% 82% at 50% 122%, rgba(124, 196, 242, 0.10), transparent 72%);
+        radial-gradient(60% 82% at 50% 122%, rgba(124, 196, 242, 0.10), transparent 72%),
+        linear-gradient(100deg, rgba(5, 32, 74, 0.95) 0%, rgba(5, 32, 74, 0.92) 34%, rgba(5, 32, 74, 0.66) 100%),
+        url("/images/about/other%20images/10.png") center / cover no-repeat;
 }
 .newsletter-cta-inner {
     position: relative;

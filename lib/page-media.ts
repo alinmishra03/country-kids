@@ -123,10 +123,15 @@ export const STORY_IMAGES = {
    Without the index signature this is an excess-property error under
    `satisfies` — and one that only `next build` reports, since `next dev` does
    not run the full type check. */
+/* What an extra slot is allowed to be: one photograph, an ordered list of them
+   (the philosophy values accordion), or a map keyed by something the page owns
+   (the curriculum series, keyed by series id). */
+type MediaSlot = Media | Media[] | Record<string, Media>;
+
 type PageMedia = {
     hero: Media;
     feature: Media;
-    [slot: string]: Media | Media[];
+    [slot: string]: MediaSlot;
 };
 
 export const PAGE_MEDIA = {
@@ -213,8 +218,55 @@ export const PAGE_MEDIA = {
             '1470071459604-3b5ec3a7fe05',
             1300,
             1000,
-            'Mist over open bushland — the landscape the curriculum series are named for'
+            'A wide valley of open country under low cloud, lit by a late sun'
         ),
+        /* One landscape per series, keyed by CURRICULUM_SERIES id so a series
+           and its picture cannot drift apart. All five are the centre's own
+           photography.
+
+           crop() passes any path starting with "/" straight through, so local
+           files need no CDN handling — but they also get NO resizing, so the
+           file on disk is the file the visitor downloads. See the note on
+           river.jpg below.
+
+           `country` takes "Five landscapes, one curriculum.jpg". That file is
+           named for the section above, but the centre supplied exactly five
+           photographs for five series and this is the one left over — and an
+           aerial of open coastal country suits the series about land and
+           connection. The section above goes back to the stock landscape it had
+           before, so no photograph appears twice on the page. */
+        series: {
+            seeds: {
+                src: '/images/about/curriculum/seeds.jpeg',
+                alt: 'A child’s hands settling a green seedling into dark soil',
+                width: 2560,
+                height: 1707,
+            },
+            country: {
+                src: '/images/about/curriculum/Five%20landscapes,%20one%20curriculum.jpg',
+                alt: 'A road winding along a forested coastline, seen from above',
+                width: 949,
+                height: 530,
+            },
+            river: {
+                src: '/images/about/curriculum/river.jpg',
+                alt: 'A still river running between banks of dense bush',
+                width: 8064,
+                height: 5379,
+            },
+            seasons: {
+                src: '/images/about/curriculum/seasons.jpg',
+                alt: 'Four seasons side by side — summer coast, green forest, autumn leaves and snow',
+                width: 1344,
+                height: 768,
+            },
+            'high-country': {
+                src: '/images/about/curriculum/high%20country.jpg',
+                alt: 'A country town street lined with trees in full autumn colour',
+                width: 900,
+                height: 600,
+            },
+        } as Record<string, Media>,
     },
     compliance: {
         hero: shot(

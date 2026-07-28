@@ -48,20 +48,53 @@ export default function CurriculumPage() {
                 <div className="container">
                     <p className="curric-frameworks">{CURRICULUM_INTRO.frameworks}</p>
 
-                    <div className="curric-tabs" role="tablist" aria-label="Curriculum series">
-                        {CURRICULUM_SERIES.map((s) => (
-                            <button
-                                key={s.id}
-                                type="button"
-                                role="tab"
-                                aria-selected={s.id === activeId}
-                                className={`curric-tab accent-${s.accent}${s.id === activeId ? ' is-active' : ''}`}
-                                onClick={() => setActiveId(s.id)}
-                            >
-                                <Icon name={s.icon} /> {s.name}
-                            </button>
-                        ))}
-                    </div>
+                    {/* The five series, as photo cards rather than pills. Still
+                        a real tablist with aria-selected — the styling changed,
+                        not the semantics, so keyboard and screen-reader
+                        behaviour is exactly what it was.
+
+                        The landscape lives on the card, which is why the panel
+                        below no longer repeats it: one photograph per series,
+                        visible in one place. */}
+                    <Reveal className="curric-picker" stagger amount={0.1}>
+                        <div role="tablist" aria-label="Curriculum series" className="curric-picker-row">
+                            {CURRICULUM_SERIES.map((s) => {
+                                const media = PAGE_MEDIA.curriculum.series[s.id];
+                                const selected = s.id === activeId;
+                                return (
+                                    <Reveal as="div" variant="item" className="curric-pick-slot" key={s.id}>
+                                        <button
+                                            type="button"
+                                            role="tab"
+                                            aria-selected={selected}
+                                            className={`curric-pick accent-${s.accent}${selected ? ' is-active' : ''}`}
+                                            onClick={() => setActiveId(s.id)}
+                                        >
+                                            <span className="curric-pick-media" aria-hidden="true">
+                                                {media ? (
+                                                    <img
+                                                        src={media.src}
+                                                        alt=""
+                                                        width={media.width}
+                                                        height={media.height}
+                                                        loading="lazy"
+                                                        decoding="async"
+                                                    />
+                                                ) : null}
+                                            </span>
+                                            <span className="curric-pick-body">
+                                                <span className="curric-pick-icon" aria-hidden="true">
+                                                    <Icon name={s.icon} />
+                                                </span>
+                                                <span className="curric-pick-name">{s.name}</span>
+                                                <span className="curric-pick-tagline">{s.tagline}</span>
+                                            </span>
+                                        </button>
+                                    </Reveal>
+                                );
+                            })}
+                        </div>
+                    </Reveal>
 
                     <Reveal className={`curric-panel accent-${active.accent}`} variant="fadeUp" key={active.id}>
                         <div className="curric-panel-head">

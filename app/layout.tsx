@@ -22,7 +22,19 @@ export const metadata = {
     title: 'Country Kids Learning Centre — Rooted in Country, Flourishing Together',
     description:
         'A not-for-profit early learning centre in Ravenhall, Victoria. Seven purpose-named rooms for children 6 weeks to 6 years, funded 3 & 4 year old kinder, five fresh meals daily. Book a free tour today.',
-    icons: { icon: '/images/favicon.svg' },
+    /* The centre's own mark, 1080x1080. This replaced a reference to
+       /images/favicon.svg, which was a ZERO-BYTE file — so the site has been
+       shipping a favicon link to an empty document and browsers were falling
+       back to a blank page icon. The svg is left in place untouched in case
+       something else points at it; nothing here does any more.
+
+       `apple` is the same file: iOS ignores the standard icon when adding to
+       the home screen and would otherwise render a grey placeholder. */
+    icons: {
+        icon: '/images/favicon.png',
+        shortcut: '/images/favicon.png',
+        apple: '/images/favicon.png',
+    },
 };
 
 export const viewport = {

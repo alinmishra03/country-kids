@@ -15,53 +15,171 @@
     line-height: 1.65;
 }
 
-.curric-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.75rem;
-    margin-bottom: 2.5rem;
+/* ── Series picker ──
+   Five photo cards instead of five pills: the landscape a series is named for
+   is the thing you choose from, and the tagline is readable before you commit
+   to a tab.
+
+   Everything that carries meaning is unchanged. Each card still derives its
+   colour from the per-series .accent-* tokens (rooms.css), the type still uses
+   --text-primary / --mid at the sizes the rest of the page uses, and the
+   entrance is still the shared Reveal stagger — this file adds no animation of
+   its own beyond hover and the selected-state transition. */
+.curric-picker { margin-bottom: clamp(2.5rem, 5vw, 3.5rem); }
+.curric-picker-row {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.6vw, 1.15rem);
+    align-items: stretch;
 }
-.curric-tab {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    font-family: var(--font-body);
-    font-size: 0.96rem;
-    font-weight: var(--fw-medium);
-    color: var(--text-primary);
+.curric-pick-slot { display: flex; }
+
+.curric-pick {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+    text-align: start;
+    cursor: pointer;
     background: var(--surface-elevated);
     border: 1.5px solid var(--border-card);
-    border-radius: var(--radius-pill);
-    padding: 0.65rem 1.3rem;
-    cursor: pointer;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    transition:
+        transform 0.45s var(--ease-out),
+        box-shadow 0.45s var(--ease-out),
+        border-color 0.3s ease;
 }
-.curric-tab svg { width: 20px; height: 20px; color: var(--acc-deep, var(--blue)); }
-.curric-tab:hover { border-color: color-mix(in srgb, var(--acc, var(--blue)) 45%, transparent); transform: translateY(-2px); }
-.curric-tab.is-active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--acc, var(--blue)) 0%, var(--acc-deep, var(--blue-deep)) 100%);
-    border-color: transparent;
-    box-shadow: 0 12px 26px -12px color-mix(in srgb, var(--acc, var(--blue)) 70%, transparent);
-}
-.curric-tab.is-active svg { color: #fff; }
 
+.curric-pick-media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--surface-2);
+}
+.curric-pick-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.6s var(--ease-out);
+}
+
+.curric-pick-body {
+    display: block;
+    padding: 0.95rem 1rem 1.1rem;
+}
+/* ── Ink: the brand blue, not the per-series accent ──
+   Icons and copy on these cards all read from the --blue family rather than
+   the --acc-* tokens each series carries. No new values are introduced: --blue-
+   deep and --blue-light are the existing primary and its lighter step from
+   base.css, and both are theme-aware, so dark mode gets the navy family's light
+   tints rather than a hardcoded navy nobody could read there.
+
+   The per-series accent is no longer used anywhere in this section. It used to
+   survive on the selected card's ring and the practice cards' top rule, which
+   left a navy icon sitting inside a clay ring under Seasons and a sage one
+   under Seeds. Series identity is carried by the photograph and the name. The
+   .accent-* class is still on the markup and still sets --acc / --acc-deep /
+   --acc-pale; nothing here reads them, so restoring a per-series edge later
+   needs only the declaration back, not the plumbing. */
+.curric-pick-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    transition: background 0.3s ease, color 0.3s ease;
+}
+.curric-pick-icon svg { width: 18px; height: 18px; }
+.curric-pick-name {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: var(--fw-medium);
+    color: var(--blue-deep);
+}
+/* --blue-light, not --blue: in light mode --blue and --blue-deep are the same
+   #05204A, so using either here would flatten the title and its tagline into
+   one colour. --blue-light is the design system's own lighter step of the same
+   family, which keeps the hierarchy the muted --mid used to give. */
+.curric-pick-tagline {
+    display: block;
+    margin-top: 0.2rem;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.86rem;
+    line-height: 1.35;
+    color: var(--blue-light);
+}
+
+.curric-pick:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: color-mix(in srgb, var(--blue) 45%, transparent);
+}
+.curric-pick:hover .curric-pick-media img { transform: scale(1.05); }
+
+/* Selected. The edge and ring are the brand blue, matching the icon — the card
+   previously took its series accent here, which put a navy icon inside a clay
+   or sage ring on the same card. The selected state is marked by the edge
+   rather than a fill, so the photograph stays the thing being chosen and the
+   label keeps the page's normal ink. */
+.curric-pick.is-active {
+    border-color: var(--blue-deep);
+    box-shadow:
+        0 0 0 2px color-mix(in srgb, var(--blue) 42%, transparent),
+        var(--shadow-elevation);
+    transform: translateY(-2px);
+}
+/* The selected card's icon fills with the shared --blue-gradient, so every
+   card's icon is the same blue in both states rather than one turning its
+   series colour on selection. */
+.curric-pick.is-active .curric-pick-icon {
+    background: var(--blue-gradient);
+    color: #fff;
+}
+
+.curric-pick:focus-visible {
+    outline: 2px solid var(--blue-deep);
+    outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .curric-pick,
+    .curric-pick-media img { transition: none; }
+    .curric-pick:hover { transform: none; }
+    .curric-pick:hover .curric-pick-media img { transform: none; }
+}
+
+/* Text only. The series photograph lives on its picker card above, so
+   repeating it here would put the same image on screen twice. */
 .curric-panel-head {
     text-align: center;
     max-width: 640px;
     margin: 0 auto 2.2rem;
 }
+/* This tagline is the SAME STRING as the one on the selected picker card
+   ("Where every child begins"). Leaving it on the series accent while the card
+   above it went blue would show one sentence in two colours on one screen, so
+   it follows the cards. Revert this pair if the accent is wanted back here. */
 .curric-panel-head .curric-tagline {
     font-family: var(--font-display);
     font-style: italic;
     font-size: 1.4rem;
-    color: var(--acc-deep, var(--blue-deep));
+    color: var(--blue-deep);
     margin-bottom: 0.6rem;
 }
-.curric-panel-head p { color: var(--mid); line-height: 1.7; }
+.curric-panel-head p { color: var(--blue-light); line-height: 1.7; }
 
 /* Surface/shadow/hover come from the shared card system in section-commons.css;
-   the accent rule along the top edge is this card's own. */
+   the rule along the top edge is this card's own. It reads from the blue family
+   rather than the series accent, so that under Seasons — say — the practice
+   cards no longer wear a clay stripe above blue headings. */
 .curric-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -76,22 +194,37 @@
     position: absolute;
     inset-inline: 0; top: 0;
     height: 4px;
-    background: linear-gradient(90deg, var(--acc, var(--blue)), var(--acc-deep, var(--blue-deep)));
+    background: var(--blue-gradient);
 }
-.curric-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
-.curric-card p { color: var(--mid); font-size: 0.95rem; line-height: 1.65; }
+/* Same ink as the picker cards above — title on the primary, body on its
+   lighter step. Size, weight, spacing and the accent rule on the card's top
+   edge are untouched. */
+.curric-card h3 { font-size: 1.2rem; margin-bottom: 0.75rem; color: var(--blue-deep); }
+.curric-card p { color: var(--blue-light); font-size: 0.95rem; line-height: 1.65; }
 .curric-outcome {
     display: inline-block;
     font-size: 0.72rem;
     font-weight: var(--fw-medium);
     letter-spacing: 0.4px;
-    color: var(--acc-deep, var(--blue-deep));
-    background: var(--acc-pale, var(--blue-pale));
+    color: var(--blue-deep);
+    background: var(--blue-pale);
     padding: 0.3rem 0.7rem;
     border-radius: var(--radius-pill);
     margin-bottom: 0.9rem;
 }
 
+/* Five across needs about 1100px before the taglines start breaking badly.
+   Below that the row rewraps rather than shrinking the cards further: three,
+   then two. Never one — at 2 columns a card is still ~150px at 320px, which
+   the 4:3 crop and a two-line tagline both survive. */
+@media (max-width: 1100px) {
+    .curric-picker-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 @media (max-width: 900px) {
     .curric-cards { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+    .curric-picker-row { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .curric-pick-body { padding: 0.8rem 0.85rem 0.95rem; }
+    .curric-pick-tagline { font-size: 0.82rem; }
 }
