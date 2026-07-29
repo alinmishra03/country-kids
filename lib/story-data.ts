@@ -49,7 +49,7 @@ export const STORY_CHAPTERS = [
                 stat: '7',
                 title: 'Seven rooms, named for this land',
                 text:
-                    'Joey and Koala, Kookaburra and Cockatoo, Kingfisher, Kangaroo and Emu — so that from their very first day, our children grow up knowing the creatures, the seasons, and the Country they belong to.',
+                    'Joey and Koala, Kookaburra and Cockatoo, Kingfisher, Kangaroo and Bunjil — so that from their very first day, our children grow up knowing the creatures, the seasons, and the Country they belong to.',
             },
             {
                 stat: '5',

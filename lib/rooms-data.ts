@@ -80,15 +80,15 @@ export const ROOMS = [
     },
     {
         id: 'emu',
-        name: 'Emu Room',
-        animal: 'Emu',
+        name: 'Bunjil Room',
+        animal: 'Bunjil',
         age: '3 – 5 Years',
         stage: 'Integrated Learning',
         icon: 'egg',
         accent: 'green',
         img: '1587616211892-f743fcca64f9',
         blurb:
-            "Australia's tallest bird — strong, curious and never able to fly backwards. The Emu Room is our flexible integrated learning space for 3–5 year olds, supporting mixed-age groups, children with additional needs, and specialised learning programs.",
+            "Australia's tallest bird — strong, curious and never able to fly backwards. The Bunjil Room is our flexible integrated learning space for 3–5 year olds, supporting mixed-age groups, children with additional needs, and specialised learning programs.",
     },
 ];
 

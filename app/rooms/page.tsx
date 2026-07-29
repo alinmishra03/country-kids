@@ -36,7 +36,7 @@ export default function RoomsPage() {
                 kicker="Named for this land"
                 title={<>Every room has a <span>name &amp; a purpose</span></>}
                 paras={[
-                    'Joey, Koala, Kookaburra, Cockatoo, Kingfisher, Kangaroo and Emu — each room reflects our connection to nature, Country, and the wonder of the world our children are just beginning to explore.',
+                    'Joey, Koala, Kookaburra, Cockatoo, Kingfisher, Kangaroo and Bunjil — each room reflects our connection to nature, Country, and the wonder of the world our children are just beginning to explore.',
                 ]}
                 image={PAGE_MEDIA.rooms.feature}
                 badge={{ stat: '7', label: 'Rooms, six weeks to six years' }}

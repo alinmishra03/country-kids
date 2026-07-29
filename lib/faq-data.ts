@@ -3,7 +3,7 @@
 export const FAQS = [
     {
         q: 'What ages does Country Kids Learning Centre accept?',
-        a: 'We welcome children from 6 weeks to 6 years of age across our 7 purpose-named rooms: Joey (0–1yr), Koala (1–2yrs), Kookaburra (2–3yrs), Cockatoo (2–3yrs), Kingfisher (3–4yrs), Kangaroo (4–5yrs), and Emu (3–5yrs integrated room).',
+        a: 'We welcome children from 6 weeks to 6 years of age across our 7 purpose-named rooms: Joey (0–1yr), Koala (1–2yrs), Kookaburra (2–3yrs), Cockatoo (2–3yrs), Kingfisher (3–4yrs), Kangaroo (4–5yrs), and Bunjil (3–5yrs integrated room).',
     },
     {
         q: 'What are your opening hours and contact details?',

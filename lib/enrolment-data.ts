@@ -61,7 +61,7 @@ export const ROOM_OPTIONS = [
     'Cockatoo Room (2–3yrs)',
     'Kingfisher Room (3–4yrs · Kinder)',
     'Kangaroo Room (4–5yrs · Kinder)',
-    'Emu Room (3–5yrs · Integrated)',
+    'Bunjil Room (3–5yrs · Integrated)',
 ];
 
 export const DAYS_OPTIONS = [

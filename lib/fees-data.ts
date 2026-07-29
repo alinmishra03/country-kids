@@ -58,7 +58,7 @@ export const DAY_OPTIONS = [
 export const ROOM_GROUPS = [
     { id: 'joey-koala', label: 'Joey / Koala (0–2yrs)', rate: 160 },
     { id: 'kooka-cockatoo', label: 'Kookaburra / Cockatoo (2–3yrs)', rate: 155 },
-    { id: 'kinder', label: 'Kingfisher / Kangaroo / Emu (3–6yrs)', rate: 150 },
+    { id: 'kinder', label: 'Kingfisher / Kangaroo / Bunjil (3–6yrs)', rate: 150 },
 ];
 
 export const ESTIMATOR_NOTE =
