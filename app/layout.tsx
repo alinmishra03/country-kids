@@ -18,10 +18,58 @@ import IntroLoader from '@/components/layout/IntroLoader';
 import SmoothScroll from '@/components/providers/SmoothScroll';
 import { HeroNavProvider } from '@/components/providers/HeroNavProvider';
 
+/* Kept in one place because the OG title, the Twitter title and the <title>
+   have to agree, and because a link preview shows the description to people who
+   have not seen the page yet — it is marketing copy, not a meta afterthought. */
+const SITE_URL = 'https://www.countrykids.au';
+const SITE_TITLE = 'Country Kids Learning Centre — Rooted in Country, Flourishing Together';
+const SITE_DESC =
+    'A not-for-profit early learning centre in Ravenhall, Victoria. Seven purpose-named rooms for children 6 weeks to 6 years, funded 3 & 4 year old kinder, five fresh meals daily. Book a free tour today.';
+
 export const metadata = {
-    title: 'Country Kids Learning Centre — Rooted in Country, Flourishing Together',
-    description:
-        'A not-for-profit early learning centre in Ravenhall, Victoria. Seven purpose-named rooms for children 6 weeks to 6 years, funded 3 & 4 year old kinder, five fresh meals daily. Book a free tour today.',
+    /* Without this, Next emits the relative "/og-image.png" as-is. Every
+       scraper — WhatsApp, Facebook, LinkedIn, iMessage — requires an ABSOLUTE
+       url in og:image and simply drops a relative one, which is the blank grey
+       panel that was showing. metadataBase is what turns the relative path
+       below into https://www.countrykids.au/og-image.png. */
+    metadataBase: new URL(SITE_URL),
+    title: SITE_TITLE,
+    description: SITE_DESC,
+    /* Deliberately NO canonical here.
+       Metadata in the root layout is inherited by every route, and a canonical
+       of "/" would have every interior page declare itself a duplicate of the
+       homepage — which invites search engines to drop /about, /philosophy and
+       the rest from the index. That is worse than having none: with no tag,
+       each page is canonical to its own URL, which is already correct.
+
+       A per-page canonical is the right answer, but it needs each route to
+       export its own metadata, and every page under app/ is a Client Component
+       ('use client'), which cannot. Doing it properly means a small server
+       layout per route — worth doing, but it is a structural change and not
+       part of a metadata fix. */
+    openGraph: {
+        type: 'website',
+        siteName: 'Country Kids Learning Centre',
+        url: SITE_URL,
+        title: SITE_TITLE,
+        description: SITE_DESC,
+        locale: 'en_AU',
+        images: [
+            {
+                url: '/og-image.png',
+                width: 1200,
+                height: 630,
+                type: 'image/png',
+                alt: 'Country Kids Learning Centre',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: SITE_TITLE,
+        description: SITE_DESC,
+        images: ['/og-image.png'],
+    },
     /* The centre's own mark, 1080x1080. This replaced a reference to
        /images/favicon.svg, which was a ZERO-BYTE file — so the site has been
        shipping a favicon link to an empty document and browsers were falling
