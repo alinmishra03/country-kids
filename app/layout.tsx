@@ -70,18 +70,30 @@ export const metadata = {
         description: SITE_DESC,
         images: ['/og-image.png'],
     },
-    /* The centre's own mark, 1080x1080. This replaced a reference to
-       /images/favicon.svg, which was a ZERO-BYTE file — so the site has been
-       shipping a favicon link to an empty document and browsers were falling
-       back to a blank page icon. The svg is left in place untouched in case
-       something else points at it; nothing here does any more.
+    /* ── Favicon ──
+       Built from the centre's supplied mark, composited onto the brand navy.
 
-       `apple` is the same file: iOS ignores the standard icon when adding to
-       the home screen and would otherwise render a grey placeholder. */
+       The artwork is a WHITE logo on a TRANSPARENT background. A browser tab is
+       white in light mode, so pointing at it directly makes the icon vanish —
+       which is what the previous /images/favicon.png did, and before that the
+       reference was to /images/favicon.svg, a zero-byte file. An opaque navy
+       plate is what makes it legible on any tab chrome, light or dark.
+
+       Several sizes rather than one: browsers downscale a single 512 badly at
+       16px, so the 32 is rendered at its own size with tighter padding. No
+       baked-in corner radius — every OS applies its own mask, and a radius
+       underneath theirs shows as a dark halo.
+
+       `apple` is separate because iOS ignores the standard icon on the home
+       screen and would otherwise render a grey placeholder. */
     icons: {
-        icon: '/images/favicon.png',
-        shortcut: '/images/favicon.png',
-        apple: '/images/favicon.png',
+        icon: [
+            { url: '/icon-32.png', sizes: '32x32', type: 'image/png' },
+            { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+            { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+        ],
+        shortcut: '/icon-32.png',
+        apple: '/apple-icon.png',
     },
 };
 
