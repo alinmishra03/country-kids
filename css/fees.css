@@ -12,6 +12,48 @@
 .fee-step {
     position: relative;
     padding: 2.2rem var(--card-pad-sm) var(--card-pad-sm);
+    color: #ffffff;
+}
+.fee-step-bg {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    z-index: 0;
+    pointer-events: none;
+}
+.fee-step-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.95) contrast(1.05);
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.fee-step:hover .fee-step-bg img {
+    transform: scale(1.08);
+}
+.fee-step-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        rgba(15, 34, 30, 0.60) 0%,
+        rgba(15, 34, 30, 0.82) 100%
+    );
+    backdrop-filter: blur(0.5px);
+    transition: background var(--transition-base);
+}
+[data-theme="dark"] .fee-step-overlay {
+    background: linear-gradient(
+        180deg,
+        rgba(10, 22, 19, 0.70) 0%,
+        rgba(10, 22, 19, 0.88) 100%
+    );
+}
+.fee-step > *:not(.fee-step-bg) {
+    position: relative;
+    z-index: 2;
 }
 .fee-step::before {
     counter-increment: fee;
@@ -26,19 +68,21 @@
     font-family: var(--font-display);
     font-weight: var(--fw-medium);
     font-size: 1.15rem;
-    box-shadow: var(--shadow-soft);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    z-index: 3;
 }
 .fee-step-icon {
     display: grid; place-items: center;
     width: 54px; height: 54px;
     border-radius: var(--radius-md);
-    background: var(--blue-pale);
-    color: var(--blue);
+    background: rgba(255, 255, 255, 0.92);
+    color: #1a4d40;
     margin-bottom: 1.1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
 }
 .fee-step-icon svg { width: 26px; height: 26px; }
-.fee-step h3 { font-size: 1.1rem; margin-bottom: 0.55rem; }
-.fee-step p { color: var(--mid); font-size: 0.92rem; line-height: 1.65; }
+.fee-step h3 { font-size: 1.1rem; margin-bottom: 0.55rem; color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+.fee-step p { color: rgba(255, 255, 255, 0.92); font-size: 0.92rem; line-height: 1.65; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
 
 /* Estimator. */
 .estimator {

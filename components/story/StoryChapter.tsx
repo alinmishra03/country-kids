@@ -41,7 +41,7 @@ type Props = {
 const LAYOUT_RATIO: Record<string, string | undefined> = {
     'split-right': undefined,
     'split-left': undefined,
-    centered: undefined,
+    centered: '16 / 10',
     overlap: '16 / 7',
 };
 

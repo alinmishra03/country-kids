@@ -1,9 +1,9 @@
 'use client';
 
 /* FAMILIES — families as partners: how we communicate and share the day, plus
-   the FAQ accordion. FAQ content from lib/faq-data.js. */
+   the FAQ accordion. Dynamically connected to CMS & Backend API. */
 
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Page from '@/components/shared/Page';
 import PageHero from '@/components/shared/PageHero';
 import SectionHeader from '@/components/shared/SectionHeader';
@@ -11,35 +11,53 @@ import CTASection from '@/components/shared/CTASection';
 import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
-import { FAQS } from '@/lib/faq-data';
+import { FAQS as STATIC_FAQS } from '@/lib/faq-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import { fetchPublishedFaqs } from '@/lib/api-client';
 
 const FAMILY_HIGHLIGHTS = [
     {
         icon: 'smartphone',
         title: 'Daily Updates, Wherever You Are',
         text: 'Photos, learning observations, meal notes and daily moments shared through our parent communication app throughout the day.',
+        image: PAGE_MEDIA.families.highlights?.[0]?.src,
     },
     {
         icon: 'utensils',
         title: 'Five Fresh Meals a Day',
         text: 'Our full-time on-site cook prepares breakfast, morning tea, lunch, afternoon tea and a late snack — adapted for allergies and cultural preferences.',
+        image: PAGE_MEDIA.families.highlights?.[1]?.src,
     },
     {
         icon: 'heart-handshake',
         title: 'Genuine Partnership',
         text: 'Families are never guests in our program. You are partners and contributors — the first and most important teachers your child will ever have.',
+        image: PAGE_MEDIA.families.highlights?.[2]?.src,
     },
     {
         icon: 'users',
         title: 'Not-for-Profit, Community First',
         text: 'Every dollar is reinvested into children, educators and facilities — never returned to shareholders. That means better ratios and richer resources.',
+        image: PAGE_MEDIA.families.highlights?.[3]?.src,
     },
 ];
 
 export default function FamiliesPage() {
     const rootRef = useRef(null);
     const [open, setOpen] = useState(0);
+    const [faqsList, setFaqsList] = useState<{ q: string; a: string }[]>(STATIC_FAQS);
+
+    useEffect(() => {
+        let isMounted = true;
+        fetchPublishedFaqs().then((dynamicFaqs) => {
+            if (isMounted && dynamicFaqs && dynamicFaqs.length > 0) {
+                setFaqsList(dynamicFaqs);
+            }
+        });
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     return (
         <Page id="families" innerRef={rootRef}>
@@ -53,8 +71,6 @@ export default function FamiliesPage() {
                 parallax
             />
 
-            {/* Same kicker, title and lead — now beside a photograph, with the
-                four partnership highlights still below it. */}
             <SplitFeature
                 kicker="Partners in the Journey"
                 title={<>The world inside &amp; the world <span>beyond, woven as one</span></>}
@@ -66,7 +82,13 @@ export default function FamiliesPage() {
             >
                 <Reveal className="features-grid" stagger amount={0.1}>
                     {FAMILY_HIGHLIGHTS.map((f) => (
-                        <Reveal as="div" variant="item" className="feature-item" key={f.title}>
+                        <Reveal as="div" variant="item" className={`feature-item${f.image ? ' has-bg' : ''}`} key={f.title}>
+                            {f.image && (
+                                <div className="feature-item-bg" aria-hidden="true">
+                                    <img src={f.image} alt="" loading="lazy" />
+                                    <div className="feature-item-overlay" />
+                                </div>
+                            )}
                             <div className="feature-icon" aria-hidden="true"><Icon name={f.icon} /></div>
                             <h3>{f.title}</h3>
                             <p>{f.text}</p>
@@ -83,7 +105,7 @@ export default function FamiliesPage() {
                         lead="Can't find your answer here? Call us on 1300 025 520 or book a tour — we love to talk."
                     />
                     <div className="faq-list">
-                        {FAQS.map((item, i) => {
+                        {faqsList.map((item, i) => {
                             const isOpen = open === i;
                             return (
                                 <div className={`faq-item${isOpen ? ' is-open' : ''}`} key={item.q}>

@@ -22,7 +22,13 @@ export default function ComplianceStrip() {
 
                 <Reveal className="pillars-grid" stagger amount={0.1}>
                     {COMPLIANCE_PILLARS.map((p) => (
-                        <Reveal as="article" variant="item" className="pillar-card" key={p.title}>
+                        <Reveal as="article" variant="item" className={`pillar-card ${p.image ? 'has-bg' : ''}`} key={p.title}>
+                            {p.image && (
+                                <div className="pillar-card-bg" aria-hidden="true">
+                                    <img src={p.image} alt="" loading="lazy" />
+                                    <div className="pillar-card-overlay" />
+                                </div>
+                            )}
                             <span className="pillar-icon" aria-hidden="true"><Icon name={p.icon} /></span>
                             <h3>{p.title}</h3>
                             <p>{p.text}</p>

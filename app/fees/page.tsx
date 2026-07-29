@@ -68,6 +68,12 @@ export default function FeesPage() {
                 <Reveal className="fee-steps" stagger amount={0.1}>
                     {SUBSIDY_STEPS.map((s) => (
                         <Reveal as="article" variant="item" className="fee-step" key={s.title}>
+                            {s.image && (
+                                <div className="fee-step-bg" aria-hidden="true">
+                                    <img src={s.image} alt="" loading="lazy" />
+                                    <div className="fee-step-overlay" />
+                                </div>
+                            )}
                             <span className="fee-step-icon" aria-hidden="true"><Icon name={s.icon} /></span>
                             <h3>{s.title}</h3>
                             <p>{s.text}</p>

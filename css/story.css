@@ -210,7 +210,7 @@
 }
 
 /* Centred compositions give their picture the full shell width. */
-.ir--centered .ir-frame { aspect-ratio: var(--ir-ratio, 2 / 1); }
+.ir--centered .ir-frame { aspect-ratio: var(--ir-ratio, 16 / 10); }
 .ir--overlap .ir-frame { border-radius: var(--radius-xl); }
 
 /* ═══ 3. FEATURED QUOTE BAND ═════════════════════════════════════════════ */

@@ -23,6 +23,53 @@ import { PAGE_MEDIA } from '@/lib/page-media';
 const MAP_SRC =
     'https://www.google.com/maps?q=3+Nexus+Street+Ravenhall+VIC+3023&output=embed';
 
+const CONTACT_METHODS = [
+    {
+        icon: 'phone',
+        title: 'Call',
+        content: (
+            <a href={PHONE_HREF} className="link-accent">
+                {PHONE}
+            </a>
+        ),
+        image: PAGE_MEDIA.contact.highlights?.[0]?.src,
+    },
+    {
+        icon: 'mail',
+        title: 'Email',
+        content: (
+            <a href={EMAIL_HREF} className="link-accent">
+                {EMAIL}
+            </a>
+        ),
+        image: PAGE_MEDIA.contact.highlights?.[1]?.src,
+    },
+    {
+        icon: 'map-pin',
+        title: 'Visit',
+        content: (
+            <a href={ADDRESS.mapsHref} target="_blank" rel="noopener noreferrer" className="link-accent">
+                {ADDRESS.line1}
+                <br />
+                {ADDRESS.line2}
+            </a>
+        ),
+        image: PAGE_MEDIA.contact.highlights?.[2]?.src,
+    },
+    {
+        icon: 'clock',
+        title: 'Hours',
+        content: (
+            <>
+                Mon–Fri
+                <br />
+                6:30am – 6:30pm
+            </>
+        ),
+        image: PAGE_MEDIA.contact.highlights?.[3]?.src,
+    },
+];
+
 export default function ContactPage() {
     const rootRef = useRef(null);
 
@@ -41,26 +88,19 @@ export default function ContactPage() {
             <section className="section">
                 <div className="container">
                     <Reveal className="features-grid" stagger amount={0.1}>
-                        <Reveal as="div" variant="item" className="feature-item">
-                            <div className="feature-icon" aria-hidden="true"><Icon name="phone" /></div>
-                            <h3>Call</h3>
-                            <p><a href={PHONE_HREF} className="link-accent">{PHONE}</a></p>
-                        </Reveal>
-                        <Reveal as="div" variant="item" className="feature-item">
-                            <div className="feature-icon" aria-hidden="true"><Icon name="mail" /></div>
-                            <h3>Email</h3>
-                            <p><a href={EMAIL_HREF} className="link-accent">{EMAIL}</a></p>
-                        </Reveal>
-                        <Reveal as="div" variant="item" className="feature-item">
-                            <div className="feature-icon" aria-hidden="true"><Icon name="map-pin" /></div>
-                            <h3>Visit</h3>
-                            <p><a href={ADDRESS.mapsHref} target="_blank" rel="noopener noreferrer" className="link-accent">{ADDRESS.line1}<br />{ADDRESS.line2}</a></p>
-                        </Reveal>
-                        <Reveal as="div" variant="item" className="feature-item">
-                            <div className="feature-icon" aria-hidden="true"><Icon name="clock" /></div>
-                            <h3>Hours</h3>
-                            <p>Mon–Fri<br />6:30am – 6:30pm</p>
-                        </Reveal>
+                        {CONTACT_METHODS.map((item) => (
+                            <Reveal as="div" variant="item" className={`feature-item${item.image ? ' has-bg' : ''}`} key={item.title}>
+                                {item.image && (
+                                    <div className="feature-item-bg" aria-hidden="true">
+                                        <img src={item.image} alt="" loading="lazy" />
+                                        <div className="feature-item-overlay" />
+                                    </div>
+                                )}
+                                <div className="feature-icon" aria-hidden="true"><Icon name={item.icon} /></div>
+                                <h3>{item.title}</h3>
+                                <p>{item.content}</p>
+                            </Reveal>
+                        ))}
                     </Reveal>
 
                     <div className="contact-lower">

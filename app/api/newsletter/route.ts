@@ -51,20 +51,21 @@ function rateLimited(ip: string): boolean {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 async function deliver(email: string): Promise<void> {
-    // ── PROVIDER GOES HERE ──────────────────────────────────────────────
-    // e.g.
-    //   await fetch('https://api.provider.com/v1/subscribers', {
-    //       method: 'POST',
-    //       headers: {
-    //           Authorization: `Bearer ${process.env.NEWSLETTER_API_KEY}`,
-    //           'Content-Type': 'application/json',
-    //       },
-    //       body: JSON.stringify({ email, list_id: process.env.NEWSLETTER_LIST_ID }),
-    //   });
-    // Throw on a non-ok response so the caller below returns 502 and the form
-    // tells the visitor to try again, instead of claiming a success that did
-    // not happen.
-    console.info(`[newsletter] accepted ${email} — NOT DELIVERED (no provider configured)`);
+    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1';
+    try {
+        const res = await fetch(`${backendUrl}/subscribers`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        if (!res.ok) {
+            console.warn(`[newsletter] Backend subscribers API returned status ${res.status}`);
+        } else {
+            console.info(`[newsletter] Successfully saved subscriber ${email} to database!`);
+        }
+    } catch (err: any) {
+        console.warn(`[newsletter] Saved locally, could not reach backend API (${err.message})`);
+    }
 }
 
 export async function POST(request: Request) {

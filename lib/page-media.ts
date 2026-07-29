@@ -68,15 +68,15 @@ export const STORY_IMAGES = {
     ),
     chapterThree: shot(
         '1516627145497-ae6968895b74',
-        2000,
-        1000,
+        1800,
+        1125,
         'An educator sitting with young children, listening closely as they talk',
         ph('chapter-three-educator-child')
     ),
     chapterFour: shot(
         '1509062522246-3755977927d7',
         1800,
-        1013,
+        1125,
         'A light-filled learning room set up with open-ended play materials',
         ph('chapter-four-learning-space')
     ),
@@ -309,6 +309,32 @@ export const PAGE_MEDIA = {
             1000,
             'A parent and child arriving together, hand in hand'
         ),
+        highlights: [
+            shot(
+                '1587616211892-f743fcca64f9',
+                1200,
+                900,
+                'Children and educators sharing daily moments and learning'
+            ),
+            shot(
+                '1498837167922-ddd27525d352',
+                1200,
+                900,
+                'Freshly prepared healthy meals for children'
+            ),
+            shot(
+                '1577896851231-70ef18881754',
+                1200,
+                900,
+                'Educators and parents working together in genuine partnership'
+            ),
+            shot(
+                '1497486751825-1233686d5d80',
+                1200,
+                900,
+                'Children standing together in a supportive community'
+            ),
+        ],
     },
     contact: {
         hero: shot(
@@ -323,6 +349,32 @@ export const PAGE_MEDIA = {
             1000,
             'Native foliage and textured bark, close up'
         ),
+        highlights: [
+            shot(
+                '1516627145497-ae6968895b74',
+                1200,
+                900,
+                'Welcoming staff ready to answer parent calls'
+            ),
+            shot(
+                '1522661067900-ab829854a57f',
+                1200,
+                900,
+                'Educator reviewing email enquiries and messages'
+            ),
+            shot(
+                '1587616211892-f743fcca64f9',
+                1200,
+                900,
+                'The entrance to Country Kids Learning Centre'
+            ),
+            shot(
+                '1509062522246-3755977927d7',
+                1200,
+                900,
+                'Bright early learning room open Monday to Friday'
+            ),
+        ],
     },
     enroll: {
         hero: shot(

@@ -1,3 +1,5 @@
+import { crop } from '@/lib/images';
+
 /* Quality & Compliance — the four assurance pillars plus the 2025–2026 sector
    updates timeline. Faithful to the centre's own content. */
 
@@ -14,24 +16,28 @@ export const COMPLIANCE_PILLARS = [
         title: 'NQF Approved Provider',
         text:
             'Assessed against all seven Quality Areas of the National Quality Standard. Find us on startingblocks.gov.au for our current rating, assessment reports and compliance history.',
+        image: crop('1587616211892-f743fcca64f9', 600, 800),
     },
     {
         icon: 'shield',
         title: 'Child Safe Organisation',
         text:
             'All educators hold current Working with Children Checks. Personal mobile devices banned from use with children from September 2025. Service-supplied devices only.',
+        image: crop('1516627145497-ae6968895b74', 600, 800),
     },
     {
         icon: 'clipboard',
         title: 'National Worker Register',
         text:
             'Country Kids is registered on the National Early Childhood Worker Register (launched February 2026). All workforce information entered by March 2026 deadline.',
+        image: crop('1503676260728-1c00da094a0b', 600, 800),
     },
     {
         icon: 'graduation',
         title: 'Victorian Kinder Funding',
         text:
             'Registered with the Victorian Government to deliver funded 3 and 4 Year Old Kindergarten, saving eligible families up to $2,500 per year.',
+        image: crop('1541692641319-981cc79ee10a', 600, 800),
     },
 ];
 
