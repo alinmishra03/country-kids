@@ -6,51 +6,73 @@
     position: relative;
     overflow: hidden;
     border-radius: var(--radius-xl);
-    padding: 4rem 2rem;
+    /* Padding scales with the viewport rather than stepping at one breakpoint,
+       so the panel keeps the same proportions from 320px to desktop instead of
+       looking cramped just above the old 600px switch. */
+    padding: clamp(3rem, 6vw, 5.25rem) clamp(1.4rem, 4vw, 3.5rem);
     text-align: center;
     background: var(--blue-gradient);
     box-shadow: var(--shadow-elevation);
 }
+/* A gold hairline set inside the panel edge, replacing the 5px bar that used to
+   sit across the top. Same device as the values panel on /philosophy, so the
+   two dark surfaces on the site are finished the same way — and it frames the
+   whole panel rather than decorating one edge of it. */
 .cta-band-inner::after {
     content: "";
     position: absolute;
-    inset-inline: 0;
-    top: 0;
-    height: 5px;
-    background: var(--gold-gradient);
+    inset: 10px;
+    border: 1px solid rgba(var(--gold-rgb), 0.28);
+    border-radius: calc(var(--radius-xl) - 10px);
+    pointer-events: none;
 }
+/* A wide, low bloom behind the heading rather than a 620px circle hanging off
+   the top edge. An ellipse sized in percentages tracks the panel at every
+   width, so it never crops to a hard arc on a phone the way the fixed circle
+   did, and it reads as light in the panel rather than a shape on it. */
 .cta-band-glow {
     position: absolute;
-    top: -40%;
-    inset-inline-start: 50%;
-    transform: translateX(-50%);
-    width: 620px;
-    height: 620px;
-    max-width: 120%;
+    inset-inline: -10%;
+    top: -55%;
+    height: 150%;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(var(--gold-rgb), 0.30) 0%, transparent 62%);
+    background: radial-gradient(
+        ellipse at 50% 62%,
+        rgba(var(--gold-rgb), 0.26) 0%,
+        rgba(var(--gold-rgb), 0.08) 42%,
+        transparent 68%
+    );
     pointer-events: none;
 }
 .cta-band-content { position: relative; z-index: 1; }
 .cta-band-title {
     color: #fff;
-    font-size: clamp(1.9rem, 4vw, 2.7rem);
+    /* Slightly larger and tighter than before, matching the display sizes the
+       editorial pages settled on. text-wrap: balance stops a two-line heading
+       leaving one orphaned word on the second line. */
+    font-size: clamp(2rem, 4.4vw, 3rem);
+    line-height: 1.12;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
     text-shadow: 0 2px 20px rgba(4, 16, 32, 0.35);
 }
 .cta-band-text {
-    max-width: 600px;
-    margin: 1.1rem auto 0;
-    color: rgba(255, 255, 255, 0.92);
-    font-size: 1.08rem;
+    /* Character-based measure rather than 600px: the line length now holds
+       steady as the type scales instead of growing to 12 words a line. */
+    max-width: 54ch;
+    margin: 1.15rem auto 0;
+    color: rgba(255, 255, 255, 0.88);
+    font-size: clamp(1rem, 1.2vw, 1.08rem);
     line-height: 1.75;
+    text-wrap: pretty;
 }
 .cta-band-actions {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    gap: 1.1rem;
-    margin-top: 2.2rem;
+    gap: 1rem;
+    margin-top: clamp(1.75rem, 3.5vw, 2.5rem);
 }
 /* The shared site button (base.css), in the band's colours. It used to restate
    its own metrics and claim in a comment that they matched base.css — they did
@@ -83,7 +105,11 @@
     align-items: center;
     gap: clamp(2rem, 4vw, 3.5rem);
     text-align: start;
-    padding: clamp(2.75rem, 5vw, 4rem);
+    /* Separate axes. A single clamp bottomed out at 2.75rem, which is 41px of
+       side padding on a 288px panel — it left the copy 205px to live in once
+       both sides were taken. The inline floor drops to match the centred
+       variant; the block floor stays generous. */
+    padding: clamp(2.25rem, 5vw, 4rem) clamp(1.4rem, 4vw, 4rem);
 }
 .cta-band--split .cta-band-title,
 .cta-band--split .cta-band-text { margin-inline: 0; }
@@ -114,7 +140,12 @@
     .cta-band--split .cta-band-glow { inset-inline-start: 50%; top: -40%; }
 }
 
+/* Padding is a clamp now, so there is no step to correct here — only the
+   hairline, which needs to sit closer in on a small panel or it crowds the
+   copy. */
 @media (max-width: 600px) {
-    .cta-band-inner { padding: 3rem 1.4rem; }
-    .cta-band--split { padding: 2.5rem 1.4rem; }
+    .cta-band-inner::after {
+        inset: 7px;
+        border-radius: calc(var(--radius-xl) - 7px);
+    }
 }
