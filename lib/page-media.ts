@@ -349,32 +349,88 @@ export const PAGE_MEDIA = {
             1000,
             'Native foliage and textured bark, close up'
         ),
+        /* ── REAL photographs, not the stock dummies above ──
+           Sourced from the files already in the repo (public/images/about/
+           "other images"), which were sitting unreferenced. Converted to WebP
+           at 900px on the long edge before being wired in: the originals are
+           1.2–1.8MB PNGs, and crop() passes a local path straight through with
+           NO resizing, so the file on disk is the file the visitor downloads.
+           As PNGs these seven were 10.4MB; as WebP they are 297KB.
+
+           Every caption below was written after LOOKING at the file, not from
+           its filename — the numbered originals carry no clue as to content,
+           and this module's own history (see the philosophy notes above) is
+           what happens when captions are guessed.
+
+           Licensing is UNVERIFIED. They arrived with no attribution and no
+           README, unlike the Story slots, and they read as commercial stock.
+           Confirm the licence before this page goes near production. */
         highlights: [
-            shot(
-                '1516627145497-ae6968895b74',
-                1200,
-                900,
-                'Welcoming staff ready to answer parent calls'
-            ),
-            shot(
-                '1522661067900-ab829854a57f',
-                1200,
-                900,
-                'Educator reviewing email enquiries and messages'
-            ),
-            shot(
-                '1587616211892-f743fcca64f9',
-                1200,
-                900,
-                'The entrance to Country Kids Learning Centre'
-            ),
-            shot(
-                '1509062522246-3755977927d7',
-                1200,
-                900,
-                'Bright early learning room open Monday to Friday'
-            ),
-        ],
+            {
+                src: '/images/contact/story-circle.webp',
+                alt: 'Young children sitting in a row, each looking through a picture book',
+                width: 900,
+                height: 720,
+            },
+            {
+                src: '/images/contact/block-table.webp',
+                alt: 'Two toddlers building together at a table of wooden letter blocks',
+                width: 900,
+                height: 720,
+            },
+            {
+                src: '/images/contact/playground-slide.webp',
+                alt: 'A child coming down a bright playground tunnel slide with arms outstretched',
+                width: 900,
+                height: 720,
+            },
+            {
+                src: '/images/contact/hands-up.webp',
+                alt: 'Four children at a desk with their hands in the air, mid-cheer',
+                width: 900,
+                height: 720,
+            },
+        ] as Media[],
+
+        /* The rest of the converted set, for the sections below the hero. */
+        gallery: [
+            {
+                src: '/images/contact/alphabet-puzzle.webp',
+                alt: 'Three children on the floor fitting foam alphabet tiles together',
+                width: 900,
+                height: 720,
+            },
+            {
+                src: '/images/contact/wooden-blocks.webp',
+                alt: 'Two toddlers building with coloured wooden blocks in a bright room',
+                width: 900,
+                height: 720,
+            },
+            {
+                src: '/images/contact/colouring-outdoors.webp',
+                alt: 'A group of children coloring with crayons around a shared sheet of paper',
+                width: 900,
+                height: 720,
+            },
+        ] as Media[],
+
+        /* Australian country, reused from the curriculum set — the only
+           genuinely Australian photography in the repo. Already web-sized
+           JPEGs, so they are referenced in place rather than duplicated. */
+        country: {
+            coast: {
+                src: '/images/about/curriculum/Five%20landscapes,%20one%20curriculum.jpg',
+                alt: 'An Australian coastline seen from above, road winding between bush and beach',
+                width: 949,
+                height: 530,
+            },
+            town: {
+                src: '/images/about/curriculum/high%20country.jpg',
+                alt: 'A Victorian high-country town street lined with trees in autumn colour',
+                width: 900,
+                height: 600,
+            },
+        } as Record<string, Media>,
     },
     enroll: {
         hero: shot(
