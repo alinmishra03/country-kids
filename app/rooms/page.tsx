@@ -13,6 +13,7 @@ import SplitFeature from '@/components/shared/SplitFeature';
 import Reveal from '@/components/shared/Reveal';
 import { ROOMS } from '@/lib/rooms-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 export default function RoomsPage() {
     const rootRef = useRef(null);
@@ -57,6 +58,8 @@ export default function RoomsPage() {
                     ))}
                 </Reveal>
             </SplitFeature>
+
+            <PageNavigator />
 
             <CTASection
                 title="Find the right room for your child"

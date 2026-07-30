@@ -1,0 +1,190 @@
+/* ─── EXPLORE MORE ────────────────────────────────────────────────────────
+   The internal-linking band (components/common/PageNavigator.tsx).
+
+   Every value derives from the shared system — --radius-*, --card-pad,
+   --card-gap, --card-lift, --shadow-*, --section-y, --ease-out and the colour
+   tokens. There is no new scale and no new easing here; the section is meant to
+   read as another band of the same site, not as a widget bolted on.
+
+   Loads after section-commons.css and before surfaces.css, so the band map
+   still owns the section background. */
+
+.page-navigator-head {
+    text-align: center;
+    max-width: 46rem;
+    margin: 0 auto var(--section-head-gap);
+}
+.page-navigator-kicker {
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.75rem;
+}
+.page-navigator-head h2 {
+    font-size: clamp(1.6rem, 3.2vw, 2.35rem);
+    line-height: 1.2;
+    margin: 0;
+}
+
+/* auto-fit rather than a fixed count: the row fills itself, so eight cards and
+   five cards both land on a balanced grid without a per-page override. The
+   280px floor is what produces 4-up on a wide desktop, 3-up on a laptop and
+   2-up on a tablet — the breakpoints below only handle what auto-fit cannot
+   decide on its own. */
+.page-navigator-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--card-gap);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* The <li> is the grid item; the <a> inside stretches to fill it. That split is
+   what gives every card the same height regardless of summary length while
+   keeping the whole card a single anchor. */
+.pn-card { display: flex; }
+
+.pn-card-link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+    width: 100%;
+    height: 100%;
+    padding: var(--card-pad);
+    border-radius: var(--radius-lg);
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-soft);
+    text-decoration: none;
+    color: inherit;
+    /* Transform and shadow only — both compositor-friendly. */
+    transition:
+        transform 0.5s var(--ease-out),
+        box-shadow 0.5s var(--ease-out),
+        border-color 0.4s ease;
+}
+
+/* Focus is treated exactly as hover, so a keyboard user gets the same
+   affordance and not merely a ring. The ring is still drawn — the lift is an
+   addition to it, never a replacement. */
+.pn-card-link:hover,
+.pn-card-link:focus-visible {
+    transform: translate3d(0, var(--card-lift), 0);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(var(--accent-rgb), 0.18);
+}
+.pn-card-link:focus-visible {
+    outline: 2px solid var(--brand-navy);
+    outline-offset: 3px;
+}
+
+.pn-card-icon {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 16px;
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    flex: 0 0 auto;
+    margin-bottom: 0.3rem;
+    transition:
+        transform 0.5s var(--ease-out),
+        background-color 0.4s ease,
+        color 0.4s ease;
+}
+.pn-card-icon svg { width: 25px; height: 25px; }
+/* The "zoom" the brief asks for, applied to the icon tile — these cards carry
+   an icon rather than a photograph, so there is no image to scale. Kept at
+   1.06: a tile that jumps reads as a bug, not as polish. */
+.pn-card-link:hover .pn-card-icon,
+.pn-card-link:focus-visible .pn-card-icon {
+    transform: scale(1.06);
+    background: var(--green-pale);
+    color: var(--green-deep);
+}
+
+.pn-card-title {
+    font-family: var(--font-display, inherit);
+    font-size: 1.18rem;
+    font-weight: var(--fw-medium);
+    line-height: 1.3;
+    color: var(--text-primary);
+}
+.pn-card-summary {
+    font-size: 0.95rem;
+    line-height: 1.65;
+    color: var(--mid);
+}
+
+/* Pushed to the bottom so the cue sits on one line across a row of cards whose
+   summaries differ in length. */
+.pn-card-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    font-size: 0.88rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.01em;
+    color: var(--blue-deep);
+    transition: color 0.4s ease, gap 0.4s var(--ease-out);
+}
+.pn-card-cue svg {
+    width: 1.05em;
+    height: 1.05em;
+    transition: transform 0.45s cubic-bezier(0.6, 0.01, 0.2, 1);
+}
+.pn-card-link:hover .pn-card-cue svg,
+.pn-card-link:focus-visible .pn-card-cue svg { transform: translateX(5px); }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────
+   auto-fit already handles the column count. These only cap it where the
+   automatic answer would be wrong: a very wide screen would otherwise run to
+   five or six columns and the cards would stop reading as cards. */
+@media (min-width: 1400px) {
+    .page-navigator-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+    .page-navigator-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 560px) {
+    .page-navigator-grid { grid-template-columns: 1fr; }
+    .pn-card-link { padding: var(--card-pad-sm); }
+    .pn-card-icon { width: 48px; height: 48px; border-radius: 14px; }
+    .pn-card-icon svg { width: 22px; height: 22px; }
+}
+
+/* ─── DARK ───────────────────────────────────────────────────────────────
+   The card sits on a near-black field here, so the elevated surface and the
+   hairline both need lifting — same treatment the other card surfaces get. */
+[data-theme="dark"] .pn-card-link {
+    background: var(--surface-3);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .pn-card-link:hover,
+[data-theme="dark"] .pn-card-link:focus-visible {
+    border-color: rgba(var(--gold-rgb), 0.30);
+}
+[data-theme="dark"] .pn-card-link:focus-visible { outline-color: var(--gold); }
+
+/* ─── REDUCED MOTION ─────────────────────────────────────────────────────
+   The fade-up on scroll is already handled by Reveal, which reads the same
+   setting. Here the hover motion goes; the colour and shadow changes stay, so
+   the card still answers the pointer without moving. */
+@media (prefers-reduced-motion: reduce) {
+    .pn-card-link,
+    .pn-card-icon,
+    .pn-card-cue,
+    .pn-card-cue svg { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+    .pn-card-link:hover,
+    .pn-card-link:focus-visible { transform: none; }
+    .pn-card-link:hover .pn-card-icon,
+    .pn-card-link:focus-visible .pn-card-icon { transform: none; }
+    .pn-card-link:hover .pn-card-cue svg,
+    .pn-card-link:focus-visible .pn-card-cue svg { transform: none; }
+}

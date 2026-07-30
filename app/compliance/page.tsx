@@ -15,6 +15,7 @@ import Icon from '@/components/shared/Icon';
 import { COMPLIANCE_INTRO, COMPLIANCE_PILLARS, SECTOR_UPDATES } from '@/lib/compliance-data';
 import { TRUST_BADGES, STARTING_BLOCKS_HREF } from '@/lib/site-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 export default function CompliancePage() {
     const rootRef = useRef(null);
@@ -103,6 +104,8 @@ export default function CompliancePage() {
                     </div>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection
                 title="A promise we make in writing"

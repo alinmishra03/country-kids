@@ -14,6 +14,7 @@ import Reveal from '@/components/shared/Reveal';
 import Icon from '@/components/shared/Icon';
 import { CURRICULUM_INTRO, CURRICULUM_SERIES } from '@/lib/curriculum-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 export default function CurriculumPage() {
     const rootRef = useRef(null);
@@ -122,6 +123,8 @@ export default function CurriculumPage() {
                     </Reveal>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection
                 title="Learning grown in this soil"

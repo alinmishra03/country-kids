@@ -21,6 +21,7 @@ import {
 import { PHONE, PHONE_HREF, EMAIL, EMAIL_HREF, ADDRESS } from '@/lib/site-data';
 import { img, PHOTOS } from '@/lib/images';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 export default function EnrollPage() {
     const rootRef = useRef(null);
@@ -114,6 +115,7 @@ export default function EnrollPage() {
                     </div>
                 </div>
             </section>
+            <PageNavigator />
         </Page>
     );
 }

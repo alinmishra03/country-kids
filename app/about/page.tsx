@@ -17,6 +17,7 @@ import useCountUp from '@/hooks/useCountUp';
 import { STORY_INTRO, STORY_CHAPTERS, STORY_CLOSING } from '@/lib/story-data';
 import { CHAPTER_MEDIA, STORY_IMAGES } from '@/lib/story-media';
 import { fetchPublishedAboutSections } from '@/lib/api-client';
+import PageNavigator from '@/components/common/PageNavigator';
 
 function parseParas(htmlContent: string): string[] {
     if (!htmlContent) return [];
@@ -150,6 +151,8 @@ export default function AboutPage() {
                     </Reveal>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection
                 title="Come and be part of the story"

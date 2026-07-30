@@ -48,6 +48,10 @@
    corrects (rooms, curriculum, fees, enroll, contact above) and before
    surfaces.css, which owns the band colours. */
 @import url("../css/editorial.css");
+/* Explore More — the internal-linking band. After section-commons.css (it
+   builds on the shared card + section scale) and before surfaces.css, which
+   owns the band backgrounds. */
+@import url("../css/page-navigator.css");
 @import url("../css/footer.css");
 /* Decorative layer — reusable organic blobs, dots, circles, wave dividers. */
 @import url("../css/decor.css");

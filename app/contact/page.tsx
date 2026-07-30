@@ -24,6 +24,7 @@ import {
     ACKNOWLEDGEMENT,
 } from '@/lib/site-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 const MAP_SRC =
     'https://www.google.com/maps?q=3+Nexus+Street+Ravenhall+VIC+3023&output=embed';
@@ -273,6 +274,8 @@ export default function ContactPage() {
                     </Reveal>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection />
         </Page>

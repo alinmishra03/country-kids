@@ -29,6 +29,7 @@ import Icon from '@/components/shared/Icon';
 import useCountUp from '@/hooks/useCountUp';
 import { PHILOSOPHY_INTRO, PVM } from '@/lib/philosophy-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 /* Row order matches PVM's order, so the pictures cannot drift away from the
    blocks they belong to even if the data is reordered. */
@@ -116,6 +117,8 @@ export default function PhilosophyPage() {
                 accordion. Owns its own heading, lead and state, so it is a
                 component rather than markup here. */}
             <ValuesAccordion />
+
+            <PageNavigator />
 
             <CTASection
                 title="See our philosophy in action"

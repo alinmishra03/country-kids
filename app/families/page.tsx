@@ -14,6 +14,7 @@ import Icon from '@/components/shared/Icon';
 import { FAQS as STATIC_FAQS } from '@/lib/faq-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
 import { fetchPublishedFaqs } from '@/lib/api-client';
+import PageNavigator from '@/components/common/PageNavigator';
 
 const FAMILY_HIGHLIGHTS = [
     {
@@ -129,6 +130,8 @@ export default function FamiliesPage() {
                     </div>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection
                 title="Become part of the Country Kids family"

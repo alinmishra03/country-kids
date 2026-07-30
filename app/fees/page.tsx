@@ -21,6 +21,7 @@ import {
     ESTIMATOR_NOTE,
 } from '@/lib/fees-data';
 import { PAGE_MEDIA } from '@/lib/page-media';
+import PageNavigator from '@/components/common/PageNavigator';
 
 const money = (n) => `$${Math.round(n).toLocaleString('en-AU')}`;
 
@@ -136,6 +137,8 @@ export default function FeesPage() {
                     <p className="estimator-note">{ESTIMATOR_NOTE}</p>
                 </div>
             </section>
+
+            <PageNavigator />
 
             <CTASection
                 title="Let's work out your fees together"
