@@ -273,15 +273,49 @@
     }
 }
 
-/* ─── Mobile ──────────────────────────────────────────────────────────────
-   A compact floating column near the bottom-right of the hero. The hero copy is
-   a centred column and the Continue button is centred with it, so a narrow rail
-   pinned to the right edge clears both. Touch targets stay at 34px of hit area
-   with the label as the whole target. */
+/* ─── The rail is DESKTOP ONLY ────────────────────────────────────────────
+   1080px is not an arbitrary number: it is exactly where css/nav.css collapses
+   the pill nav and shows the hamburger. Above it the rail owns pre-entry
+   navigation; below it the header's own menu does, so a second navigation
+   surface would be a duplicate — and on a phone it was taking ~40% of the
+   screen to be one.
+
+   `display: none` rather than not rendering it: the component stays mounted, so
+   nothing in the hero's handover has to learn about viewports, and rotating a
+   tablet across the breakpoint needs no remount. Its proximity engine is
+   pointer-driven and self-terminating, so a hidden rail costs nothing — there
+   are no items to hover.
+
+   The navbar is un-concealed at this same width in css/nav-polish.css, and
+   SiteHeader skips the GSAP handover below it. All three have to agree; change
+   one and change all three. */
+@media (max-width: 1080px) {
+    .line-sidebar { display: none; }
+}
+
+/* ─── Compact rail — CURRENTLY UNREACHABLE ───────────────────────────────
+   This was the phone treatment: a compact column pinned bottom-right. Every
+   width it matches (≤1023px) is now inside the `display: none` range above, so
+   none of it renders today.
+
+   Kept rather than deleted because it is the whole mobile design, and it comes
+   back intact if the hide-breakpoint is ever raised or lowered. Delete it only
+   if the decision to give phones the hamburger instead is considered permanent.
+
+   The visible rail is therefore: full ≥1280px, tightened 1081–1279px. */
 @media (max-width: 1023px) {
     .line-sidebar {
         top: auto;
-        bottom: clamp(0.75rem, 3vh, 1.75rem);
+        /* Was clamp(0.75rem, 3vh, 1.75rem), which put the last item ~8px off
+           the bottom of the screen: the panel's own bottom padding was no
+           longer visible, so it read as clipped rather than placed, and
+           "Contact" sat in the least reachable strip of a phone.
+
+           The clamp max is what does the work — 2.5rem holds the panel off the
+           edge on tall phones, where 3vh had been hitting its own ceiling and
+           leaving the rail flush. It costs ~11-15px of the gap above, which
+           was ~57px to the Continue button, so that stays comfortable. */
+        bottom: clamp(1.5rem, 5vh, 2.5rem);
         right: clamp(0.5rem, 2vw, 1rem);
         align-items: flex-end;
     }

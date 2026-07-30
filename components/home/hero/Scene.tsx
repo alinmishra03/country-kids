@@ -124,6 +124,7 @@ export default function Scene({
                         /* The globe's own half-extent is its radius plus half a
                            card; `fitRadius` is the framing target on top of it. */
                         fitRadius={Math.min(fitRadius, GLOBE.radius + GLOBE.cardH)}
+                        flat={flat}
                         selected={selectedIndex !== null}
                         reduced={reduced}
                     />

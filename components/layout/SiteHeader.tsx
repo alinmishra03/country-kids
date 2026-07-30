@@ -73,6 +73,26 @@ export default function SiteHeader() {
     const [mobileOpen, setMobileOpen] = useState(false);
     const [openGroup, setOpenGroup] = useState<string | null>(null);
 
+    /* ── Is the header in hamburger mode? ──
+       1080px is where css/nav.css swaps the pill nav for the hamburger, and
+       where the hero's LineSidebar stops rendering. Below it the header IS the
+       menu on every route including home, so the pre-entry handover below must
+       not run — see the guard in the handover effect.
+
+       Starts false on the server AND on the first client render, then corrects
+       in an effect. Seeding it from `window` would be a hydration mismatch, and
+       it is safe to start wrong: the concealed state is carried by a CSS class
+       that css/nav-polish.css already overrides at this width, so the bar is
+       painted correctly before this ever resolves. */
+    const [compactHeader, setCompactHeader] = useState(false);
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 1080px)');
+        const sync = () => setCompactHeader(mq.matches);
+        sync();
+        mq.addEventListener('change', sync);
+        return () => mq.removeEventListener('change', sync);
+    }, []);
+
     const routeId = routeIdFromPathname(pathname);
     const activeGroup = NAV_GROUP_FOR_ROUTE[routeId] || null;
 
@@ -160,6 +180,23 @@ export default function SiteHeader() {
     useIsoLayoutEffect(() => {
         const nav = navRef.current;
         if (!nav) return;
+
+        /* ── Hamburger mode: no handover at all ──
+           There is no LineSidebar below 1080px, so the bar is the only menu and
+           must stay put. Bailing is not enough on its own — anything GSAP wrote
+           while the window was wider is still inline, and inline outranks the
+           CSS override in nav-polish.css. So clear those properties before
+           returning; the class-based rules then take over cleanly.
+
+           lastRevealedRef is still advanced, so re-widening the window does not
+           replay a transition for a state change that happened while hidden. */
+        if (compactHeader) {
+            lastRevealedRef.current = navRevealed;
+            gsap.killTweensOf(nav);
+            gsap.set(nav, { clearProps: 'transform,opacity,visibility' });
+            return;
+        }
+
         if (lastRevealedRef.current === navRevealed) return;
         lastRevealedRef.current = navRevealed;
 
@@ -217,7 +254,7 @@ export default function SiteHeader() {
         return () => {
             tl.kill();
         };
-    }, [navRevealed]);
+    }, [navRevealed, compactHeader]);
 
     /* ── Hamburger → X morph timeline (built once) ── */
     useIsoLayoutEffect(() => {

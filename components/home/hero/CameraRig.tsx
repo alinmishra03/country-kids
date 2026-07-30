@@ -18,16 +18,19 @@
 import { useRef } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { CAMERA } from '@/lib/hero/hero-config';
+import { CAMERA, FLATTEN } from '@/lib/hero/hero-config';
+import { FLAT_SPAN_Y } from '@/lib/hero/sphere-layout';
 
 type Props = {
     /** Half-extent the camera must frame — the globe's radius plus a card. */
     fitRadius: number;
+    /** True while the "Continue" flat wall is showing. */
+    flat: boolean;
     selected: boolean;
     reduced: boolean;
 };
 
-export default function CameraRig({ fitRadius, selected, reduced }: Props) {
+export default function CameraRig({ fitRadius, flat, selected, reduced }: Props) {
     const target = useRef(new THREE.Vector3(0, 0, CAMERA.z));
 
     useFrame(({ camera, size, pointer }, rawDelta) => {
@@ -40,7 +43,31 @@ export default function CameraRig({ fitRadius, selected, reduced }: Props) {
         const distV = fitRadius / Math.tan(halfFov);
         const distH = fitRadius / (Math.tan(halfFov) * aspect);
         /* Whichever axis is tighter wins, so nothing is ever cut off. */
-        const base = Math.max(distV, distH);
+        let base = Math.max(distV, distH);
+
+        /* ── Portrait: frame the WALL, not the sphere ──
+           The fit above solves for the GLOBE. On a portrait viewport the
+           horizontal axis is the tight one, so it pushes the camera a long way
+           back — far enough that the flat wall, which sits nearer the camera at
+           FLATTEN.z and is only FLAT_SPAN_Y tall, covered barely half the
+           screen height with empty stage above and below it.
+
+           So while the wall is showing, and only when the horizontal axis is
+           the one driving the fit, solve the distance that makes the wall's
+           height fill the frame instead.
+
+           `distH > distV` IS the portrait test, expressed as the thing that
+           actually causes the problem rather than as a breakpoint: on any
+           landscape viewport distV wins, this branch never runs, and desktop
+           framing is byte-for-byte what it was.
+
+           Math.min so this can only ever bring the camera CLOSER. If the globe
+           fit were already tighter than the wall fit, it stays — the wall must
+           never be framed looser than the sphere it morphed from. */
+        if (flat && distH > distV) {
+            const wallDist = FLAT_SPAN_Y / (2 * Math.tan(halfFov));
+            base = Math.min(base, FLATTEN.z + wallDist);
+        }
 
         /* Selecting pulls in by the same proportion the config asks for at the
            default distance, so the dolly feels identical at every viewport. */

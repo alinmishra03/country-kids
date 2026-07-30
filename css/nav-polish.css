@@ -84,3 +84,27 @@
     visibility: hidden;
     pointer-events: none;
 }
+
+/* ── …but NOT below 1080px ──
+   The pre-entry layer only hands navigation to the LineSidebar, and the rail is
+   desktop-only (css/line-sidebar.css). Below 1080px there is no rail to hand it
+   to, so concealing the bar would leave a phone with no way out of the globe at
+   all. The header's hamburger is the menu here, and it has to be present from
+   the first frame.
+
+   This handles FIRST PAINT: `nav-concealed` is rendered into the SSR HTML from
+   the pathname, which cannot know the viewport, so the class ships on mobile
+   too and is overridden here rather than being conditionally rendered — that
+   would be a hydration mismatch.
+
+   It only holds because SiteHeader skips the GSAP handover at this same width.
+   Inline styles outrank this block, so if that guard is ever removed, "Back to
+   globe" will write `autoAlpha: 0` inline and hide the bar on phones. */
+@media (max-width: 1080px) {
+    #navbar.nav-concealed {
+        transform: none;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}

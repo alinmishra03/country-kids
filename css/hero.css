@@ -395,16 +395,36 @@ body[data-hero-hover="1"] .hero-veil {
 
 /* ── The pre-entry rail's breakpoint ──
    At 1023px and below the LineSidebar stops being a right-edge rail and becomes
-   a compact column pinned to the BOTTOM right of the hero, directly under the
-   centred copy. Eight items at a 34px touch target is roughly 290px of screen,
-   so on a phone it owns the lower half outright.
+   a compact column pinned to the BOTTOM right of the hero.
 
-   The overlay is centred by auto margins rather than by the section's
-   align-items (see below), which means reserving that space as padding is
-   enough to push the copy into the room that is left — no absolute positioning,
-   and it degrades gracefully when the rail is gone. */
+   This used to reserve the rail's height as padding — clamp(16rem, 40vh, 22rem)
+   — which pushed the copy up out of the way. That is why the headline sat well
+   above the globe: the globe is centred in the hero, and the copy was not.
+
+   Now the two paddings MATCH, which is what centres the copy on the hero box,
+   and therefore on the globe drawn inside it. Matching is the whole mechanism:
+   the overlay is centred by auto margins, so equal padding above and below puts
+   its content box on the section's centre line at every viewport height, with
+   no magic number to re-tune per device.
+
+   The value below pairs with the BASE top padding (nav-h + 2rem), which is what
+   applies between 901px and 1023px. Under 900px the top padding drops to
+   nav-h + 1.5rem, so the bottom is re-matched in its own block further down —
+   it has to come after this one to win.
+
+   Nothing is competing for the space any more: below 1080px the rail is not
+   rendered at all (css/line-sidebar.css) and the header's hamburger is the
+   menu instead, so the hero below the headline is the Continue button and
+   empty stage. Reserving a third of the screen for a rail that is gone was
+   the last reason this padding was asymmetric. */
 @media (max-width: 1023px) {
-    .hero-overlay { padding-bottom: clamp(16rem, 40vh, 22rem); }
+    .hero-overlay { padding-bottom: calc(var(--nav-h) + 2rem); }
+}
+
+/* Re-match the bottom to the tightened top from the 900px block above. Must
+   sit after the 1023px rule, not inside that earlier block, or it loses. */
+@media (max-width: 900px) {
+    .hero-overlay { padding-bottom: calc(var(--nav-h) + 1.5rem); }
 }
 
 @media (max-width: 600px) {
