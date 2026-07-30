@@ -28,7 +28,7 @@
        same gold in light and dark mode, and the accent token is sage in light
        mode and gold in dark. Anything that fills a pill (the circle, and the
        Rooms split) reads from here so the two can never drift apart. */
-    --pill-fill: #C5B07C;
+    --pill-fill: #ECBE00;
 
     position: fixed;
     top: 0;

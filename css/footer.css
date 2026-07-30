@@ -1,5 +1,5 @@
 #site-footer {
-    /* --surface-2 is the tinted-panel tone, which is now #C5B07C — so reading
+    /* --surface-2 is the tinted-panel tone, which is now #ECBE00 — so reading
        the token gives the footer that colour, and dark mode still gets its navy
        surface for free rather than needing an override. */
     background: var(--surface-2);
@@ -17,8 +17,8 @@
        shows up first. These two are LOCAL overrides of --mid and --gold-deep,
        scoped to the footer, deliberately not touched globally: the background
        is a deliberate brand choice and the rest of the site is unaffected.
-       It buys the footer roughly 4.6:1 against #C5B07C, where the global token
-       gives 3.28:1. */
+       It buys the footer roughly 5.9:1 against #ECBE00, where the global token
+       gives 3.97:1. */
     --footer-ink: #33405C;
 }
 
@@ -224,13 +224,13 @@
     border: none;
     /* The brand gold, not var(--gold-gradient). That token is SAGE in light
        mode — the accent family kept its historical name — so the primary action
-       on this band rendered teal, matching neither the nav's #C5B07C pill fill
+       on this band rendered teal, matching neither the nav's #ECBE00 pill fill
        nor the page field, and putting white on #6C969D at about 2.9:1. This is
-       the same gold the rest of the site now uses, with navy type at 7.3:1. */
-    background: #C5B07C;
+       the same gold the rest of the site now uses, with navy type at 9.1:1. */
+    background: #ECBE00;
     color: #05204A;
     white-space: nowrap;
-    box-shadow: 0 8px 20px -10px rgba(197, 176, 124, 0.5);
+    box-shadow: 0 8px 20px -10px rgba(236, 190, 0, 0.5);
 }
 /* The shared wipe, a shade deeper so the fill still reads as a state change
    under the same navy label. */
@@ -239,7 +239,7 @@
 }
 .newsletter-submit:hover {
     color: #05204A;
-    box-shadow: 0 12px 26px -10px rgba(197, 176, 124, 0.65);
+    box-shadow: 0 12px 26px -10px rgba(236, 190, 0, 0.65);
 }
 /* Submitting, not refusing — keep the progress cursor rather than the shared
    not-allowed one. */

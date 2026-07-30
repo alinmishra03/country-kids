@@ -102,7 +102,7 @@ export const viewport = {
     initialScale: 1,
     /* Matches the light theme's cream page field, so the mobile browser chrome
        blends with the site the visitor actually gets by default. */
-    themeColor: '#C5B07C',
+    themeColor: '#ECBE00',
 };
 
 /* Runs before paint to prevent a flash of the wrong theme (FOUC). Default =

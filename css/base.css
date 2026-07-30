@@ -1,6 +1,6 @@
 :root {
     /* ─── LIGHT THEME — CREAM / NAVY / SAGE ───────────────────────────────
-       Background #C5B07C · Cards #FFFFFF · Secondary bands #05204A (navy)
+       Background #ECBE00 · Cards #FFFFFF · Secondary bands #05204A (navy)
        Primary brand #05204A · Accent #6C969D · Hover #464D77
 
        The token NAMES are historical (blue / gold / green / orange) and are
@@ -14,7 +14,7 @@
        luxury surface reads as one system, not five. */
 
     /* ── Raw palette ── */
-    --band-cream: #C5B07C;
+    --band-cream: #ECBE00;
     --band-white: #FFFFFF;
     /* The secondary band is navy, not beige. Kept under the --band-beige name
        because every band selector in css/surfaces.css already reads from it;
@@ -26,8 +26,8 @@
     --brand-hover: #464D77;
 
     /* Core Palette — Light Mode */
-    --bg-light: #C5B07C;            /* Page field */
-    --bg-dark: #C5B07C;
+    --bg-light: #ECBE00;            /* Page field */
+    --bg-dark: #ECBE00;
     --text-primary: #05204A;        /* Navy — 15:1 on cream */
     --text-on-dark: #05204A;
     --border-gray: #E2DCC0;
@@ -70,7 +70,7 @@
     --fw-medium: 500;
 
     /* Premium Gradients */
-    --hero-gradient: linear-gradient(135deg, #C5B07C 0%, #F7EFDA 100%);
+    --hero-gradient: linear-gradient(135deg, #ECBE00 0%, #F7EFDA 100%);
 
     /* Remapped surface tokens */
     --black: var(--bg-light);
@@ -81,7 +81,7 @@
        light enough to read against — navy here would make five places
        unreadable. Now the same colour as the page field, so those panels no
        longer read as a separate tint. */
-    --dark2: #C5B07C;               /* Tinted panel */
+    --dark2: #ECBE00;               /* Tinted panel */
     --dark3: #FFFFFF;               /* Tertiary band — white */
 
     /* Text Scale */
@@ -110,7 +110,7 @@
        (rgba(var(--bg-primary-rgb), 0.86) and similar). It has to move whenever
        --bg-light does, or those panels tint to a colour the page no longer
        uses. */
-    --bg-primary-rgb: 197, 176, 124;
+    --bg-primary-rgb: 236, 190, 0;
 
     --nav-h: 80px;
 
