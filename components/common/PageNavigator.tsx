@@ -33,6 +33,7 @@ import {
     PAGE_LINKS,
     NAVIGATOR_HEADINGS,
     NAVIGATOR_FALLBACK,
+    CARD_IMAGE_SIZE,
 } from '@/lib/page-links';
 
 export default function PageNavigator({
@@ -71,14 +72,37 @@ export default function PageNavigator({
                                 className="pn-card-link"
                                 aria-label={page.ariaLabel}
                             >
+                                {/* Decorative: the card already carries the page
+                                    title and the anchor an accessible label, so
+                                    alt="" keeps a screen reader from announcing
+                                    the same destination a third time. The scrim
+                                    is a sibling rather than a background-image so
+                                    the photograph can zoom underneath it while
+                                    the scrim holds still — a scrim that scales
+                                    with the image would let its dark end drift
+                                    off the text it exists to protect. */}
+                                <span className="pn-card-media" aria-hidden="true">
+                                    <img
+                                        src={page.image}
+                                        alt=""
+                                        width={CARD_IMAGE_SIZE.width}
+                                        height={CARD_IMAGE_SIZE.height}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </span>
+                                <span className="pn-card-scrim" aria-hidden="true" />
+
                                 <span className="pn-card-icon" aria-hidden="true">
                                     <Icon name={page.icon} />
                                 </span>
-                                <span className="pn-card-title">{page.title}</span>
-                                <span className="pn-card-summary">{page.summary}</span>
-                                <span className="pn-card-cue" aria-hidden="true">
-                                    Learn more
-                                    <Icon name="arrow-right" />
+                                <span className="pn-card-body">
+                                    <span className="pn-card-title">{page.title}</span>
+                                    <span className="pn-card-summary">{page.summary}</span>
+                                    <span className="pn-card-cue" aria-hidden="true">
+                                        Learn more
+                                        <Icon name="arrow-right" />
+                                    </span>
                                 </span>
                             </Link>
                         </Reveal>

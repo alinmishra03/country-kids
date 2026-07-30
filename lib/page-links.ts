@@ -25,6 +25,24 @@
    than a content page — a visitor who wants it has the logo in the header, and
    a card promising "Home" alongside eight real destinations is noise. */
 
+import { crop } from '@/lib/images';
+
+/* ── Card artwork ──
+   Each card carries the photograph its own page leads with, so the card is a
+   genuine preview rather than decoration.
+
+   Requested at CARD size, not reused from lib/page-media.ts. Those entries are
+   built at hero dimensions (up to 2000×1125); pointing eight of them at a
+   ~380px card would download roughly 8 MB to render thumbnails. crop() asks the
+   CDN for exactly these pixels instead, so a full row of eight is a few hundred
+   KB — and they are all below the fold and lazy-loaded.
+
+   Ids are distinct across all nine entries on purpose: two cards showing the
+   same photograph reads as a bug. */
+const CARD_W = 640;
+const CARD_H = 420;
+const art = (id: string) => crop(id, CARD_W, CARD_H);
+
 export type PageLink = {
     /** Must match a route id in lib/routes.ts. */
     id: string;
@@ -38,7 +56,15 @@ export type PageLink = {
     /** Reads as the destination when the link text alone would not — used for
         the accessible name, never shown. */
     ariaLabel: string;
+    /** Background photograph. Decorative: the card already carries the page
+        title and an accessible label, so this renders with alt="" rather than
+        making a screen reader announce the same destination twice. */
+    image: string;
 };
+
+/** Written onto every card <img> so the browser reserves the box before the
+    photograph arrives and the grid cannot shift under it. */
+export const CARD_IMAGE_SIZE = { width: CARD_W, height: CARD_H } as const;
 
 export const PAGE_LINKS: PageLink[] = [
     {
@@ -49,6 +75,7 @@ export const PAGE_LINKS: PageLink[] = [
             'How a lifetime of lessons, carried across the world, became a centre where every child belongs.',
         icon: 'book',
         ariaLabel: 'Read our story',
+        image: art('1500534314209-a25ddb2bd429'),
     },
     {
         id: 'philosophy',
@@ -58,6 +85,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Every child arrives capable and unique. Our role is to provide the right soil — play as the most powerful vehicle for learning we know.',
         icon: 'sprout',
         ariaLabel: 'Read our philosophy',
+        image: art('1526634332515-d56c5fd16991'),
     },
     {
         id: 'rooms',
@@ -67,6 +95,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Seven rooms from six weeks to six years, each named for an iconic Australian animal — a place to belong at every age and stage.',
         icon: 'home',
         ariaLabel: 'Explore our seven rooms',
+        image: art('1509062522246-3755977927d7'),
     },
     {
         id: 'curriculum',
@@ -76,6 +105,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Fifteen cards across five series, each linking everyday practice to the National Quality Standard and the VEYLDF learning outcomes.',
         icon: 'graduation',
         ariaLabel: 'Explore our curriculum',
+        image: art('1541692641319-981cc79ee10a'),
     },
     {
         id: 'compliance',
@@ -85,6 +115,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Operating within Australia’s National Quality Framework, registered on Starting Blocks and compliant with the 2025–2026 reforms.',
         icon: 'shield',
         ariaLabel: 'See our quality and compliance record',
+        image: art('1503676260728-1c00da094a0b'),
     },
     {
         id: 'fees',
@@ -94,6 +125,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Child Care Subsidy and Victorian Kinder Funding explained, including the three subsidised days per fortnight guaranteed from 2026.',
         icon: 'calculator',
         ariaLabel: 'View fees and subsidy information',
+        image: art('1596464716127-f2a82984de30'),
     },
     {
         id: 'families',
@@ -103,6 +135,7 @@ export const PAGE_LINKS: PageLink[] = [
             'A child cannot be raised by a centre alone. How we keep families close, informed and part of everything we do.',
         icon: 'users',
         ariaLabel: 'See how we work with families',
+        image: art('1516627145497-ae6968895b74'),
     },
     {
         id: 'contact',
@@ -112,6 +145,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Reach our centre team directly, any weekday between 6:30am and 6:30pm, or find us in Ravenhall.',
         icon: 'mail',
         ariaLabel: 'Get in touch with us',
+        image: art('1587616211892-f743fcca64f9'),
     },
     {
         id: 'enroll',
@@ -121,6 +155,7 @@ export const PAGE_LINKS: PageLink[] = [
             'A simple, supported process from your first tour to your child’s first day, with our team guiding every step.',
         icon: 'clipboard-check',
         ariaLabel: 'Start the enrolment process',
+        image: art('1503454537195-1dcabb73ffb9'),
     },
 ];
 

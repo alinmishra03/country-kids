@@ -47,24 +47,90 @@
 .pn-card { display: flex; }
 
 .pn-card-link {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    justify-content: flex-end;   /* copy sits in the darkest part of the scrim */
     gap: 0.7rem;
     width: 100%;
     height: 100%;
+    min-height: 310px;
     padding: var(--card-pad);
     border-radius: var(--radius-lg);
-    background: var(--surface-elevated);
+    /* The photograph covers this, but it is the colour behind a picture that
+       has not arrived yet — so the card is never a white flash, and the text
+       is legible from the first paint. */
+    background: var(--brand-navy);
     border: 1px solid var(--border-card);
     box-shadow: var(--shadow-soft);
     text-decoration: none;
-    color: inherit;
+    color: #fff;
     /* Transform and shadow only — both compositor-friendly. */
     transition:
         transform 0.5s var(--ease-out),
         box-shadow 0.5s var(--ease-out),
         border-color 0.4s ease;
+}
+
+/* ── Photograph ── */
+.pn-card-media {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+}
+.pn-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    /* Slightly slower than the card's own lift, so the zoom reads as the image
+       settling rather than as a second, competing animation. */
+    transition: transform 0.75s var(--ease-out);
+}
+.pn-card-link:hover .pn-card-media img,
+.pn-card-link:focus-visible .pn-card-media img { transform: scale(1.07); }
+
+/* ── Scrim ──
+   This is what makes the text readable, so it is not decoration and it is not
+   tuned by eye.
+
+   A photograph can be any luminance, including white, so the copy cannot rely
+   on the picture being dark. The lower half therefore lands at 0.88–0.96 alpha
+   of the brand navy, which puts the composite within a few percent of #05204A
+   no matter what is underneath: white text then measures ~14:1 against it, and
+   the 0.86-alpha summary ~10:1. Both clear AA with room to spare on the worst
+   possible photograph.
+
+   The top stays lighter (0.34) so the image is still visibly an image. The icon
+   badge that sits up there carries its own backdrop-blur pill rather than
+   leaning on the scrim.
+
+   A separate element, not a background-image on the card: it must NOT scale
+   with the photograph on hover, or its dark end drifts off the text. */
+.pn-card-scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(
+        180deg,
+        rgba(5, 32, 74, 0.34) 0%,
+        rgba(5, 32, 74, 0.30) 26%,
+        rgba(5, 32, 74, 0.72) 56%,
+        rgba(5, 32, 74, 0.92) 78%,
+        rgba(5, 32, 74, 0.96) 100%
+    );
+}
+
+.pn-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    width: 100%;
 }
 
 /* Focus is treated exactly as hover, so a keyboard user gets the same
@@ -81,58 +147,61 @@
     outline-offset: 3px;
 }
 
+/* Sits in the lighter top half of the scrim, so it carries its own glass pill
+   rather than relying on the gradient to separate it from the photograph. */
 .pn-card-icon {
+    position: absolute;
+    top: var(--card-pad);
+    left: var(--card-pad);
     display: grid;
     place-items: center;
-    width: 54px;
-    height: 54px;
-    border-radius: 16px;
-    background: var(--blue-pale);
-    color: var(--blue-deep);
-    flex: 0 0 auto;
-    margin-bottom: 0.3rem;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.26);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #fff;
     transition:
         transform 0.5s var(--ease-out),
         background-color 0.4s ease,
-        color 0.4s ease;
+        border-color 0.4s ease;
 }
-.pn-card-icon svg { width: 25px; height: 25px; }
-/* The "zoom" the brief asks for, applied to the icon tile — these cards carry
-   an icon rather than a photograph, so there is no image to scale. Kept at
-   1.06: a tile that jumps reads as a bug, not as polish. */
+.pn-card-icon svg { width: 22px; height: 22px; }
 .pn-card-link:hover .pn-card-icon,
 .pn-card-link:focus-visible .pn-card-icon {
     transform: scale(1.06);
-    background: var(--green-pale);
-    color: var(--green-deep);
+    background: rgba(236, 190, 0, 0.9);
+    border-color: rgba(236, 190, 0, 0.9);
+    color: var(--brand-navy);
 }
 
 .pn-card-title {
     font-family: var(--font-display, inherit);
-    font-size: 1.18rem;
+    font-size: 1.24rem;
     font-weight: var(--fw-medium);
     line-height: 1.3;
-    color: var(--text-primary);
+    color: #fff;
 }
 .pn-card-summary {
-    font-size: 0.95rem;
-    line-height: 1.65;
-    color: var(--mid);
+    font-size: 0.93rem;
+    line-height: 1.6;
+    /* ~10:1 on the scrim's lower band. Full white would flatten the hierarchy
+       against the title; this is the lowest step that still clears AA. */
+    color: rgba(255, 255, 255, 0.86);
 }
 
-/* Pushed to the bottom so the cue sits on one line across a row of cards whose
-   summaries differ in length. */
 .pn-card-cue {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    margin-top: auto;
-    padding-top: 0.9rem;
+    padding-top: 0.5rem;
     font-size: 0.88rem;
     font-weight: var(--fw-medium);
     letter-spacing: 0.01em;
-    color: var(--blue-deep);
-    transition: color 0.4s ease, gap 0.4s var(--ease-out);
+    color: var(--gold-light, #F5E0A8);
+    transition: color 0.4s ease;
 }
 .pn-card-cue svg {
     width: 1.05em;
@@ -154,21 +223,29 @@
 }
 @media (max-width: 560px) {
     .page-navigator-grid { grid-template-columns: 1fr; }
-    .pn-card-link { padding: var(--card-pad-sm); }
-    .pn-card-icon { width: 48px; height: 48px; border-radius: 14px; }
-    .pn-card-icon svg { width: 22px; height: 22px; }
+    /* One per row means each card is much wider, so it needs less height to
+       read as a card rather than a banner. */
+    .pn-card-link { padding: var(--card-pad-sm); min-height: 260px; }
+    .pn-card-icon {
+        top: var(--card-pad-sm);
+        left: var(--card-pad-sm);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+    }
+    .pn-card-icon svg { width: 20px; height: 20px; }
 }
 
 /* ─── DARK ───────────────────────────────────────────────────────────────
-   The card sits on a near-black field here, so the elevated surface and the
-   hairline both need lifting — same treatment the other card surfaces get. */
+   The card is a photograph under a navy scrim in both themes, so it needs no
+   surface swap here — only the edge, which has to read against a near-black
+   field rather than a light one. */
 [data-theme="dark"] .pn-card-link {
-    background: var(--surface-3);
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.10);
 }
 [data-theme="dark"] .pn-card-link:hover,
 [data-theme="dark"] .pn-card-link:focus-visible {
-    border-color: rgba(var(--gold-rgb), 0.30);
+    border-color: rgba(var(--gold-rgb), 0.34);
 }
 [data-theme="dark"] .pn-card-link:focus-visible { outline-color: var(--gold); }
 
@@ -180,11 +257,15 @@
     .pn-card-link,
     .pn-card-icon,
     .pn-card-cue,
-    .pn-card-cue svg { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+    .pn-card-cue svg,
+    .pn-card-media img { transition: box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease; }
     .pn-card-link:hover,
     .pn-card-link:focus-visible { transform: none; }
     .pn-card-link:hover .pn-card-icon,
     .pn-card-link:focus-visible .pn-card-icon { transform: none; }
     .pn-card-link:hover .pn-card-cue svg,
     .pn-card-link:focus-visible .pn-card-cue svg { transform: none; }
+    /* The image zoom is the largest movement in this section — it goes first. */
+    .pn-card-link:hover .pn-card-media img,
+    .pn-card-link:focus-visible .pn-card-media img { transform: none; }
 }
