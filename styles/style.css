@@ -7,6 +7,9 @@
 @import url("../css/nav.css");
 /* Nav refinements — MUST follow nav.css. */
 @import url("../css/nav-polish.css");
+/* Enrol CTA finish + attention pulse. MUST follow both nav stylesheets — they
+   style the same two buttons at one class, so this only wins on order. */
+@import url("../css/enroll-cta.css");
 @import url("../css/pages.css");
 @import url("../css/hero.css");
 @import url("../css/hero-globe.css");

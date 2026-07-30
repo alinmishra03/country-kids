@@ -19,36 +19,27 @@
     background: linear-gradient(135deg, #111827 0%, #05204A 100%);
 }
 
-/* ── Enrol CTA — gold on dark ──
-   Dark mode only: the shared .btn-gold is a solid navy pill, which on the
-   near-black field reads as a hole rather than the lead action. Here it fills
-   with the brand gold and takes navy type. Light mode is untouched — the navy
-   pill still leads there, on cream.
+/* ── Enrol CTA on dark ──
+   The CTA now leads with the navy pill in BOTH themes (css/enroll-cta.css) —
+   it is the brand colour, and the 35s gold pulse is what makes it the loudest
+   control on the page. This used to be a solid gold fill on dark, for the
+   reason that solid navy on a near-black field reads as a hole rather than as
+   a button. That reason has not gone away, so it is answered differently here:
+   the navy is raised a step, and the gold rim that is a hairline in light mode
+   is opened up until the pill has a visible edge of its own.
 
-   Both selectors are DARK-SCOPED and land after base.css, so they outrank
-   `[data-theme="dark"] .btn-gold`'s white border and, at one class more, the
-   `.btn-gold:hover` indigo. Only the colours change; shape, size, lift, arrow
-   slide and the wipe geometry all still come from the shared button. */
-[data-theme="dark"] .nav-cta,
-[data-theme="dark"] .mobile-cta {
-    background: #C5B07C;
-    border-color: #C5B07C;
-    color: #05204A;
-}
-/* The wipe would otherwise flood indigo across the gold. A deeper gold keeps
-   the fill in the same family and still darkens enough to read as a state
-   change under the navy label. */
-[data-theme="dark"] .nav-cta::before,
-[data-theme="dark"] .mobile-cta::before {
-    background: linear-gradient(100deg, #B49A62 0%, #9E8449 100%);
-}
-[data-theme="dark"] .nav-cta:hover,
-[data-theme="dark"] .mobile-cta:hover {
-    color: #05204A;
-    border-color: #B49A62;
-    box-shadow:
-        0 18px 40px -18px rgba(197, 176, 124, 0.55),
-        0 0 0 6px rgba(197, 176, 124, 0.12);
+   Token retune ONLY. Every colour below is a --cta-* the CTA already reads, so
+   the finish, the pulse, the hover, the press and the ripple keep one
+   definition and this file never restates them. */
+[data-theme="dark"] .cta-enroll {
+    --cta-navy: #0C2C5E;
+    --cta-navy-lift: #16407E;
+    --cta-navy-deep: #071F45;
+    --cta-rim: rgba(236, 190, 0, 0.42);
+    /* Restated, not re-invented: base.css gives every dark .btn-gold a white
+       hairline at two classes, which would outrank the CTA's own rim wherever
+       the pulse is not driving the border — i.e. under reduced motion. */
+    border-color: var(--cta-rim);
 }
 
 /* The footer darkens its own ink so body copy clears AA on the light field

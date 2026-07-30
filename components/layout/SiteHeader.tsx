@@ -27,6 +27,7 @@ import {
 import { gsap } from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
 import Icon from '@/components/shared/Icon';
+import EnrollCta from '@/components/shared/EnrollCta';
 import ThemeToggle from './ThemeToggle';
 import { NAV_GROUP_FOR_ROUTE, routeIdFromPathname } from '@/lib/routes';
 import { PRIMARY_NAV } from '@/lib/nav-data';
@@ -441,10 +442,7 @@ export default function SiteHeader() {
                             id="themeToggleHeaderMobile"
                             className="theme-toggle-header-mobile"
                         />
-                        <Link className="btn-gold nav-cta" href="/enroll">
-                            Enroll Now
-                            <Icon name="arrow-right" />
-                        </Link>
+                        <EnrollCta className="nav-cta" />
                         <button
                             className="hamburger"
                             ref={hamburgerRef}
@@ -511,9 +509,12 @@ export default function SiteHeader() {
                         )
                     )}
 
-                    <Link className="btn-gold m-item mobile-cta" href="/enroll" onClick={closeMobile}>
-                        <Icon name="sparkles" /> Enroll Now
-                    </Link>
+                    <EnrollCta
+                        className="m-item mobile-cta"
+                        icon="sparkles"
+                        iconPosition="start"
+                        onNavigate={closeMobile}
+                    />
 
                     <div className="m-item mobile-toggles-row">
                         <ThemeToggle id="themeToggleMobile" className="theme-toggle-mobile" />

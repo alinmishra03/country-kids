@@ -1,0 +1,416 @@
+/* ─── ENROL CTA ──────────────────────────────────────────────────────────
+   The premium finish on the site's lead action ("Enroll Now", navbar + mobile
+   drawer — components/shared/EnrollCta.tsx).
+
+   THIS FILE ADDS A COLOUR AND MOTION LAYER ONLY. The one-button rule still
+   holds: shape, padding, height, radius, font size/weight, the hover wipe
+   geometry, the arrow slide and the disabled state all come from .btn-gold in
+   base.css, and the nav's tighter size still comes from its --btn-* retune in
+   nav.css. Nothing here redeclares a metric. The single token it does turn is
+   --btn-tracking, which is the sanctioned dial and is the "slightly stronger
+   hierarchy" the CTA asks for.
+
+   MUST load after nav.css and nav-polish.css (both style .nav-cta / .mobile-cta
+   at one class, so this wins on order) and before theme-dark.css, which retunes
+   the tokens below for the dark field.
+
+   LAYERS, painted bottom to top inside the pill (the shared button sets
+   `isolation: isolate` and `overflow: hidden`, so all three are clipped to the
+   pill and cannot escape their own stacking context):
+
+     element background   navy gradient + a radial top-light  — the resting look
+     ::before    z -3     the hover wipe, inherited from base.css
+     ::after     z -2     the gold wash the attention pulse fades in
+     .cta-sheen  z -1     the light band that rakes across on each pulse
+     .cta-ripple z -1     the press ripple — later in the DOM, so above the sheen
+
+   MOTION BUDGET. Five loops — pill, label, gold wash, sheen, arrow — all on the
+   ONE duration (--cta-cycle). The pulse is continuous, so unlike the earlier
+   version there is no idle stretch to coast through; what keeps it cheap is
+   that only transform, opacity, colour and box-shadow are touched. No layout
+   property is animated anywhere in this file, so nothing here can cost a
+   reflow, and all five loops are one small composited element. */
+
+.cta-enroll {
+    /* Brand pair. #ECBE00 is the CTA's own accent — a brighter, more urgent
+       gold than the site's --gold family (sage in light, #E3BC63 in dark), and
+       deliberately so: this is the one control on the page allowed to ask for
+       attention. It appears ONLY here. */
+    --cta-navy: #05204A;
+    --cta-navy-lift: #123A73;      /* top of the navy gradient */
+    --cta-navy-deep: #041A3C;      /* bottom of it */
+    --cta-gold: #ECBE00;
+    --cta-gold-hi: #F7D64A;
+    --cta-gold-lo: #D6A800;
+    --cta-ink: #FFFFFF;            /* on navy — 14.6:1 */
+    --cta-gold-ink: #05204A;       /* on gold — 8.6:1 */
+    --cta-rim: rgba(236, 190, 0, 0.30);
+
+    /* Composed into the transform below so the press and the hover lift are one
+       transform instead of two rules fighting over the property. */
+    --cta-scale: 1;
+
+    --btn-tracking: 0.34px;
+
+    /* THE ONE DIAL FOR THE CADENCE. Every loop below runs on this duration and
+       every keyframe stop is a percentage, so changing this number alone
+       re-times the whole pulse and keeps its proportions: navy → gold → navy,
+       continuously, with a short dwell at each end. Raise it to make the button
+       calmer, lower it to make it more insistent. Below ~1.2s the dwells get
+       too short to read the label in both states. */
+    --cta-cycle: 2s;
+
+    /* Soft and symmetrical — the button blinks, but it eases in and out of
+       every state rather than snapping between them. */
+    --cta-ease: cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Premium finish: a navy gradient with a radial highlight raking across the
+       top left, so the pill reads as a lit surface rather than a flat fill. */
+    background-color: var(--cta-navy);
+    background-image:
+        radial-gradient(
+            120% 160% at 22% -40%,
+            rgba(255, 255, 255, 0.20) 0%,
+            rgba(255, 255, 255, 0) 58%
+        ),
+        linear-gradient(
+            135deg,
+            var(--cta-navy-lift) 0%,
+            var(--cta-navy) 52%,
+            var(--cta-navy-deep) 100%
+        );
+    border-color: var(--cta-rim);
+    color: var(--cta-ink);
+
+    /* Rest: a soft navy glow, plus an inner top highlight for the glass edge.
+       The 0-spread second layer is a placeholder so the pulse has a matching
+       stop to interpolate its golden halo out of. */
+    box-shadow:
+        0 10px 26px -14px rgba(5, 32, 74, 0.55),
+        0 0 0 0 rgba(236, 190, 0, 0),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+
+    transform:
+        translate3d(var(--mx), calc(var(--my) + var(--lift)), 0)
+        scale(var(--cta-scale));
+    transition:
+        transform 0.45s var(--ease-out),
+        color 0.4s ease,
+        box-shadow 0.5s var(--ease-out),
+        border-color 0.4s ease;
+
+    /* Two animations, because they need different keyframe stops: the pill's
+       shape and glow breathe on a long, soft curve, while the LABEL has to flip
+       on a short one. See cta-ink. They touch disjoint properties, so they
+       compose rather than compete. */
+    animation:
+        cta-breathe var(--cta-cycle) var(--cta-ease) infinite,
+        cta-ink var(--cta-cycle) var(--cta-ease) infinite;
+}
+
+/* Hover wipe — inherited geometry, retuned colour. A slightly lighter navy
+   into the brand indigo, so the fill reads as the surface catching more light
+   rather than as a different button. */
+.cta-enroll::before {
+    z-index: -3;
+    background: linear-gradient(100deg, #123A73 0%, #464D77 55%, #2A3566 100%);
+}
+
+/* The gold wash. Opacity only — scaling it would show a navy rim as it faded,
+   and the "expanding" part of the pulse is the pill's own scale. */
+.cta-enroll::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    background-image:
+        radial-gradient(
+            120% 150% at 25% -30%,
+            rgba(255, 255, 255, 0.45) 0%,
+            rgba(255, 255, 255, 0) 55%
+        ),
+        linear-gradient(
+            135deg,
+            var(--cta-gold-hi) 0%,
+            var(--cta-gold) 50%,
+            var(--cta-gold-lo) 100%
+        );
+    will-change: opacity;
+    transition: opacity 0.5s ease;
+    animation: cta-gold-wash var(--cta-cycle) var(--cta-ease) infinite;
+}
+
+/* ── The attention pulse ──
+   CONTINUOUS: there is no rest phase. The button is always travelling between
+   navy and gold, and the cycle is symmetric so the loop point is seamless —
+   navy at 0% is the same navy at 100%, mid-glide, with nothing to give away
+   where one repetition ends. One cycle at the default --cta-cycle of 2s:
+
+      0 –  8%   navy, brief dwell                       0.16s
+      8 – 42%   glide up to gold                        0.68s
+     42 – 58%   gold, brief dwell                       0.32s
+     58 – 92%   glide back down to navy                 0.68s
+     92 – 100%  navy, brief dwell (continues into 0%)   0.16s
+
+   The two dwells are the only thing here that is not movement, and they are not
+   rests — they are the minimum the LABEL needs. A pure sine between the two
+   colours would never hold either state long enough to read the word, so each
+   end holds for ~0.32s, which is about two comfortable reading fixations.
+
+   Time is split evenly: gold and navy each own half of every cycle, so neither
+   colour becomes the button's identity at the other's expense.
+
+   Every stop is a PERCENTAGE, so retiming is --cta-cycle and nothing else.
+
+   The transform keyframes re-state the --mx/--my/--lift composition so the
+   magnetic offset and the hover lift still apply while the pulse runs; custom
+   properties resolve per frame, so nothing is lost. */
+@keyframes cta-breathe {
+    0%,
+    8% {
+        transform:
+            translate3d(var(--mx), calc(var(--my) + var(--lift)), 0)
+            scale(1);
+        border-color: var(--cta-rim);
+        box-shadow:
+            0 10px 26px -14px rgba(5, 32, 74, 0.55),
+            0 0 0 0 rgba(236, 190, 0, 0),
+            inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+    42%,
+    58% {
+        transform:
+            translate3d(var(--mx), calc(var(--my) + var(--lift)), 0)
+            scale(1.03);
+        border-color: var(--cta-gold);
+        box-shadow:
+            0 18px 42px -16px rgba(236, 190, 0, 0.60),
+            0 0 0 9px rgba(236, 190, 0, 0.18),
+            inset 0 1px 0 rgba(255, 255, 255, 0.34);
+    }
+    92%,
+    100% {
+        transform:
+            translate3d(var(--mx), calc(var(--my) + var(--lift)), 0)
+            scale(1);
+        border-color: var(--cta-rim);
+        box-shadow:
+            0 10px 26px -14px rgba(5, 32, 74, 0.55),
+            0 0 0 0 rgba(236, 190, 0, 0),
+            inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+}
+
+@keyframes cta-gold-wash {
+    0%,
+    8% { opacity: 0; }
+    42%,
+    58% { opacity: 1; }
+    92%,
+    100% { opacity: 0; }
+}
+
+/* The label is the one thing here that must NOT crossfade. White and navy both
+   pass comfortably on their own field, but the label is unavoidably crossing a
+   background mid-way between the two, and no single colour is legible there. So
+   it SNAPS, in ~0.03s, at the frame the wash passes 50% — 25% on the way up,
+   75% on the way down. That is the optimum rather than a compromise: flipping
+   any earlier leaves navy on near-navy, any later leaves white on near-gold,
+   and both are legibly worse for longer. It is never below AA in either state
+   it actually holds. */
+@keyframes cta-ink {
+    0%,
+    24.3% { color: var(--cta-ink); }
+    25.7%,
+    74.3% { color: var(--cta-gold-ink); }
+    75.7%,
+    100% { color: var(--cta-ink); }
+}
+
+/* The arrow travels with the colour and holds out at the gold end, rather than
+   nudging and returning — with no rest phase to return TO, a separate little
+   bounce would be a second rhythm running against the first. */
+@keyframes cta-arrow-nudge {
+    0%,
+    8% { transform: translateX(0); }
+    42%,
+    58% { transform: translateX(3px); }
+    92%,
+    100% { transform: translateX(0); }
+}
+.cta-enroll svg { animation: cta-arrow-nudge var(--cta-cycle) var(--cta-ease) infinite; }
+
+/* ── Specular sweep ──
+   The single most "expensive-looking" part of the pulse: a narrow band of light
+   that rakes diagonally across the pill as the gold comes up, the way a
+   highlight travels over a polished surface. One skewed gradient moving on
+   transform + opacity, clipped by the pill's own overflow.
+
+   It sweeps ONCE per cycle, on the way up only. Sweeping both ways would put a
+   second highlight into a button that is already always moving, and the point
+   of the sheen is that it marks the arrival of the gold.
+
+   Deliberately weak (0.38 white at its core): at full strength this stops being
+   a sheen and becomes a second flash competing with the wash. */
+.cta-sheen {
+    position: absolute;
+    top: -30%;
+    left: 0;
+    z-index: -1;
+    width: 34%;
+    height: 160%;
+    pointer-events: none;
+    opacity: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.38) 50%,
+        rgba(255, 255, 255, 0) 100%
+    );
+    will-change: transform, opacity;
+    animation: cta-sheen var(--cta-cycle) linear infinite;
+}
+@keyframes cta-sheen {
+    0%,
+    6% {
+        opacity: 0;
+        transform: translateX(-140%) skewX(-16deg);
+    }
+    16% { opacity: 1; }
+    38% { opacity: 0.85; }
+    48%,
+    100% {
+        opacity: 0;
+        transform: translateX(320%) skewX(-16deg);
+    }
+}
+
+/* ── Hover / focus ──
+   Interaction OUTRANKS the pulse: the animation is dropped entirely so the
+   button is back under its transitions and hover feels immediate instead of
+   fighting a keyframe. Dropping an animation transitions FROM the animated
+   value, so catching the button mid-pulse eases back to navy rather than
+   snapping. The rhythm restarts from rest on leave.
+
+   Focus is treated as hover so keyboard users get the same affordance; the
+   navbar's gold focus ring (nav-polish.css) still draws on top. */
+.cta-enroll:hover,
+.cta-enroll:focus-visible {
+    --cta-scale: 1.02;
+    animation: none;
+    color: var(--cta-ink);
+    border-color: rgba(236, 190, 0, 0.55);
+    box-shadow:
+        0 20px 44px -18px rgba(5, 32, 74, 0.62),
+        0 0 0 6px rgba(236, 190, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+.cta-enroll:hover::after,
+.cta-enroll:focus-visible::after {
+    animation: none;
+    opacity: 0;
+}
+.cta-enroll:hover svg,
+.cta-enroll:focus-visible svg { animation: none; }
+/* The sheen belongs to the pulse, not to hover — a light band sweeping while
+   the button is under the cursor would read as a second, unrelated animation. */
+.cta-enroll:hover .cta-sheen,
+.cta-enroll:focus-visible .cta-sheen {
+    animation: none;
+    opacity: 0;
+}
+
+/* ── Press ──
+   A short, deep-eased scale in. The lift drops at the same time so the button
+   reads as being pushed into the bar. */
+.cta-enroll:active {
+    --cta-scale: 0.972;
+    --lift: 0px;
+    transition: transform 0.12s ease-out;
+}
+
+/* ── Ripple ──
+   Centred on the pointer: EnrollCta writes the press point to --rx / --ry, and
+   the translate puts the circle's own centre there (percentages in translate
+   resolve against the circle, px against the button). 220% wide so it clears
+   the pill from any origin; the pill's overflow does the shaping. */
+.cta-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 220%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(
+        circle,
+        rgba(255, 255, 255, 0.42) 0%,
+        rgba(255, 255, 255, 0.16) 45%,
+        rgba(255, 255, 255, 0) 70%
+    );
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: cta-ripple 620ms var(--ease-out) forwards;
+}
+@keyframes cta-ripple {
+    from {
+        opacity: 0.5;
+        transform: translate(calc(var(--rx) - 50%), calc(var(--ry) - 50%)) scale(0);
+    }
+    to {
+        opacity: 0;
+        transform: translate(calc(var(--rx) - 50%), calc(var(--ry) - 50%)) scale(1);
+    }
+}
+
+/* ── Touch ──
+   :hover sticks after a tap on touch devices, which would leave the pulse
+   permanently killed on the pill a visitor happened to press. Coarse pointers
+   therefore keep the pulse and get their feedback from the press + ripple. */
+@media (hover: none) {
+    .cta-enroll:hover {
+        animation:
+            cta-breathe var(--cta-cycle) var(--cta-ease) infinite,
+            cta-ink var(--cta-cycle) var(--cta-ease) infinite;
+    }
+    .cta-enroll:hover::after {
+        animation: cta-gold-wash var(--cta-cycle) var(--cta-ease) infinite;
+    }
+    .cta-enroll:hover svg {
+        animation: cta-arrow-nudge var(--cta-cycle) var(--cta-ease) infinite;
+    }
+    .cta-enroll:hover .cta-sheen {
+        animation: cta-sheen var(--cta-cycle) linear infinite;
+    }
+}
+
+/* ── Reduced motion ──
+   The looping attention pulse is exactly the kind of unprompted, repeating
+   movement this setting exists to stop, so it goes entirely — along with the
+   ripple and the arrow nudge. Hover and press feedback stay, as colour and
+   shadow changes only: the button still answers every interaction, it just
+   never moves on its own. */
+@media (prefers-reduced-motion: reduce) {
+    .cta-enroll,
+    .cta-enroll::after,
+    .cta-enroll svg,
+    .cta-enroll:hover,
+    .cta-enroll:hover::after,
+    .cta-enroll:hover svg { animation: none; }
+
+    .cta-sheen,
+    .cta-ripple { display: none; }
+
+    .cta-enroll {
+        --cta-scale: 1;
+        transform: none;
+        transition: color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+    .cta-enroll:hover,
+    .cta-enroll:focus-visible { --cta-scale: 1; }
+    .cta-enroll:active { --cta-scale: 1; transition: box-shadow 0.12s ease; }
+}
