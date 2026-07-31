@@ -15,8 +15,8 @@ export const SITE = {
 
 export const PHONE = '1300 025 520';
 export const PHONE_HREF = 'tel:1300025520';
-export const EMAIL = 'hello@countrykidslearning.org.au'; // placeholder — confirm
-export const EMAIL_HREF = 'mailto:hello@countrykidslearning.org.au';
+export const EMAIL = 'info@countrykids.au';
+export const EMAIL_HREF = 'mailto:info@countrykids.au';
 
 export const ADDRESS = {
     line1: '3 Nexus Street',
