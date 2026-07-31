@@ -12,9 +12,9 @@
 
    THE FILM STEP has two implementations and prefers the real one:
 
-     1. If public/videos/intro.mp4 exists it is played — muted, inline,
-        autoplaying, no controls, object-fit: cover. It is committed to this
-        repo, so this is the path that runs today.
+     1. A committed clip from public/videos is played — muted, inline,
+        autoplaying, no controls, object-fit: cover. There are two cuts, one
+        framed for wide screens and one for phones; see INTRO_VIDEO below.
      2. If it is missing, fails, or autoplay is refused, a scripted CINEMATIC
         built from the centre's own mark and taglines plays instead, for the
         same few seconds.
@@ -27,7 +27,19 @@ import { usePathname } from 'next/navigation';
 import { SITE } from '@/lib/site-data';
 import { markIntroDone } from '@/lib/intro-signal';
 
-const INTRO_VIDEO = '/videos/intro.mp4';
+/* Two cuts of the same intro: one framed for wide screens, one for phones.
+   `(max-width: 768px)` is the site's mobile line elsewhere too. Which one to
+   fetch cannot be decided on the server — the overlay is server-rendered and
+   the server does not know the viewport — so the element ships WITHOUT a src
+   and gets one on mount. That costs a little of the head start the video used
+   to have, but the alternative is worse: guessing a src in the server HTML
+   means every viewer the guess got wrong starts downloading megabytes of the
+   wrong file before the right one begins. */
+const INTRO_VIDEO = {
+    desktop: '/videos/intronew.mp4',
+    mobile: '/videos/intromobile.mp4',
+};
+const MOBILE_MQ = '(max-width: 768px)';
 
 /* Logo beat, then the film. */
 const LOGO_MS = 1800;
@@ -56,6 +68,8 @@ export default function IntroLoader() {
     const pathname = usePathname();
     const [phase, setPhase] = useState<Phase>('logo');
     const [content, setContent] = useState<Content>('none');
+    /* null until the client has measured the viewport — see INTRO_VIDEO. */
+    const [videoSrc, setVideoSrc] = useState<string | null>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const timers = useRef<number[]>([]);
     /* The video is mounted from the very first frame so its download starts
@@ -98,6 +112,18 @@ export default function IntroLoader() {
            finishing hidden behind it. */
         markIntroDone();
         timers.current.push(window.setTimeout(() => setPhase('done'), 700));
+    }, []);
+
+    /* Choose the cut on mount — the first moment the viewport is knowable —
+       so the download still gets most of the logo beat to run. Measured once
+       and never revisited: a viewport that crosses 768px mid-intro would
+       otherwise swap the source and restart the film from frame one. */
+    useEffect(() => {
+        setVideoSrc(
+            window.matchMedia(MOBILE_MQ).matches
+                ? INTRO_VIDEO.mobile
+                : INTRO_VIDEO.desktop
+        );
     }, []);
 
     /* Skip immediately when it should not play at all.
@@ -239,12 +265,17 @@ export default function IntroLoader() {
                 has to be downloading during the logo beat, or the beat is just
                 dead time before the download even starts. `is-playing` is what
                 reveals it. Dropped once the cinematic has taken over, so a
-                broken file is not left fetching behind it. */}
+                broken file is not left fetching behind it.
+
+                `src` is omitted rather than emptied until the cut is chosen —
+                src="" resolves to the page's own URL and would fetch the HTML
+                document as a video, firing onError before the real file ever
+                got a turn. */}
             {content !== 'film' ? (
                 <video
                     ref={videoRef}
                     className={`intro-video${content === 'video' ? ' is-playing' : ''}`}
-                    src={INTRO_VIDEO}
+                    src={videoSrc ?? undefined}
                     muted
                     playsInline
                     preload="auto"
