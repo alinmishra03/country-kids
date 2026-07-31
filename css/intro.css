@@ -119,7 +119,7 @@ html.intro-locked body {
 }
 
 /* ── Scripted cinematic ─────────────────────────────────────────────────
-   Plays where a real intro.mp4 would, using the centre's own mark and its own
+   Plays where a real intro clip would, using the centre's own mark and its own
    taglines from lib/site-data. ~4.2s, matching FILM_MS in IntroLoader.
 
    Pure CSS keyframes on transform/opacity/filter — no canvas, no decode, no

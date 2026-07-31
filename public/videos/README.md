@@ -17,9 +17,6 @@ about case but the Linux host serving production does.
 Current files: both 10.2s, H.264 High / yuv420p @ 30fps, no audio track,
 faststart. 2.87 MB / 2.35 Mbps landscape, 2.52 MB / 2.06 Mbps portrait.
 
-`intro.mp4` is the retired single-cut clip, kept only as a reference encode.
-Nothing loads it.
-
 ## Every replacement must be re-encoded
 
 Both cuts were delivered as heavy exports — the landscape one at 12.05 MB /
