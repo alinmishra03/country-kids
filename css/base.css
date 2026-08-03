@@ -54,7 +54,12 @@
 
     /* Clay / beige (was orange) */
     --orange: #C49A82;
-    --orange-deep: #9C6F55;
+    /* The deep clay tone was the one brown left in the palette; it now resolves
+       to the navy primary, so accents that read from it (room age badges and
+       "Discover this room" links, contact-form required marks and focus rings,
+       feature/program accent-strong) match the blue every card title and body
+       line already uses. */
+    --orange-deep: var(--blue-deep);
     --orange-pale: rgba(216, 188, 171, 0.34);
     --orange-rgb: 196, 154, 130;
 

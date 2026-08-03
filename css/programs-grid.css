@@ -53,11 +53,13 @@
 .program-icon svg { width: 30px; height: 30px; }
 .program-card:hover .program-icon { transform: scale(1.08) rotate(-3deg); }
 
-/* Rotate the accent colour across cards for a lively-but-consistent palette. */
-.program-card:nth-child(4n+1) { --accent-soft: var(--blue-pale);  --accent-strong: var(--blue);      --accent-grad: var(--blue-gradient); }
-.program-card:nth-child(4n+2) { --accent-soft: rgba(var(--gold-rgb),0.16);  --accent-strong: var(--gold-deep);  --accent-grad: var(--gold-gradient); }
-.program-card:nth-child(4n+3) { --accent-soft: var(--green-pale); --accent-strong: var(--green-deep); --accent-grad: linear-gradient(135deg,#8AB2B8,#3F6268); }
-.program-card:nth-child(4n+4) { --accent-soft: var(--orange-pale); --accent-strong: var(--orange-deep); --accent-grad: linear-gradient(135deg,#D8BCAB,#9C6F55); }
+/* The accent no longer rotates across cards. Icon chip, age pill and card link
+   are one blue — ink and pale fill alike — so a row of cards reads as one
+   system. Only --accent-grad (the ribbon behind the media) still varies. */
+.program-card:nth-child(4n+1) { --accent-soft: var(--blue-pale); --accent-strong: var(--blue-deep); --accent-grad: var(--blue-gradient); }
+.program-card:nth-child(4n+2) { --accent-soft: var(--blue-pale); --accent-strong: var(--blue-deep); --accent-grad: var(--gold-gradient); }
+.program-card:nth-child(4n+3) { --accent-soft: var(--blue-pale); --accent-strong: var(--blue-deep); --accent-grad: linear-gradient(135deg,#8AB2B8,#3F6268); }
+.program-card:nth-child(4n+4) { --accent-soft: var(--blue-pale); --accent-strong: var(--blue-deep); --accent-grad: linear-gradient(135deg,#D8BCAB,var(--blue-deep)); }
 
 .program-card h3 { font-size: 1.3rem; }
 .program-age {

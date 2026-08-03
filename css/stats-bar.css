@@ -112,16 +112,16 @@
     place-items: center;
     width: 56px; height: 56px;
     border-radius: var(--radius-md);
-    background: rgba(var(--gold-rgb), 0.14);
-    color: var(--gold-deep);
+    background: var(--blue-pale);
+    color: var(--blue-deep);
     transition: transform 0.3s ease, filter 0.3s ease, background 0.3s ease;
 }
 .stat-icon svg { width: 28px; height: 28px; }
 .stat-card:hover .stat-icon,
 .stat-card:focus-visible .stat-icon {
     transform: rotate(-8deg) scale(1.08);
-    background: rgba(var(--gold-rgb), 0.22);
-    filter: drop-shadow(0 0 10px rgba(var(--gold-rgb), 0.5));
+    background: rgba(var(--accent-rgb), 0.14);
+    filter: drop-shadow(0 0 10px rgba(var(--accent-rgb), 0.4));
 }
 
 /* Number — large serif, navy. */
@@ -209,7 +209,9 @@
     font-size: clamp(3.2rem, 17vw, 4.6rem);
     line-height: 1;
     letter-spacing: -0.02em;
-    color: var(--gold-deep);
+    /* Matches .stat-value on the desktop cards — the mobile carousel is the
+       same card, so its numeral takes the same ink. */
+    color: var(--blue-deep);
 }
 .statm-label {
     font-family: var(--font-body);

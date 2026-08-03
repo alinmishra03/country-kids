@@ -296,9 +296,9 @@
     width: 46px;
     height: 46px;
     border-radius: 50%;
-    background: var(--green-pale);
-    border: 1px solid rgba(var(--gold-rgb), 0.24);
-    color: var(--green-deep);
+    background: var(--blue-pale);
+    border: 1px solid rgba(var(--accent-rgb), 0.24);
+    color: var(--blue-deep);
     transition:
         transform 0.35s var(--ease-out),
         background-color 0.35s var(--ease-out),
@@ -312,8 +312,8 @@
 }
 .pt-value:hover .pt-value-icon {
     transform: scale(1.1);
-    background: var(--gold-solid);
-    border-color: var(--gold-solid);
+    background: var(--blue);
+    border-color: var(--blue);
     color: #fff;
 }
 /* The icon itself takes the rotation, so the circle stays a circle. */

@@ -24,6 +24,14 @@
     padding: 0;
     overflow: hidden;
     height: 100%;
+    /* The whole card accent is the blue — ink, pale fill and hover border alike.
+       The .accent-* class the markup carries stays (it is the room's identity in
+       the data) but no longer changes what is drawn: seven cards showed seven
+       different age-pill tints and link colours, and now show one. Declared
+       after the .accent-* rules above, so it wins on equal specificity. */
+    --acc: var(--blue);
+    --acc-deep: var(--blue-deep);
+    --acc-pale: var(--blue-pale);
 }
 /* The accent tint is the room card's one deviation from the shared hover. */
 .room-card:hover {
@@ -41,6 +49,27 @@
     position: absolute; inset: 0;
     background: linear-gradient(180deg, transparent 45%, rgba(6, 22, 42, 0.35) 100%);
 }
+
+/* ── Illustrated rooms ──────────────────────────────────────────────────
+   The room artwork (/public/images/about/rooms) is flat 5:3 illustration on a
+   solid cream field, not a photograph. Three consequences:
+     · it is CONTAINED, never cropped — a cover-fit on a card narrower or taller
+       than 5:3 would cut the animal, and the animal is the whole point;
+     · the frame is painted the artwork's own background colour, so the letterbox
+       contain leaves is invisible at every card width and in the stacked layout
+       where the media column is far taller than it is wide;
+     · the darkening scrim is dropped. It exists to hold a photo's bottom edge
+       down; over cream it just reads as a grey smudge, and no copy sits on it. */
+.room-media--art {
+    background: #FFF1CF;
+}
+.room-media--art img {
+    object-fit: contain;
+    /* Keeps the drawing clear of the icon badge and the card's rounded corners
+       on small cards, where the art would otherwise run edge to edge. */
+    padding: 0.35rem;
+}
+.room-media--art::after { display: none; }
 
 .room-icon {
     position: absolute;

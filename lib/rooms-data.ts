@@ -1,7 +1,10 @@
 /* The seven purpose-named rooms. Each is named after an iconic Australian animal.
    `icon` maps to components/shared/Icon.js; `accent` is a theme key used to tint
    the card (maps to CSS classes .accent-*); `img` is an Unsplash id (see
-   lib/images.js). Content is faithful to the centre's own descriptions. */
+   lib/images.js). `art` is the room's own commissioned animal illustration in
+   /public/images/about/rooms — the room CARDS show it; `img` stays as the photo
+   the hero globe bakes into its card faces. Content is faithful to the centre's
+   own descriptions. */
 
 export const ROOMS = [
     {
@@ -13,6 +16,7 @@ export const ROOMS = [
         icon: 'baby',
         accent: 'gold',
         img: '1519689680058-324335c77eba',
+        art: '/images/about/rooms/joey.png',
         blurb:
             'A gentle sanctuary for our youngest members. Named after the baby kangaroo — small, precious and cradled with care. Our Joey Room educators provide responsive, attachment-focused care in a sensory-rich environment, building secure foundations for all future learning.',
     },
@@ -25,6 +29,7 @@ export const ROOMS = [
         icon: 'leaf',
         accent: 'green',
         img: '1526634332515-d56c5fd16991',
+        art: '/images/about/rooms/koala.png',
         blurb:
             "Named after Australia's most beloved marsupial — calm, steady and full of quiet wonder. The Koala Room nurtures independence, language development and social confidence through guided play, music and sensory exploration.",
     },
@@ -37,6 +42,7 @@ export const ROOMS = [
         icon: 'bird',
         accent: 'orange',
         img: '1503454537195-1dcabb73ffb9',
+        art: '/images/about/rooms/kuckaboora.png',
         blurb:
             "Named after Australia's laughing bird — joyful, social and always making noise! Kookaburra children explore creativity, problem-solving and friendship-building in a language-rich, stimulating environment full of discovery.",
     },
@@ -49,6 +55,7 @@ export const ROOMS = [
         icon: 'feather',
         accent: 'blue',
         img: '1560785496-3c9d27877182',
+        art: '/images/about/rooms/cockatoo.png',
         blurb:
             'Bold, bright and expressive — just like the cockatoo. The Cockatoo Room fosters emotional literacy, creative arts and collaborative play, building confident and resilient young learners who love to express themselves.',
     },
@@ -62,6 +69,7 @@ export const ROOMS = [
         icon: 'fish',
         accent: 'teal',
         img: '1544005313-94ddf0286df2',
+        art: '/images/about/rooms/kingfisher.png',
         blurb:
             'Precise, colourful and always darting toward new discoveries — like the kingfisher in flight. Children engage in our 3-year-old kindergarten program, Victorian Government funded, led by a VIT-registered Early Childhood Teacher.',
     },
@@ -75,6 +83,7 @@ export const ROOMS = [
         icon: 'rabbit',
         accent: 'gold',
         img: '1541692641319-981cc79ee10a',
+        art: '/images/about/rooms/kangaroo.png',
         blurb:
             'Strong, fast and ready to leap into the world. The Kangaroo Room delivers our funded 4-year-old kindergarten program — 15 hours per week — developing literacy, numeracy and the social-emotional skills needed for a confident school transition.',
     },
@@ -87,6 +96,7 @@ export const ROOMS = [
         icon: 'egg',
         accent: 'green',
         img: '1587616211892-f743fcca64f9',
+        art: '/images/about/rooms/bunjil.png',
         blurb:
             "Australia's tallest bird — strong, curious and never able to fly backwards. The Bunjil Room is our flexible integrated learning space for 3–5 year olds, supporting mixed-age groups, children with additional needs, and specialised learning programs.",
     },

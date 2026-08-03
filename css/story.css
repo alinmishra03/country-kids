@@ -180,8 +180,8 @@
     height: 48px;
     margin-bottom: 1.1rem;
     border-radius: 50%;
-    color: var(--gold-deep);
-    background: var(--green-pale);
+    color: var(--blue-deep);
+    background: var(--blue-pale);
 }
 
 /* ═══ 2. IMAGE REVEAL ════════════════════════════════════════════════════
@@ -300,8 +300,8 @@
     height: 44px;
     margin-bottom: 1.1rem;
     border-radius: 50%;
-    color: var(--gold-deep);
-    background: var(--green-pale);
+    color: var(--blue-deep);
+    background: var(--blue-pale);
     transition: transform 0.5s var(--ease-out), background-color 0.4s ease;
 }
 .story-pillar:hover .story-pillar-icon,
