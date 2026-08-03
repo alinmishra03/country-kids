@@ -1,7 +1,20 @@
 /* Central API configuration connecting public website (country-kids) to CMS & Backend API */
 
+/* The single definition of where the backend lives. Both server route handlers
+   import this rather than re-deriving it, so there is one place to change.
+
+   The fallback is the deployed backend, NOT localhost. NEXT_PUBLIC_* is inlined
+   at BUILD time, so a missing or misspelled Vercel env var cannot be corrected
+   at runtime — it would ship a bundle pointing at localhost:3000, which on
+   Vercel resolves to this site's own domain and 404s. Every caller below
+   swallows failures and falls back to static content, so that breakage would be
+   silent. A production default makes the missing-var case merely redundant
+   instead of invisible.
+
+   Set NEXT_PUBLIC_API_BASE_URL to override (e.g. against a local backend). */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1';
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  'https://country-kids-backend-chi.vercel.app/api/v1';
 
 export async function fetchPublishedFaqs() {
   try {
@@ -22,6 +35,11 @@ export async function fetchPublishedFaqs() {
   return null;
 }
 
+/* NOTE: as of the backend deploy at country-kids-backend-chi, /about is not
+   implemented and returns 404 — only /faqs, /enquiries and /subscribers exist.
+   This therefore always returns null and /about renders its static chapters.
+   That is the designed fallback, not a regression; this function starts
+   returning live data the moment the endpoint ships, with no change here. */
 export async function fetchPublishedAboutSections() {
   try {
     const res = await fetch(`${API_BASE_URL}/about?status=Published`, {

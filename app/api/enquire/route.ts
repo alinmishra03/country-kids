@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { enquiryPayloadSchema } from '@/lib/contact-schema';
+import { API_BASE_URL } from '@/lib/api-client';
 
 export const runtime = 'nodejs';
 
@@ -105,10 +106,7 @@ export async function POST(request: Request) {
             );
         }
 
-        const backendUrl =
-            process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1';
-
-        const backendRes = await fetch(`${backendUrl}/enquiries`, {
+        const backendRes = await fetch(`${API_BASE_URL}/enquiries`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(parsed.data),

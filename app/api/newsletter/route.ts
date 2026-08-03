@@ -14,6 +14,7 @@
    out in the log line so it cannot quietly look finished in production. */
 
 import { NextResponse } from 'next/server';
+import { API_BASE_URL } from '@/lib/api-client';
 
 /* Node, not Edge: the limiter below keeps state in module scope, and it needs a
    runtime where that survives between requests on an instance. */
@@ -51,9 +52,8 @@ function rateLimited(ip: string): boolean {
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 async function deliver(email: string): Promise<void> {
-    const backendUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3000/api/v1';
     try {
-        const res = await fetch(`${backendUrl}/subscribers`, {
+        const res = await fetch(`${API_BASE_URL}/subscribers`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email })
