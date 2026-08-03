@@ -30,6 +30,7 @@ export default function EnrollForm() {
             room: formData.get('room') as string,
             days: formData.get('days') as string,
             message: formData.get('message') as string,
+            source: 'enrollment-page',
         };
 
         try {
