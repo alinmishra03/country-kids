@@ -5,7 +5,7 @@ export const PROGRAMS = [
     {
         id: 'infants',
         icon: 'baby',
-        img: '1519689680058-324335c77eba',
+        img: '1495131292899-bc096577e8f5',
         name: 'Infant Care',
         age: '6 weeks – 18 months',
         blurb:
@@ -23,7 +23,7 @@ export const PROGRAMS = [
     {
         id: 'preschool',
         icon: 'palette',
-        img: '1560785496-3c9d27877182',
+        img: '1578349035260-9f3d4042f1f7',
         name: 'Preschool',
         age: '3 – 4 years',
         blurb:
@@ -32,7 +32,7 @@ export const PROGRAMS = [
     {
         id: 'prek',
         icon: 'graduation',
-        img: '1541692641319-981cc79ee10a',
+        img: '1501686637-b7aa9c48a882',
         name: 'Pre-Kindergarten',
         age: '4 – 5 years',
         blurb:
@@ -41,7 +41,7 @@ export const PROGRAMS = [
     {
         id: 'afterschool',
         icon: 'backpack',
-        img: '1516627145497-ae6968895b74',
+        img: '1583468991267-3f068b607ae1',
         name: 'After-School Club',
         age: '5 – 10 years',
         blurb:
@@ -68,14 +68,14 @@ export const FEATURES = [
 /* Home gallery — icon-led activity tiles (replaces the old emoji placeholders).
    Each tile pairs a Lucide activity icon with a short caption. */
 export const GALLERY = [
-    { icon: 'palette', label: 'Art & Crafts', img: '1596464716127-f2a82984de30' },
+    { icon: 'palette', label: 'Art & Crafts', img: '1607211851821-8be3cd6146f0' },
     { icon: 'blocks', label: 'Building', img: '1587654780291-39c9404d746b' },
-    { icon: 'book', label: 'Story Time', img: '1481627834876-b7833e8f5570' },
-    { icon: 'bike', label: 'Active Play', img: '1503919545889-aef636e10ad4' },
-    { icon: 'music', label: 'Music', img: '1445633629932-0029acc44e88' },
-    { icon: 'leaf', label: 'Nature', img: '1444703686981-a3abbc4d4fe3' },
+    { icon: 'book', label: 'Story Time', img: '1599689868384-59cb2b01bb21' },
+    { icon: 'bike', label: 'Active Play', img: '1593893513213-0ecc2ea282c5' },
+    { icon: 'music', label: 'Music', img: '1509781827353-fb95c262fc40' },
+    { icon: 'leaf', label: 'Nature', img: '1509414556967-312906f278a0' },
     { icon: 'sun', label: 'Outdoors', img: '1503454537195-1dcabb73ffb9' },
-    { icon: 'calculator', label: 'Early Math', img: '1509228468518-180dd4864904' },
+    { icon: 'calculator', label: 'Early Math', img: '1501686637-b7aa9c48a882' },
 ];
 
 export const STATS = [

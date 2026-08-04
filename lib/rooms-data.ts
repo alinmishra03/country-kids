@@ -15,7 +15,7 @@ export const ROOMS = [
         stage: 'Infants',
         icon: 'baby',
         accent: 'gold',
-        img: '1519689680058-324335c77eba',
+        img: '1495131292899-bc096577e8f5',
         art: '/images/about/rooms/joey.png',
         blurb:
             'A gentle sanctuary for our youngest members. Named after the baby kangaroo — small, precious and cradled with care. Our Joey Room educators provide responsive, attachment-focused care in a sensory-rich environment, building secure foundations for all future learning.',
@@ -54,7 +54,7 @@ export const ROOMS = [
         stage: 'Toddlers',
         icon: 'feather',
         accent: 'blue',
-        img: '1560785496-3c9d27877182',
+        img: '1578349035260-9f3d4042f1f7',
         art: '/images/about/rooms/cockatoo.png',
         blurb:
             'Bold, bright and expressive — just like the cockatoo. The Cockatoo Room fosters emotional literacy, creative arts and collaborative play, building confident and resilient young learners who love to express themselves.',
@@ -68,7 +68,7 @@ export const ROOMS = [
         badge: '3yr Kinder · FREE',
         icon: 'fish',
         accent: 'teal',
-        img: '1544005313-94ddf0286df2',
+        img: '1613794713137-a78aba4be84a',
         art: '/images/about/rooms/kingfisher.png',
         blurb:
             'Precise, colourful and always darting toward new discoveries — like the kingfisher in flight. Children engage in our 3-year-old kindergarten program, Victorian Government funded, led by a VIT-registered Early Childhood Teacher.',
@@ -82,7 +82,7 @@ export const ROOMS = [
         badge: '4yr Kinder · FREE',
         icon: 'rabbit',
         accent: 'gold',
-        img: '1541692641319-981cc79ee10a',
+        img: '1607453998825-f3f36da5ab18',
         art: '/images/about/rooms/kangaroo.png',
         blurb:
             'Strong, fast and ready to leap into the world. The Kangaroo Room delivers our funded 4-year-old kindergarten program — 15 hours per week — developing literacy, numeracy and the social-emotional skills needed for a confident school transition.',
@@ -95,7 +95,7 @@ export const ROOMS = [
         stage: 'Integrated Learning',
         icon: 'egg',
         accent: 'green',
-        img: '1587616211892-f743fcca64f9',
+        img: '1761208663763-c4d30657c910',
         art: '/images/about/rooms/bunjil.png',
         blurb:
             "Australia's tallest bird — strong, curious and never able to fly backwards. The Bunjil Room is our flexible integrated learning space for 3–5 year olds, supporting mixed-age groups, children with additional needs, and specialised learning programs.",

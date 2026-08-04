@@ -21,17 +21,17 @@ const CircularGallery = dynamic(
 /* Real site imagery (Unsplash ids already used across the site) paired with the
    learning-space titles. */
 const ITEMS = [
-    { image: img('1444703686981-a3abbc4d4fe3', 800, 70), text: 'Nature Play' },
-    { image: img('1541692641319-981cc79ee10a', 800, 70), text: 'Kindergarten' },
+    { image: img('1495131292899-bc096577e8f5', 800, 70), text: 'Nature Play' },
+    { image: img('1578349035260-9f3d4042f1f7', 800, 70), text: 'Kindergarten' },
     { image: img('1596464716127-f2a82984de30', 800, 70), text: 'Creative Arts' },
     { image: img('1503454537195-1dcabb73ffb9', 800, 70), text: 'Outdoor Learning' },
-    { image: img('1445633629932-0029acc44e88', 800, 70), text: 'Music' },
-    { image: img('1481627834876-b7833e8f5570', 800, 70), text: 'Reading Corner' },
-    { image: img('1509228468518-180dd4864904', 800, 70), text: 'STEM' },
-    { image: img('1516627145497-ae6968895b74', 800, 70), text: 'Family Events' },
-    { image: img('1560785496-3c9d27877182', 800, 70), text: 'Healthy Meals' },
-    { image: img('1519689680058-324335c77eba', 800, 70), text: 'Sensory Play' },
-    { image: img('1509062522246-3755977927d7', 800, 70), text: 'Community' },
+    { image: img('1509781827353-fb95c262fc40', 800, 70), text: 'Music' },
+    { image: img('1599689868384-59cb2b01bb21', 800, 70), text: 'Reading Corner' },
+    { image: img('1501686637-b7aa9c48a882', 800, 70), text: 'STEM' },
+    { image: img('1761208663763-c4d30657c910', 800, 70), text: 'Family Events' },
+    { image: img('1498837167922-ddd27525d352', 800, 70), text: 'Healthy Meals' },
+    { image: img('1613794713137-a78aba4be84a', 800, 70), text: 'Sensory Play' },
+    { image: img('1607453998825-f3f36da5ab18', 800, 70), text: 'Community' },
     { image: img('1587654780291-39c9404d746b', 800, 70), text: 'Learning Through Play' },
 ];
 

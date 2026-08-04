@@ -25,12 +25,12 @@ export function crop(id, w = 1200, h = 900, q = 68) {
 
 /* Named photos used by page heroes and standalone sections (all verified). */
 export const PHOTOS = {
-    heroPoster: '1587616211892-f743fcca64f9',   // bright classroom of children
-    aboutHome: '1516627145497-ae6968895b74',     // teacher with children
-    pageHeroAbout: '1509062522246-3755977927d7', // colourful classroom
-    pageHeroPrograms: '1526634332515-d56c5fd16991', // child with blocks
-    pageHeroContact: '1503676260728-1c00da094a0b',  // teacher at board
-    pageHeroEnroll: '1541692641319-981cc79ee10a',   // reading group
-    contact: '1516627145497-ae6968895b74',       // welcoming teacher & kids
+    heroPoster: '1613794713137-a78aba4be84a',    // three children in the sandpit
+    aboutHome: '1583468991267-3f068b607ae1',     // educator reading with a child
+    pageHeroAbout: '1567746455504-cb3213f8f5b8', // bright early learning room
+    pageHeroPrograms: '1761208663763-c4d30657c910', // children building together
+    pageHeroContact: '1616089804390-b2daa80dbf02',  // educator with young children
+    pageHeroEnroll: '1599689868384-59cb2b01bb21',   // child absorbed in a book
+    contact: '1583468991267-3f068b607ae1',       // educator reading with a child
     enroll: '1596464716127-f2a82984de30',        // arts & crafts table
 };

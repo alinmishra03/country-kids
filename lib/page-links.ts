@@ -75,7 +75,7 @@ export const PAGE_LINKS: PageLink[] = [
             'How a lifetime of lessons, carried across the world, became a centre where every child belongs.',
         icon: 'book',
         ariaLabel: 'Read our story',
-        image: art('1500534314209-a25ddb2bd429'),
+        image: art('1578011166201-83d553ed495f'),
     },
     {
         id: 'philosophy',
@@ -95,7 +95,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Seven rooms from six weeks to six years, each named for an iconic Australian animal — a place to belong at every age and stage.',
         icon: 'home',
         ariaLabel: 'Explore our seven rooms',
-        image: art('1509062522246-3755977927d7'),
+        image: art('1567746455504-cb3213f8f5b8'),
     },
     {
         id: 'curriculum',
@@ -105,7 +105,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Fifteen cards across five series, each linking everyday practice to the National Quality Standard and the VEYLDF learning outcomes.',
         icon: 'graduation',
         ariaLabel: 'Explore our curriculum',
-        image: art('1541692641319-981cc79ee10a'),
+        image: art('1509414556967-312906f278a0'),
     },
     {
         id: 'compliance',
@@ -115,7 +115,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Operating within Australia’s National Quality Framework, registered on Starting Blocks and compliant with the 2025–2026 reforms.',
         icon: 'shield',
         ariaLabel: 'See our quality and compliance record',
-        image: art('1503676260728-1c00da094a0b'),
+        image: art('1616089804390-b2daa80dbf02'),
     },
     {
         id: 'fees',
@@ -135,7 +135,7 @@ export const PAGE_LINKS: PageLink[] = [
             'A child cannot be raised by a centre alone. How we keep families close, informed and part of everything we do.',
         icon: 'users',
         ariaLabel: 'See how we work with families',
-        image: art('1516627145497-ae6968895b74'),
+        image: art('1613794713137-a78aba4be84a'),
     },
     {
         id: 'contact',
@@ -145,7 +145,7 @@ export const PAGE_LINKS: PageLink[] = [
             'Reach our centre team directly, any weekday between 6:30am and 6:30pm, or find us in Ravenhall.',
         icon: 'mail',
         ariaLabel: 'Get in touch with us',
-        image: art('1587616211892-f743fcca64f9'),
+        image: art('1583468991267-3f068b607ae1'),
     },
     {
         id: 'enroll',

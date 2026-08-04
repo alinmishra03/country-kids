@@ -13,28 +13,28 @@ export const SUBSIDY_STEPS = [
         title: 'Create or Log In to myGov',
         text:
             'Link your myGov account to Centrelink and claim the Child Care Subsidy online. This takes around 15–20 minutes.',
-        image: crop('1503919545889-aef636e10ad4', 600, 800),
+        image: crop('1583468991267-3f068b607ae1', 600, 800),
     },
     {
         icon: 'clipboard',
         title: 'Enrol at Country Kids',
         text:
             "Provide your Customer Reference Number (CRN) and your child's CRN during our enrolment process.",
-        image: crop('1587616211892-f743fcca64f9', 600, 800),
+        image: crop('1567746455504-cb3213f8f5b8', 600, 800),
     },
     {
         icon: 'circle-check',
         title: 'Subsidy Applied Automatically',
         text:
             'Your CCS is paid directly to Country Kids. You pay only the gap — every fortnight, automatically.',
-        image: crop('1497486751825-1233686d5d80', 600, 800),
+        image: crop('1607453998825-f3f36da5ab18', 600, 800),
     },
     {
         icon: 'graduation',
         title: 'Stack Victorian Kinder Funding',
         text:
             'Eligible 3 and 4 year olds receive additional Victorian Government Kinder Funding on top of CCS, saving families up to $2,500 per year.',
-        image: crop('1541692641319-981cc79ee10a', 600, 800),
+        image: crop('1501686637-b7aa9c48a882', 600, 800),
     },
 ];
 

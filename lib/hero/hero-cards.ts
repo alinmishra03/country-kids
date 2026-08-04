@@ -30,11 +30,11 @@ export type HeroCard = {
 
 /* Photos for the content that has none of its own. */
 const CURRICULUM_IMG: Record<string, string> = {
-    seeds: '1519689680058-324335c77eba',
-    country: '1444703686981-a3abbc4d4fe3',
-    river: '1503919545889-aef636e10ad4',
-    seasons: '1481627834876-b7833e8f5570',
-    'high-country': '1509228468518-180dd4864904',
+    seeds: '1495131292899-bc096577e8f5',
+    country: '1509414556967-312906f278a0',
+    river: '1676776295520-065802f5659a',
+    seasons: '1668119208053-1545bcc49e4a',
+    'high-country': '1676776295419-815b0fbe1c3c',
 };
 
 /* ── Our Rooms (7) ── */
@@ -89,7 +89,7 @@ const DAY_CARDS: HeroCard[] = GALLERY.map((g: any) => ({
 const CENTRE_CARDS: HeroCard[] = [
     {
         id: 'centre-kinder',
-        img: '1541692641319-981cc79ee10a',
+        img: '1578349035260-9f3d4042f1f7',
         category: 'The Centre',
         title: 'Free Kinder',
         subtitle: '3 & 4-year-old programs',
@@ -100,7 +100,7 @@ const CENTRE_CARDS: HeroCard[] = [
     },
     {
         id: 'centre-educators',
-        img: '1516627145497-ae6968895b74',
+        img: '1616089804390-b2daa80dbf02',
         category: 'The Centre',
         title: 'Our Educators',
         subtitle: '100% qualified team',
@@ -111,7 +111,7 @@ const CENTRE_CARDS: HeroCard[] = [
     },
     {
         id: 'centre-safety',
-        img: '1503676260728-1c00da094a0b',
+        img: '1495131292899-bc096577e8f5',
         category: 'The Centre',
         title: 'Child Safety',
         subtitle: 'All 11 Victorian standards',
@@ -122,7 +122,7 @@ const CENTRE_CARDS: HeroCard[] = [
     },
     {
         id: 'centre-families',
-        img: '1509062522246-3755977927d7',
+        img: '1607453998825-f3f36da5ab18',
         category: 'The Centre',
         title: 'Our Families',
         subtitle: 'Partnership from day one',

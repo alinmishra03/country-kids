@@ -46,59 +46,59 @@ const ph = (name: string) => `/images/about/${name}.svg`;
 /* ── Our Story (/about) ── */
 export const STORY_IMAGES = {
     hero: shot(
-        '1587616211892-f743fcca64f9',
+        '1613794713137-a78aba4be84a',
         2000,
         1125,
-        'Children and educators together in a bright, open early learning space',
+        'Three young children playing together in a sandpit under shade',
         ph('about-hero')
     ),
     chapterOne: shot(
-        '1500534314209-a25ddb2bd429',
+        '1578011166201-83d553ed495f',
         1200,
         1500,
-        'Open grassland under a wide sky — the country that made room for us',
+        'A single gum standing in open parkland under a wide blue sky',
         ph('chapter-one-country')
     ),
     chapterTwo: shot(
-        '1476514525535-07fb3b4ae5f1',
+        '1676776295419-815b0fbe1c3c',
         1400,
         1050,
-        'A long road winding through open country, standing for the journey taken the long way around',
+        'A gum leaning over open country, the valley falling away beyond it',
         ph('chapter-two-journey')
     ),
     chapterThree: shot(
-        '1516627145497-ae6968895b74',
+        '1583468991267-3f068b607ae1',
         1800,
         1125,
-        'An educator sitting with young children, listening closely as they talk',
+        'An educator sitting with a young child, working through a book together',
         ph('chapter-three-educator-child')
     ),
     chapterFour: shot(
-        '1509062522246-3755977927d7',
+        '1567746455504-cb3213f8f5b8',
         1800,
         1125,
         'A light-filled learning room set up with open-ended play materials',
         ph('chapter-four-learning-space')
     ),
     chapterFive: shot(
-        '1503676260728-1c00da094a0b',
+        '1771765754567-e7b5bbf6a3b3',
         1200,
         1500,
         'An educator working attentively with a small group of children',
         ph('chapter-five-care')
     ),
     chapterSix: shot(
-        '1541692641319-981cc79ee10a',
+        '1583468991267-3f068b607ae1',
         1800,
         1350,
-        'Children and adults gathered together around a shared story',
+        'An adult and children gathered together around a shared story',
         ph('chapter-six-family-country')
     ),
     closing: shot(
-        '1444927714506-8492d94b4e3d',
+        '1676776295520-065802f5659a',
         2200,
         1100,
-        'A path leading away through native grasses and open country',
+        'Gum canopy opening out over open country',
         ph('closing-belonging')
     ),
     cta: shot(
@@ -137,10 +137,10 @@ type PageMedia = {
 export const PAGE_MEDIA = {
     philosophy: {
         hero: shot(
-            '1526634332515-d56c5fd16991',
+            '1761208663763-c4d30657c910',
             2000,
             1125,
-            'A young child absorbed in building with wooden blocks'
+            'Children absorbed in building together on the floor of a learning room'
         ),
         /* Was id 1533228100845, captioned "children playing outdoors among
            trees". That id is a photograph of a phone showing a Google search —
@@ -148,10 +148,10 @@ export const PAGE_MEDIA = {
            something else entirely. Replaced with a picture that matches its
            caption, and the caption checked against the pixels. */
         feature: shot(
-            '1587616211892-f743fcca64f9',
+            '1581861181562-34284733005a',
             1200,
             1500,
-            'A group of children sitting together, dressed up and sharing the moment'
+            'Children working side by side at a table of coloured materials'
         ),
         /* One photograph per Philosophy / Vision / Mission row, chosen to carry
            that row's idea rather than to decorate it: play as the vehicle for
@@ -166,10 +166,10 @@ export const PAGE_MEDIA = {
             'A child painting freely with bright colours, hands busy in the work'
         ),
         visionRow: shot(
-            '1470071459604-3b5ec3a7fe05',
+            '1676776295419-815b0fbe1c3c',
             1400,
             1050,
-            'A wide valley of open country under low cloud, lit by a late sun'
+            'A wide valley of open country seen through the branches of a gum'
         ),
         missionRow: shot(
             '1518831959646-742c3a14ebf7',
@@ -185,23 +185,23 @@ export const PAGE_MEDIA = {
            outdoors" is a phone showing a Google search). */
         valueShots: [
             shot('1503454537195-1dcabb73ffb9', 1200, 1400, 'A child laughing, face and hands covered in paint'),
-            shot('1497486751825-1233686d5d80', 1200, 1400, 'A group of children standing arm in arm, smiling together'),
-            shot('1587616211892-f743fcca64f9', 1200, 1400, 'Children sitting together, dressed up and sharing the moment'),
+            shot('1607453998825-f3f36da5ab18', 1200, 1400, 'Two young children sitting arm in arm, laughing together'),
+            shot('1581861181562-34284733005a', 1200, 1400, 'Children working side by side at a table of coloured materials'),
             shot('1587654780291-39c9404d746b', 1200, 1400, 'A deep pile of coloured building bricks waiting to be used'),
-            shot('1425913397330-cf8af2ff40a1', 1200, 1400, 'Tall straight trees in a forest, lit from behind'),
-            shot('1522661067900-ab829854a57f', 1200, 1400, 'A child writing carefully on a large blackboard'),
-            shot('1444927714506-8492d94b4e3d', 1200, 1400, 'Ridges of open country receding into morning mist'),
+            shot('1509414556967-312906f278a0', 1200, 1400, 'Tall straight gums in bushland, lit from behind'),
+            shot('1780844824360-6fced13c828f', 1200, 1400, 'A child writing carefully on a large blackboard'),
+            shot('1668119208053-1545bcc49e4a', 1200, 1400, 'Ghost gums standing in open bushland'),
         ],
     },
     rooms: {
         hero: shot(
-            '1509062522246-3755977927d7',
+            '1567746455504-cb3213f8f5b8',
             2000,
             1125,
             'A bright, calm early learning room prepared for the day'
         ),
         feature: shot(
-            '1497486751825-1233686d5d80',
+            '1564429238817-393bd4286b2d',
             1300,
             1000,
             'A quiet corner of a learning room with natural materials within a child’s reach'
@@ -209,16 +209,16 @@ export const PAGE_MEDIA = {
     },
     curriculum: {
         hero: shot(
-            '1541692641319-981cc79ee10a',
+            '1583468991267-3f068b607ae1',
             2000,
             1125,
-            'Children gathered closely around a book being read aloud'
+            'A child following the words closely as a book is read aloud'
         ),
         feature: shot(
-            '1470071459604-3b5ec3a7fe05',
+            '1509414556967-312906f278a0',
             1300,
             1000,
-            'A wide valley of open country under low cloud, lit by a late sun'
+            'Tall gums standing close together in Victorian bushland'
         ),
         /* One landscape per series, keyed by CURRICULUM_SERIES id so a series
            and its picture cannot drift apart. All five are the centre's own
@@ -270,13 +270,13 @@ export const PAGE_MEDIA = {
     },
     compliance: {
         hero: shot(
-            '1503676260728-1c00da094a0b',
+            '1616089804390-b2daa80dbf02',
             2000,
             1125,
             'An educator supervising attentively while children work'
         ),
         feature: shot(
-            '1587654780291-39c9404d746b',
+            '1495131292899-bc096577e8f5',
             1300,
             1000,
             'A safe, well-kept outdoor play area seen from the shade'
@@ -290,28 +290,28 @@ export const PAGE_MEDIA = {
             'Children working side by side at a craft table'
         ),
         feature: shot(
-            '1522661067900-ab829854a57f',
+            '1583468991267-3f068b607ae1',
             1300,
             1000,
-            'A family sitting together working through paperwork at a kitchen table'
+            'An educator sitting with a child, going through a book side by side'
         ),
     },
     families: {
         hero: shot(
-            '1516627145497-ae6968895b74',
+            '1613794713137-a78aba4be84a',
             2000,
             1125,
-            'An educator and children sharing a moment together'
+            'Three young children playing side by side in a sandpit'
         ),
         feature: shot(
-            '1503919545889-aef636e10ad4',
+            '1761208663763-c4d30657c910',
             1300,
             1000,
-            'A parent and child arriving together, hand in hand'
+            'Educators and children together on the floor of a learning room'
         ),
         highlights: [
             shot(
-                '1587616211892-f743fcca64f9',
+                '1578349035260-9f3d4042f1f7',
                 1200,
                 900,
                 'Children and educators sharing daily moments and learning'
@@ -323,13 +323,13 @@ export const PAGE_MEDIA = {
                 'Freshly prepared healthy meals for children'
             ),
             shot(
-                '1577896851231-70ef18881754',
+                '1771765754567-e7b5bbf6a3b3',
                 1200,
                 900,
                 'Educators and parents working together in genuine partnership'
             ),
             shot(
-                '1497486751825-1233686d5d80',
+                '1607453998825-f3f36da5ab18',
                 1200,
                 900,
                 'Children standing together in a supportive community'
@@ -338,13 +338,13 @@ export const PAGE_MEDIA = {
     },
     contact: {
         hero: shot(
-            '1587616211892-f743fcca64f9',
+            '1567746455504-cb3213f8f5b8',
             2000,
             1125,
             'The welcoming entrance to a bright early learning centre'
         ),
         feature: shot(
-            '1425913397330-cf8af2ff40a1',
+            '1668119208053-1545bcc49e4a',
             1300,
             1000,
             'Native foliage and textured bark, close up'
@@ -424,6 +424,8 @@ export const PAGE_MEDIA = {
                 width: 949,
                 height: 530,
             },
+            /* Kept as-is: these two are the centre's own Australian photography
+               and were never part of the stock set replaced above. */
             town: {
                 src: '/images/about/curriculum/high%20country.jpg',
                 alt: 'A Victorian high-country town street lined with trees in autumn colour',
