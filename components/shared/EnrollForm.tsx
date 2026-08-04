@@ -22,6 +22,7 @@ export default function EnrollForm() {
         setIsSubmitting(true);
 
         const formData = new FormData(e.currentTarget);
+
         const payload = {
             parentName: formData.get('parentName') as string,
             phone: formData.get('phone') as string,

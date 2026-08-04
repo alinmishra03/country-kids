@@ -21,29 +21,26 @@ export const PROGRAM_OPTIONS = [
 
 export const CENTRE_OPTIONS = ['Ravenhall VIC 3023'] as const;
 
-/* ── Australian phone numbers ──
-   Accepts the shapes a parent actually types: 0412 345 678, (03) 9123 4567,
-   +61 412 345 678, 1300 025 520, 13 12 34. Spaces, dashes, dots and brackets
-   are ignored rather than rejected — punctuation is not the visitor's problem.
-
-   Normalised to the leading-zero national form first, so +61 / 61 / 0 prefixes
-   all collapse to one thing and there are three patterns to check instead of
-   nine. */
+/* ── Phone numbers (International & Domestic) ──
+   Accepts numbers from any country with or without country code.
+   Spaces, dashes, dots and brackets are ignored.
+   Validates 7 to 15 digits total (accommodates 10-digit local numbers as well as
+   international country code prefixes). */
 export function normaliseAuPhone(raw: string): string {
-    const cleaned = raw.replace(/[^\d+]/g, '');
-    if (cleaned.startsWith('+61')) return `0${cleaned.slice(3)}`;
-    if (cleaned.startsWith('61') && cleaned.length === 11) return `0${cleaned.slice(2)}`;
-    return cleaned;
+    return raw.trim();
 }
 
-export function isValidAuPhone(raw: string): boolean {
-    const n = normaliseAuPhone(raw);
-    return (
-        /^0[2-478]\d{8}$/.test(n) ||   /* landline + mobile: 03…, 04…, 07…, 08… */
-        /^1[38]00\d{6}$/.test(n) ||    /* 1300 / 1800                            */
-        /^13\d{4}$/.test(n)            /* 13 xx xx                               */
-    );
+export function isValidPhone(raw: string): boolean {
+    if (!raw) return false;
+    const cleaned = raw.trim().replace(/[^\d+]/g, '');
+    if (cleaned.startsWith('+')) {
+        const digits = cleaned.slice(1);
+        return /^\d{7,15}$/.test(digits);
+    }
+    return /^\d{7,15}$/.test(cleaned);
 }
+
+export const isValidAuPhone = isValidPhone;
 
 const trimmed = (max: number) => z.string().trim().max(max);
 
@@ -57,7 +54,7 @@ export const contactEnquirySchema = z.object({
 
     phone: trimmed(30)
         .min(1, 'Please enter a phone number.')
-        .refine(isValidAuPhone, 'Please enter a valid Australian phone number.'),
+        .refine(isValidPhone, 'Please enter a valid phone number.'),
 
     childName: trimmed(80).optional().or(z.literal('')),
     childAge: trimmed(40).optional().or(z.literal('')),
@@ -98,7 +95,7 @@ export const enquiryPayloadSchema = z.object({
     phone: z
         .string()
         .trim()
-        .refine(isValidAuPhone, 'Please enter a valid Australian phone number.'),
+        .refine(isValidPhone, 'Please enter a valid phone number.'),
     childName: z.string().trim().max(80).optional(),
     childAge: z.string().trim().max(40).optional(),
     program: z.string().trim().max(80).optional(),
