@@ -72,7 +72,7 @@ export const PAGE_LINKS: PageLink[] = [
         href: '/about',
         title: 'Our Story',
         summary:
-            'How a lifetime of lessons, carried across the world, became a centre where every child belongs.',
+            'How a lifetime of lessons, carried across the world, became a center where every child belongs.',
         icon: 'book',
         ariaLabel: 'Read our story',
         image: art('1578011166201-83d553ed495f'),
@@ -132,7 +132,7 @@ export const PAGE_LINKS: PageLink[] = [
         href: '/families',
         title: 'Families',
         summary:
-            'A child cannot be raised by a centre alone. How we keep families close, informed and part of everything we do.',
+            'A child cannot be raised by a center alone. How we keep families close, informed and part of everything we do.',
         icon: 'users',
         ariaLabel: 'See how we work with families',
         image: art('1613794713137-a78aba4be84a'),
@@ -142,7 +142,7 @@ export const PAGE_LINKS: PageLink[] = [
         href: '/contact',
         title: 'Contact',
         summary:
-            'Reach our centre team directly, any weekday between 6:30am and 6:30pm, or find us in Ravenhall.',
+            'Reach our center team directly, any weekday between 6:30am and 6:30pm, or find us in Ravenhall.',
         icon: 'mail',
         ariaLabel: 'Get in touch with us',
         image: art('1583468991267-3f068b607ae1'),

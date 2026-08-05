@@ -2,11 +2,11 @@
    from the same data files the rest of the site renders from, so nothing here
    can drift out of sync with the pages it links to.
 
-   Four categories, each a real part of the centre:
+   Four categories, each a real part of the center:
      · Our Rooms       — the seven purpose-named rooms          → /rooms#id
      · Our Curriculum  — the five "Landscapes" series           → /curriculum
      · A Day Here      — the eight everyday-life activities     → /
-     · The Centre      — four things families ask about first   → various
+     · The Center      — four things families ask about first   → various
 
    Each card carries the copy the overlay shows when it is selected: a title, a
    category, a short subtitle and a one-line description, plus the CTA the button
@@ -85,12 +85,12 @@ const DAY_CARDS: HeroCard[] = GALLERY.map((g: any) => ({
     cta: 'See how we learn',
 }));
 
-/* ── The Centre (4) ── */
+/* ── The Center (4) ── */
 const CENTRE_CARDS: HeroCard[] = [
     {
         id: 'centre-kinder',
         img: '1578349035260-9f3d4042f1f7',
-        category: 'The Centre',
+        category: 'The Center',
         title: 'Free Kinder',
         subtitle: '3 & 4-year-old programs',
         description:
@@ -101,7 +101,7 @@ const CENTRE_CARDS: HeroCard[] = [
     {
         id: 'centre-educators',
         img: '1616089804390-b2daa80dbf02',
-        category: 'The Centre',
+        category: 'The Center',
         title: 'Our Educators',
         subtitle: '100% qualified team',
         description:
@@ -112,7 +112,7 @@ const CENTRE_CARDS: HeroCard[] = [
     {
         id: 'centre-safety',
         img: '1495131292899-bc096577e8f5',
-        category: 'The Centre',
+        category: 'The Center',
         title: 'Child Safety',
         subtitle: 'All 11 Victorian standards',
         description:
@@ -123,7 +123,7 @@ const CENTRE_CARDS: HeroCard[] = [
     {
         id: 'centre-families',
         img: '1607453998825-f3f36da5ab18',
-        category: 'The Centre',
+        category: 'The Center',
         title: 'Our Families',
         subtitle: 'Partnership from day one',
         description:

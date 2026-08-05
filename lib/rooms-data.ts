@@ -3,7 +3,7 @@
    the card (maps to CSS classes .accent-*); `img` is an Unsplash id (see
    lib/images.js). `art` is the room's own commissioned animal illustration in
    /public/images/about/rooms — the room CARDS show it; `img` stays as the photo
-   the hero globe bakes into its card faces. Content is faithful to the centre's
+   the hero globe bakes into its card faces. Content is faithful to the center's
    own descriptions. */
 
 export const ROOMS = [

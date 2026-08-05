@@ -1,5 +1,5 @@
 /* "A Dream, Rooted in Country" — the six-chapter origin narrative, plus the pull
-   quote and closing. Text is faithful to the centre's own story. */
+   quote and closing. Text is faithful to the center's own story. */
 
 export const STORY_INTRO = {
     kicker: 'Our Journey',
@@ -15,7 +15,7 @@ export const STORY_CHAPTERS = [
         paras: [
             'This country did not have to make room for us. And yet it did. We came to Australia the way so many families do — from different corners of the world, carrying different languages, different memories, and the same quiet hope: that here, our children might have the chance to grow into all they were meant to be.',
             'This is a land that has nurtured people from every continent on earth — a place that takes the word belonging and makes it real for those who were not born to it. It gave us safety. It gave us opportunity. It gave us a future we could not have imagined for ourselves anywhere else.',
-            'We have never forgotten that gift. Before it was a centre, before it had a name or a single room, Country Kids was born out of gratitude — and out of a longing to one day give something back to the country that had given us everything.',
+            'We have never forgotten that gift. Before it was a center, before it had a name or a single room, Country Kids was born out of gratitude — and out of a longing to one day give something back to the country that had given us everything.',
         ],
     },
     {
@@ -34,7 +34,7 @@ export const STORY_CHAPTERS = [
         title: 'The day the dream had a name',
         paras: [
             'The answer, when it finally came, was small enough to hold in your arms. Children. The youngest among us — the ones who arrive already holding everything they need to flourish, asking only for someone to believe in them and a place to put down roots.',
-            "We had spent a lifetime gathering experience from the wider world. Now we wanted to pour all of it back into the place where a life truly begins. So in Ravenhall, in Melbourne's west, we planted Country Kids Learning Centre — and we chose, deliberately, to make it not-for-profit. This was never meant to be about what we could take. It was always meant to be about what we could give.",
+            "We had spent a lifetime gathering experience from the wider world. Now we wanted to pour all of it back into the place where a life truly begins. So in Ravenhall, in Melbourne's west, we planted Country Kids Learning Center — and we chose, deliberately, to make it not-for-profit. This was never meant to be about what we could take. It was always meant to be about what we could give.",
             'We believe, with everything we are, that every child deserves to thrive. Not only the fortunate ones. Not only some of them. Every single child who walks through our doors, exactly as they are.',
         ],
     },
@@ -42,7 +42,7 @@ export const STORY_CHAPTERS = [
         n: 'Chapter Four',
         title: 'What we planted',
         paras: [
-            'We built our centre on one unshakeable belief: that a child, like a seed, already contains the whole of who they will become. Our work is simply to provide the right soil — the warmth, the safety, the patience, and the love that lets what is already there unfold. From that single belief, everything else grew roots:',
+            'We built our center on one unshakeable belief: that a child, like a seed, already contains the whole of who they will become. Our work is simply to provide the right soil — the warmth, the safety, the patience, and the love that lets what is already there unfold. From that single belief, everything else grew roots:',
         ],
         pillars: [
             {
@@ -77,7 +77,7 @@ export const STORY_CHAPTERS = [
         n: 'Chapter Six',
         title: 'Walking together',
         paras: [
-            'We have never believed a child can be raised by a centre alone. It takes a village — and so families are never guests in our program. They are partners, contributors, and the first and most important teachers their children will ever have. The world inside our walls and the world beyond them are woven together, because that is how children learn most deeply: when everything around them makes sense as one.',
+            'We have never believed a child can be raised by a center alone. It takes a village — and so families are never guests in our program. They are partners, contributors, and the first and most important teachers their children will ever have. The world inside our walls and the world beyond them are woven together, because that is how children learn most deeply: when everything around them makes sense as one.',
             'And we walk this Country with humility. We acknowledge the Traditional Custodians of the land on which we learn and grow, and we pay our deepest respects to Elders past, present and emerging. Long before any of us arrived here, the oldest living culture on earth already understood what we are only now learning to put into words — that children grow through story, through care, through Country, through belonging. We weave First Nations perspectives through everything we do, not as a gesture once a year, but as a living part of every day — walking together on a path of learning, respect, and reconciliation.',
         ],
     },

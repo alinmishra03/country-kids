@@ -1,5 +1,5 @@
 /* Family stories — Google reviews from Country Kids families. Faithful to the
-   centre's own content. `img` is optional (falls back to an initials chip). */
+   center's own content. `img` is optional (falls back to an initials chip). */
 
 type Testimonial = { name: string; role: string; quote: string; img?: string };
 
@@ -8,7 +8,7 @@ export const TESTIMONIALS: Testimonial[] = [
         name: 'Deva V.',
         role: 'Google Review',
         quote:
-            'Very good place and our kids are so happy here. The educators genuinely love engaging with the children. Our son loves coming every single day — that says everything about this centre.',
+            'Very good place and our kids are so happy here. The educators genuinely love engaging with the children. Our son loves coming every single day — that says everything about this center.',
     },
     {
         name: 'Paige H.',
@@ -20,13 +20,13 @@ export const TESTIMONIALS: Testimonial[] = [
         name: 'Linda C.',
         role: 'Google Review',
         quote:
-            'As a first-time mum I visited many centres. As soon as I walked in here I felt at ease. The orientation was so thoughtful — our family couldn’t be happier with the care our son receives.',
+            'As a first-time mum I visited many centers. As soon as I walked in here I felt at ease. The orientation was so thoughtful — our family couldn’t be happier with the care our son receives.',
     },
     {
         name: 'Priya M.',
         role: 'Google Review',
         quote:
-            'The meals are outstanding — my daughter eats better at the centre than at home! The educators keep me updated via the app and I feel confident and connected every single day.',
+            'The meals are outstanding — my daughter eats better at the center than at home! The educators keep me updated via the app and I feel confident and connected every single day.',
     },
     {
         name: 'Anonymous Family',

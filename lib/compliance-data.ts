@@ -1,13 +1,13 @@
 import { crop } from '@/lib/images';
 
 /* Quality & Compliance — the four assurance pillars plus the 2025–2026 sector
-   updates timeline. Faithful to the centre's own content. */
+   updates timeline. Faithful to the center's own content. */
 
 export const COMPLIANCE_INTRO = {
     kicker: 'Quality & Compliance',
     title: 'Committed to the Highest Standards',
     lead:
-        'Country Kids Learning Centre Inc operates within Australia’s rigorous National Quality Framework, administered by ACECQA. We are registered on Starting Blocks and compliant with all 2025–2026 reforms.',
+        'Country Kids Learning Center Inc operates within Australia’s rigorous National Quality Framework, administered by ACECQA. We are registered on Starting Blocks and compliant with all 2025–2026 reforms.',
 };
 
 export const COMPLIANCE_PILLARS = [

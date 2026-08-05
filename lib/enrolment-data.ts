@@ -1,5 +1,5 @@
 /* Enrolment — the five-step journey and the enquiry-form option lists.
-   Faithful to the centre's own content. */
+   Faithful to the center's own content. */
 
 export const ENROL_INTRO = {
     kicker: 'Enrolment',
@@ -13,7 +13,7 @@ export const ENROL_STEPS = [
         icon: 'map-pin',
         title: 'Book a Tour',
         text:
-            'Visit our centre, meet our educators, and experience the Country Kids community for yourself. Tours are free and welcomed any time.',
+            'Visit our center, meet our educators, and experience the Country Kids community for yourself. Tours are free and welcomed any time.',
     },
     {
         icon: 'mail',

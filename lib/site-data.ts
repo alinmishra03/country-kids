@@ -1,11 +1,11 @@
-/* Site-wide facts for Country Kids Learning Centre Inc — a single source of truth
+/* Site-wide facts for Country Kids Learning Center Inc — a single source of truth
    for contact details, opening hours, socials and the Acknowledgement of Country.
-   Every value comes from the centre's own content. The email address was
+   Every value comes from the center's own content. The email address was
    obfuscated in the source and is a sensible PLACEHOLDER until confirmed. */
 
 export const SITE = {
     name: 'Country Kids',
-    legalName: 'Country Kids Learning Centre Inc',
+    legalName: 'Country Kids Learning Center Inc',
     tagline: 'Where Every Child Belongs',
     kicker: 'Rooted in Country. Flourishing Together.',
     established: 2026,
@@ -53,6 +53,6 @@ export const TRUST_BADGES = [
 ];
 
 export const ACKNOWLEDGEMENT =
-    'Country Kids Learning Centre Inc respectfully acknowledges the Traditional Custodians of the land on which our centre is located, the Wurundjeri Woi Wurrung people of the Kulin Nation. We pay our respects to their Elders past, present and emerging, and recognise their enduring connection to land, waters and culture.';
+    'Country Kids Learning Center Inc respectfully acknowledges the Traditional Custodians of the land on which our center is located, the Wurundjeri Woi Wurrung people of the Kulin Nation. We pay our respects to their Elders past, present and emerging, and recognise their enduring connection to land, waters and culture.';
 
 export const STARTING_BLOCKS_HREF = 'https://www.startingblocks.gov.au';

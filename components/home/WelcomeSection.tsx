@@ -1,7 +1,7 @@
 'use client';
 
 /* Home welcome / story teaser. Two columns: a revealed photograph beside the
-   opening of the centre's story, with a signature and a link to the full story. */
+   opening of the center's story, with a signature and a link to the full story. */
 
 import Link from 'next/link';
 import Reveal from '@/components/shared/Reveal';

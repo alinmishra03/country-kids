@@ -72,7 +72,7 @@ export default function CompliancePage() {
                         <div className="sblocks-callout-text">
                             <h3>Find us on Starting Blocks</h3>
                             <p>
-                                Search &ldquo;Country Kids Learning Centre&rdquo; in Ravenhall VIC 3023
+                                Search &ldquo;Country Kids Learning Center&rdquo; in Ravenhall VIC 3023
                                 for our current NQS rating, assessment reports and compliance history —
                                 updated daily from ACECQA&rsquo;s National Quality Agenda IT System.
                             </p>

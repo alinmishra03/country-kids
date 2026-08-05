@@ -1,7 +1,7 @@
 'use client';
 
 /* ENROL (app/enroll) — the five-step enrolment journey, the Kinder-funding
-   callout, and the enquiry form beside the centre's contact details. Content
+   callout, and the enquiry form beside the center's contact details. Content
    from lib/enrolment-data.js + site-data.js. */
 
 import { useRef } from 'react';

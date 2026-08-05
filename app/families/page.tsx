@@ -65,7 +65,7 @@ export default function FamiliesPage() {
             <PageHero
                 kicker="Families"
                 title="Walking Together, Every Day"
-                lead="A child cannot be raised by a centre alone — it takes a village. Here is how we keep families close, informed, and part of everything we do."
+                lead="A child cannot be raised by a center alone — it takes a village. Here is how we keep families close, informed, and part of everything we do."
                 image={PAGE_MEDIA.families.hero.src}
                 badges={['Parent communication app', '5 meals daily', 'First & most important teachers']}
                 variant="editorial"
@@ -76,7 +76,7 @@ export default function FamiliesPage() {
                 kicker="Partners in the Journey"
                 title={<>The world inside &amp; the world <span>beyond, woven as one</span></>}
                 paras={[
-                    'Children learn most deeply when everything around them makes sense together. That is why we bring families into the everyday life of the centre.',
+                    'Children learn most deeply when everything around them makes sense together. That is why we bring families into the everyday life of the center.',
                 ]}
                 image={PAGE_MEDIA.families.feature}
                 badge={{ stat: '5', label: 'Fresh meals every day' }}

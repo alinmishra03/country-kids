@@ -1,5 +1,5 @@
 /* Philosophy, Vision & Mission + the seven values that run through everything.
-   Faithful to the centre's own "Rooted in Country. Flourishing Together" content. */
+   Faithful to the center's own "Rooted in Country. Flourishing Together" content. */
 
 export const PHILOSOPHY_INTRO = {
     kicker: 'Our Philosophy & Curriculum',
@@ -20,7 +20,7 @@ export const PHILOSOPHY_INTRO = {
    which opens each value onto a heading and a short paragraph. Every one is
    drawn from wording already on this page — PHILOSOPHY_INTRO and the three
    PVM blocks below — rather than invented from nothing; several are close to
-   verbatim. They still say something the centre has not literally signed off,
+   verbatim. They still say something the center has not literally signed off,
    so they are worth a read-through before launch. */
 export const VALUES = [
     {
@@ -81,7 +81,7 @@ export const PVM = [
         icon: 'sprout',
         title: 'Every Child Is a Seed of Boundless Potential',
         paras: [
-            'At Country Kids Learning Centre Inc., we place children at the heart of everything we do — recognising them as active participants in their own learning, with the right to be heard, to feel safe and secure, and to express themselves freely. We support children’s agency through meaningful, play-based experiences that honour who they are.',
+            'At Country Kids Learning Center Inc., we place children at the heart of everything we do — recognising them as active participants in their own learning, with the right to be heard, to feel safe and secure, and to express themselves freely. We support children’s agency through meaningful, play-based experiences that honour who they are.',
             "We are committed to an inclusive, nurturing environment that respects each child's identity, culture, and individual learning needs — celebrating diversity and actively promoting equity and anti-bias practice so every child has access to the highest quality education and care.",
         ],
     },

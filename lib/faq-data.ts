@@ -1,8 +1,8 @@
-/* Frequently Asked Questions — faithful to the centre's own content. */
+/* Frequently Asked Questions — faithful to the center's own content. */
 
 export const FAQS = [
     {
-        q: 'What ages does Country Kids Learning Centre accept?',
+        q: 'What ages does Country Kids Learning Center accept?',
         a: 'We welcome children from 6 weeks to 6 years of age across our 7 purpose-named rooms: Joey (0–1yr), Koala (1–2yrs), Kookaburra (2–3yrs), Cockatoo (2–3yrs), Kingfisher (3–4yrs), Kangaroo (4–5yrs), and Bunjil (3–5yrs integrated room).',
     },
     {
@@ -26,11 +26,11 @@ export const FAQS = [
         a: 'We use a dedicated parent communication app to share photos, learning observations, meal updates and daily notes throughout the day. Our educators are always available at pick-up and our Director can be reached by phone or email anytime.',
     },
     {
-        q: 'What makes Country Kids different from for-profit centres?',
+        q: 'What makes Country Kids different from for-profit centers?',
         a: 'As a not-for-profit incorporated organisation, every dollar we generate is reinvested into our children, educators and facilities — not returned to shareholders. This means higher educator-to-child ratios, better resources and a genuine community-first approach to everything we do.',
     },
     {
         q: 'How do I find Country Kids on Starting Blocks?',
-        a: 'Visit startingblocks.gov.au and search for "Country Kids Learning Centre" in Ravenhall, VIC 3023. You will find our current NQS rating, assessment reports, compliance history and service details. Starting Blocks is updated daily from ACECQA’s National Quality Agenda IT System.',
+        a: 'Visit startingblocks.gov.au and search for "Country Kids Learning Center" in Ravenhall, VIC 3023. You will find our current NQS rating, assessment reports, compliance history and service details. Starting Blocks is updated daily from ACECQA’s National Quality Agenda IT System.',
     },
 ];

@@ -221,7 +221,7 @@ export const PAGE_MEDIA = {
             'Tall gums standing close together in Victorian bushland'
         ),
         /* One landscape per series, keyed by CURRICULUM_SERIES id so a series
-           and its picture cannot drift apart. All five are the centre's own
+           and its picture cannot drift apart. All five are the center's own
            photography.
 
            crop() passes any path starting with "/" straight through, so local
@@ -230,7 +230,7 @@ export const PAGE_MEDIA = {
            river.jpg below.
 
            `country` takes "Five landscapes, one curriculum.jpg". That file is
-           named for the section above, but the centre supplied exactly five
+           named for the section above, but the center supplied exactly five
            photographs for five series and this is the one left over — and an
            aerial of open coastal country suits the series about land and
            connection. The section above goes back to the stock landscape it had
@@ -341,7 +341,7 @@ export const PAGE_MEDIA = {
             '1567746455504-cb3213f8f5b8',
             2000,
             1125,
-            'The welcoming entrance to a bright early learning centre'
+            'The welcoming entrance to a bright early learning center'
         ),
         feature: shot(
             '1668119208053-1545bcc49e4a',
@@ -424,7 +424,7 @@ export const PAGE_MEDIA = {
                 width: 949,
                 height: 530,
             },
-            /* Kept as-is: these two are the centre's own Australian photography
+            /* Kept as-is: these two are the center's own Australian photography
                and were never part of the stock set replaced above. */
             town: {
                 src: '/images/about/curriculum/high%20country.jpg',

@@ -301,7 +301,10 @@ export default function ContactForm() {
                         </select>
                     </Field>
 
-                    <Field id="centre" label="Preferred centre" optional>
+                    {/* The id and the field name stay "centre": that key is the
+                        contract with the CMS backend and with lib/contact-schema,
+                        so only the visible LABEL follows the site's spelling. */}
+                    <Field id="centre" label="Preferred center" optional>
                         <select id="centre" {...register('centre')}>
                             {CENTRE_OPTIONS.map((c) => (
                                 <option key={c} value={c}>

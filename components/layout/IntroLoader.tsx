@@ -16,7 +16,7 @@
         autoplaying, no controls, object-fit: cover. There are two cuts, one
         framed for wide screens and one for phones; see INTRO_VIDEO below.
      2. If it is missing, fails, or autoplay is refused, a scripted CINEMATIC
-        built from the centre's own mark and taglines plays instead, for the
+        built from the center's own mark and taglines plays instead, for the
         same few seconds.
 
    Every exit — ended, error, refused autoplay, stall timeout, skip, Escape —

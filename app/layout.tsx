@@ -22,9 +22,9 @@ import { HeroNavProvider } from '@/components/providers/HeroNavProvider';
    have to agree, and because a link preview shows the description to people who
    have not seen the page yet — it is marketing copy, not a meta afterthought. */
 const SITE_URL = 'https://www.countrykids.au';
-const SITE_TITLE = 'Country Kids Learning Centre — Rooted in Country, Flourishing Together';
+const SITE_TITLE = 'Country Kids Learning Center — Rooted in Country, Flourishing Together';
 const SITE_DESC =
-    'A not-for-profit early learning centre in Ravenhall, Victoria. Seven purpose-named rooms for children 6 weeks to 6 years, funded 3 & 4 year old kinder, five fresh meals daily. Book a free tour today.';
+    'A not-for-profit early learning center in Ravenhall, Victoria. Seven purpose-named rooms for children 6 weeks to 6 years, funded 3 & 4 year old kinder, five fresh meals daily. Book a free tour today.';
 
 export const metadata = {
     /* Without this, Next emits the relative "/og-image.png" as-is. Every
@@ -49,7 +49,7 @@ export const metadata = {
        part of a metadata fix. */
     openGraph: {
         type: 'website',
-        siteName: 'Country Kids Learning Centre',
+        siteName: 'Country Kids Learning Center',
         url: SITE_URL,
         title: SITE_TITLE,
         description: SITE_DESC,
@@ -60,7 +60,7 @@ export const metadata = {
                 width: 1200,
                 height: 630,
                 type: 'image/png',
-                alt: 'Country Kids Learning Centre',
+                alt: 'Country Kids Learning Center',
             },
         ],
     },
@@ -71,7 +71,7 @@ export const metadata = {
         images: ['/og-image.png'],
     },
     /* ── Favicon ──
-       Built from the centre's supplied mark, composited onto the brand navy.
+       Built from the center's supplied mark, composited onto the brand navy.
 
        The artwork is a WHITE logo on a TRANSPARENT background. A browser tab is
        white in light mode, so pointing at it directly makes the icon vanish —

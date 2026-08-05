@@ -31,7 +31,7 @@ const MAP_SRC =
 
 /* Accreditation marks. Every claim below is one the site ALREADY makes on
    /compliance (lib/compliance-data.ts) — none of them is invented here, and
-   none is a third-party logo. Text marks rather than logo files: the centre
+   none is a third-party logo. Text marks rather than logo files: the center
    has supplied no logo assets, and rendering a regulator's mark we do not hold
    permission for would be worse than not showing one. */
 const ACCREDITATIONS = [
@@ -47,7 +47,7 @@ const CONTACT_CARDS = [
     {
         icon: 'phone',
         title: 'Call us',
-        body: 'Speak with our centre team about availability, fees or anything else on your mind.',
+        body: 'Speak with our center team about availability, fees or anything else on your mind.',
         actionLabel: PHONE,
         href: PHONE_HREF,
         external: false,
@@ -62,7 +62,7 @@ const CONTACT_CARDS = [
     },
     {
         icon: 'map-pin',
-        title: 'Visit the centre',
+        title: 'Visit the center',
         body: `${ADDRESS.line1}, ${ADDRESS.line2}. Tours are welcome — book ahead so we can give you our full attention.`,
         actionLabel: 'Get directions',
         href: ADDRESS.mapsHref,
@@ -123,7 +123,7 @@ export default function ContactPage() {
                                 <img
                                     className="contact-aside-logo"
                                     src="/images/countrykids.png"
-                                    alt="Country Kids Learning Centre"
+                                    alt="Country Kids Learning Center"
                                     /* Must match the file's real 1080x658 ratio. The CSS pins
                                        height and leaves width auto, so the browser derives the
                                        rendered width from these two numbers until the PNG
@@ -134,8 +134,8 @@ export default function ContactPage() {
                                 />
                                 <h2>Let&rsquo;s start your child&rsquo;s learning journey</h2>
                                 <p className="contact-aside-lead">
-                                    Every enquiry reaches our centre team directly — not a call
-                                    centre. Tell us a little about your family and we will find the
+                                    Every enquiry reaches our center team directly — not a call
+                                    center. Tell us a little about your family and we will find the
                                     right room, the right days and the right start.
                                 </p>
 
@@ -188,7 +188,7 @@ export default function ContactPage() {
                                             <dt>Urgent or after hours</dt>
                                             <dd>
                                                 <a href={PHONE_HREF}>{PHONE}</a> — enrolled families
-                                                also hold our centre director&rsquo;s direct line.
+                                                also hold our center director&rsquo;s direct line.
                                             </dd>
                                         </div>
                                     </div>
@@ -257,7 +257,7 @@ export default function ContactPage() {
                         <div className="map-frame">
                             <iframe
                                 src={MAP_SRC}
-                                title={`Map showing Country Kids Learning Centre at ${ADDRESS.full}`}
+                                title={`Map showing Country Kids Learning Center at ${ADDRESS.full}`}
                                 loading="lazy"
                                 referrerPolicy="no-referrer-when-downgrade"
                                 allowFullScreen
