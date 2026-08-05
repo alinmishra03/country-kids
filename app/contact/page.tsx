@@ -124,7 +124,12 @@ export default function ContactPage() {
                                     className="contact-aside-logo"
                                     src="/images/countrykids.png"
                                     alt="Country Kids Learning Centre"
-                                    width={160}
+                                    /* Must match the file's real 1080x658 ratio. The CSS pins
+                                       height and leaves width auto, so the browser derives the
+                                       rendered width from these two numbers until the PNG
+                                       loads — a ratio that disagrees with the file reserves the
+                                       wrong box and shifts the aside as it settles. */
+                                    width={56}
                                     height={34}
                                 />
                                 <h2>Let&rsquo;s start your child&rsquo;s learning journey</h2>
