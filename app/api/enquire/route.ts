@@ -32,8 +32,8 @@ const MIN_FILL_MS = 3000;
 /* In-memory, per-instance, best-effort. Enough to blunt a burst from one
    address; it is not a distributed rate limiter and does not pretend to be.
    Serverless instances each keep their own map and lose it on recycle. */
-const RATE_LIMIT_MAX = 5;
-const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
+const RATE_LIMIT_MAX = 300;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
 const hits = new Map<string, number[]>();
 
 function isRateLimited(ip: string): boolean {
@@ -106,16 +106,21 @@ export async function POST(request: Request) {
             );
         }
 
-        const backendRes = await fetch(`${API_BASE_URL}/enquiries`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(parsed.data),
-        });
+        let backendRes: Response;
+        try {
+            backendRes = await fetch(`${API_BASE_URL}/enquiries`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(parsed.data),
+            });
+        } catch (fetchErr: any) {
+            console.error('[api/enquire] Could not reach backend server:', fetchErr?.message);
+            return NextResponse.json(
+                { ok: false, error: 'Form not submitted: Backend server could not be reached. Please try again or call us.' },
+                { status: 502 }
+            );
+        }
 
-        /* The backend may be down or mid-deploy. An enquiry that reached us but
-           not the CMS is still a lead we must not lose, so it is logged loudly
-           and the visitor is NOT shown an error — telling a parent their message
-           failed, when we have it, costs an enrolment. */
         let backendJson: any = null;
         try {
             backendJson = await backendRes.json();
@@ -125,8 +130,15 @@ export async function POST(request: Request) {
 
         if (!backendRes.ok || !backendJson?.success) {
             console.error(
-                '[api/enquire] BACKEND REJECTED ENQUIRY — captured here instead:',
+                '[api/enquire] BACKEND REJECTED ENQUIRY:',
                 JSON.stringify({ status: backendRes.status, payload: parsed.data })
+            );
+            return NextResponse.json(
+                {
+                    ok: false,
+                    error: backendJson?.message ? `Form not submitted: ${backendJson.message}` : 'Form not submitted to our database. Please try again or call us.'
+                },
+                { status: backendRes.status >= 400 && backendRes.status < 600 ? backendRes.status : 502 }
             );
         }
 

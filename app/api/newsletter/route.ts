@@ -27,7 +27,7 @@ export const runtime = 'nodejs';
    abuse, not a security control — a real one belongs at the edge or in a shared
    store (Upstash, Redis) once there is a provider bill attached to each call. */
 const WINDOW_MS = 60_000;
-const MAX_PER_WINDOW = 5;
+const MAX_PER_WINDOW = 300;
 const hits = new Map<string, number[]>();
 
 function rateLimited(ip: string): boolean {

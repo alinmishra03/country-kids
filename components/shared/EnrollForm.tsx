@@ -11,6 +11,7 @@ export default function EnrollForm() {
     const [isMounted, setIsMounted] = useState(false);
     const [sent, setSent] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -20,6 +21,7 @@ export default function EnrollForm() {
         e.preventDefault();
         if (isSubmitting) return;
         setIsSubmitting(true);
+        setErrorMsg(null);
 
         const formData = new FormData(e.currentTarget);
 
@@ -35,17 +37,25 @@ export default function EnrollForm() {
         };
 
         try {
-            await fetch('/api/enquire', {
+            const res = await fetch('/api/enquire', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            const json = await res.json().catch(() => null);
+
+            if (res.ok && json?.ok) {
+                setErrorMsg(null);
+                setSent(true);
+            } else {
+                setErrorMsg(json?.error || 'Form not submitted to our database. Please try again or call us directly.');
+            }
         } catch (err) {
             console.warn('[EnrollForm] Local proxy submission error:', err);
+            setErrorMsg('Form not submitted: We could not reach our server. Please check your connection or call us directly.');
+        } finally {
+            setIsSubmitting(false);
         }
-
-        setIsSubmitting(false);
-        setSent(true);
     };
 
     if (sent) {
@@ -61,19 +71,42 @@ export default function EnrollForm() {
 
     return (
         <form className="enroll-form" onSubmit={handleSubmit} suppressHydrationWarning>
+            {errorMsg && (
+                <div className="form-alert is-error" style={{
+                    padding: '0.85rem 1rem',
+                    borderRadius: 'var(--radius-sm, 8px)',
+                    backgroundColor: '#FEE2E2',
+                    border: '1px solid #FCA5A5',
+                    color: '#991B1B',
+                    fontSize: '0.9rem',
+                    marginBottom: '1rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                }} role="alert">
+                    <Icon name="shield" />
+                    <span>{errorMsg}</span>
+                </div>
+            )}
             <div className="form-row two">
                 <div>
-                    <label htmlFor="parentName">Parent / Guardian Name</label>
+                    <label htmlFor="parentName">
+                        Parent / Guardian Name <span className="field-required" aria-hidden="true" style={{ color: 'var(--orange-deep, #D97706)', marginLeft: '0.25rem' }}>*</span>
+                    </label>
                     <input id="parentName" name="parentName" type="text" required autoComplete="name" />
                 </div>
                 <div>
-                    <label htmlFor="phone">Phone</label>
+                    <label htmlFor="phone">
+                        Phone <span className="field-required" aria-hidden="true" style={{ color: 'var(--orange-deep, #D97706)', marginLeft: '0.25rem' }}>*</span>
+                    </label>
                     <input id="phone" name="phone" type="tel" required autoComplete="tel" />
                 </div>
             </div>
 
             <div className="form-row">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">
+                    Email <span className="field-required" aria-hidden="true" style={{ color: 'var(--orange-deep, #D97706)', marginLeft: '0.25rem' }}>*</span>
+                </label>
                 <input id="email" name="email" type="email" required autoComplete="email" />
             </div>
 

@@ -104,7 +104,13 @@ export default function ContactForm() {
                         });
                     }
                 }
-                setServerError(json?.error ?? 'We could not send your enquiry.');
+                setServerError(json?.error ?? 'Form not submitted to our server or database. Please try again or call us.');
+                setStatus('error');
+                return;
+            }
+
+            if (!json?.ok) {
+                setServerError(json?.error ?? 'Form not submitted to our database. Please try again or call us.');
                 setStatus('error');
                 return;
             }
@@ -115,7 +121,7 @@ export default function ContactForm() {
             /* Network failure, not a validation failure — say so honestly and
                give them the phone number rather than a spinner that never ends. */
             setServerError(
-                'We could not reach our server. Please check your connection, or call us.'
+                'Form not submitted: We could not reach our server. Please check your connection, or call us.'
             );
             setStatus('error');
         }
