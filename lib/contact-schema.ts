@@ -3,10 +3,12 @@
    and server can never disagree about what a valid enquiry is. Loosening a
    rule here loosens it in exactly one place.
 
-   Deliberately a SUPERSET of what the older enrolment form sends. That form
-   (components/shared/EnrollForm.tsx) posts parentName / phone / email / childAge
-   / room / days / message to the same endpoint, so every field it does not send
-   is optional here and the route keeps accepting it unchanged. */
+   Deliberately a SUPERSET of what the enrolment form sends. That form
+   (components/enroll/EnrolEnquiryForm.tsx, validated against
+   lib/enrol-form-schema.ts) posts parentName / phone / email / childName /
+   childAge / room / days / centre / message to the same endpoint, so every
+   field it does not send is optional here and the route keeps accepting it
+   unchanged. */
 
 import { z } from 'zod';
 

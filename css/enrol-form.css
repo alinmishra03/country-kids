@@ -1,0 +1,457 @@
+/* ─── /enroll — THE FORM-ONLY PAGE ───────────────────────────────────────
+   One card, centred on the page field, containing the whole route.
+
+   It reuses contact-page.css wholesale: the form carries .contact-form as well
+   as .enrolq-form, so inputs, selects, textareas, focus glows, error states,
+   hints, the consent row, the alerts, the honeypot and the button spinner all
+   come from there. This file adds ONLY what is new — the page frame, the card,
+   the intent chooser, the numbered steps, the date control and the success
+   panel. Nothing here restates a token, a radius, an easing or a button.
+
+   MUST be imported after contact-page.css (see styles/style.css): several rules
+   below are corrections to it at equal specificity, and would lose on order. */
+
+/* ─── PAGE FRAME ─────────────────────────────────────────────────────────
+   The nav is fixed, so the top padding clears it rather than the card sitting
+   under it. min-height keeps the footer off the fold on tall screens without
+   forcing a scroll on short ones. */
+.enrolq-page {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    min-height: 100svh;
+    padding-block: calc(var(--nav-h) + clamp(2rem, 5vw, 3.75rem)) clamp(3.5rem, 8vw, 6rem);
+    overflow: hidden;   /* the washes below bleed past the viewport edge */
+}
+
+/* Two very soft washes so the cream field is not a flat sheet behind a single
+   card. Decorative and inert — no markup, no hit area, nothing to hide from
+   assistive tech. */
+.enrolq-page::before,
+.enrolq-page::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: min(620px, 70vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    pointer-events: none;
+    filter: blur(10px);
+}
+.enrolq-page::before {
+    inset-block-start: -14%;
+    inset-inline-start: -12%;
+    background: radial-gradient(circle at 50% 50%, rgba(var(--accent-rgb), 0.10) 0%, rgba(var(--accent-rgb), 0) 68%);
+}
+.enrolq-page::after {
+    inset-block-end: -18%;
+    inset-inline-end: -14%;
+    background: radial-gradient(circle at 50% 50%, rgba(var(--gold-rgb), 0.16) 0%, rgba(var(--gold-rgb), 0) 68%);
+}
+
+.enrolq-shell {
+    position: relative;
+    z-index: 1;
+    width: min(760px, 92%);
+    margin-inline: auto;
+}
+
+/* ─── THE CARD ───────────────────────────────────────────────────────────── */
+.enrolq-card {
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-card);
+    border-radius: var(--radius-xl);
+    padding: clamp(1.5rem, 4vw, 3rem);
+    box-shadow: var(--shadow-elevation);
+}
+
+/* ─── HEADER ─────────────────────────────────────────────────────────────
+   The page has no copy of its own, so the form introduces itself here. */
+.enrolq-head {
+    padding-bottom: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: clamp(1.5rem, 3vw, 2rem);
+    border-bottom: 1px solid var(--border-subtle);
+}
+.enrolq-kicker {
+    font-size: 0.74rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 0.85rem;
+}
+.enrolq-head h1 {
+    font-size: clamp(1.75rem, 4.4vw, 2.6rem);
+    margin-bottom: 0.75rem;
+}
+.enrolq-lead {
+    color: var(--mid);
+    line-height: 1.75;
+    font-size: clamp(0.95rem, 1.6vw, 1.03rem);
+    max-width: 56ch;
+}
+
+/* Three short promises, as pills. A flex wrap rather than a grid: they are
+   different lengths and should sit to their natural width, not to a track. */
+.enrolq-assurances {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    list-style: none;
+    padding: 0;
+    margin: 1.4rem 0 0;
+}
+.enrolq-assurances li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.45rem 0.9rem;
+    border-radius: var(--radius-pill);
+    background: var(--blue-pale);
+    border: 1px solid var(--border-subtle);
+    font-size: 0.82rem;
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+.enrolq-assurances svg { width: 15px; height: 15px; flex: 0 0 auto; color: var(--gold-deep); }
+
+/* ─── STEPS ──────────────────────────────────────────────────────────────
+   Real <fieldset>/<legend>, so the grouping is announced and not merely drawn.
+   The browser's default fieldset border and legend inset are removed; the
+   separation is carried by the rule between steps instead. */
+.enrolq-step {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;   /* a fieldset defaults to min-content and will not shrink */
+}
+.enrolq-step + .enrolq-step {
+    padding-top: clamp(1.4rem, 3vw, 1.9rem);
+    border-top: 1px solid var(--border-subtle);
+}
+.enrolq-step > legend {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    float: left;        /* a legend will not take a bottom margin otherwise */
+    width: 100%;
+    padding: 0;
+    margin-bottom: 1rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.05rem, 2.2vw, 1.22rem);
+    font-weight: var(--fw-regular);
+    color: var(--text-primary);
+    line-height: 1.3;
+}
+.enrolq-step-n {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--brand-navy);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: var(--fw-medium);
+    line-height: 1;
+}
+[data-theme="dark"] .enrolq-step-n {
+    background: var(--gold);
+    color: #05060A;
+}
+.enrolq-step-note {
+    clear: both;        /* the floated legend above */
+    font-size: 0.85rem;
+    color: var(--mid);
+    margin: -0.5rem 0 1rem;
+}
+.enrolq-step-body {
+    clear: both;
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+
+/* .form-row is a spacing primitive from css/enroll-page.css, where it carries a
+   bottom margin. Here the step body's flex gap already does that job, so the
+   margin would double the space between paired rows. */
+.enrolq-form .form-row { margin-bottom: 0; }
+
+/* ─── INTENT CHOOSER ─────────────────────────────────────────────────────
+   Three radios drawn as cards. The native input stays in the DOM and in the tab
+   order — it is only visually replaced — so keyboard selection, arrow-key
+   navigation within the group and screen reader semantics are the platform's,
+   not ours. */
+.enrolq-intent {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+.enrolq-intent-option { display: block; min-width: 0; cursor: pointer; }
+/* Not display:none — that would remove it from the accessibility tree and from
+   the tab order, which is the entire point of keeping the real control. */
+.enrolq-intent-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+.enrolq-intent-face {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+    height: 100%;
+    padding: 1rem 1rem 1.05rem;
+    border-radius: var(--radius-md);
+    border: 1.5px solid var(--border-subtle);
+    background: var(--surface-1);
+    transition:
+        border-color 0.3s ease,
+        background-color 0.3s ease,
+        box-shadow 0.4s var(--ease-out),
+        transform 0.4s var(--ease-out);
+}
+.enrolq-intent-option:hover .enrolq-intent-face {
+    border-color: rgba(var(--accent-rgb), 0.32);
+    transform: translate3d(0, -3px, 0);
+    box-shadow: var(--shadow-soft);
+}
+.enrolq-intent-icon {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+.enrolq-intent-icon svg { width: 17px; height: 17px; }
+.enrolq-intent-label {
+    font-size: 0.95rem;
+    font-weight: var(--fw-medium);
+    color: var(--text-primary);
+    line-height: 1.35;
+}
+.enrolq-intent-blurb {
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: var(--mid);
+}
+
+/* Selected. Colour is not the only signal — the border thickens visibly and the
+   icon plate inverts, so the state survives greyscale. */
+.enrolq-intent-option input:checked + .enrolq-intent-face {
+    border-color: var(--brand-navy);
+    background: var(--surface-elevated);
+    box-shadow:
+        0 0 0 1.5px var(--brand-navy),
+        var(--shadow-soft);
+}
+.enrolq-intent-option input:checked + .enrolq-intent-face .enrolq-intent-icon {
+    background: var(--brand-navy);
+    color: #fff;
+}
+/* The focus ring has to be drawn on the face, because the control it belongs to
+   is the invisible input. */
+.enrolq-intent-option input:focus-visible + .enrolq-intent-face {
+    outline: 3px solid var(--gold);
+    outline-offset: 3px;
+}
+[data-theme="dark"] .enrolq-intent-option input:checked + .enrolq-intent-face {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1.5px var(--gold), var(--shadow-soft);
+}
+[data-theme="dark"] .enrolq-intent-option input:checked + .enrolq-intent-face .enrolq-intent-icon {
+    background: var(--gold);
+    color: #05060A;
+}
+
+/* The tour date/time pair only exists when "Book a tour" is chosen, so it is
+   given a tinted well — it reads as an answer to the choice above rather than
+   as two fields that appeared from nowhere. */
+.enrolq-tour {
+    margin-top: 1rem;
+    padding: 1.1rem;
+    border-radius: var(--radius-md);
+    background: var(--green-pale);
+    border: 1px solid var(--border-subtle);
+}
+
+/* ─── DATE CONTROL ───────────────────────────────────────────────────────
+   contact-page.css styles inputs by type and has no date rule, so this repeats
+   the treatment for the one type it does not cover. */
+.enrolq-form input[type="date"] {
+    width: 100%;
+    font: inherit;
+    font-size: 0.96rem;
+    color: var(--text-primary);
+    background: var(--surface-1);
+    border: 1.5px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.85rem 1rem;
+    min-height: 50px;   /* iOS renders an empty date input shorter than a text one */
+    transition:
+        border-color 0.3s ease,
+        box-shadow 0.35s var(--ease-out),
+        background-color 0.3s ease;
+}
+.enrolq-form input[type="date"]:focus {
+    outline: none;
+    background: var(--surface-elevated);
+    border-color: var(--brand-navy);
+    box-shadow: 0 0 0 4px rgba(var(--accent-rgb), 0.12);
+}
+.enrolq-form .form-field.has-error input[type="date"] {
+    border-color: var(--orange-deep);
+    background: var(--orange-pale);
+}
+.enrolq-form input[type="date"]::-webkit-calendar-picker-indicator { cursor: pointer; opacity: 0.65; }
+.enrolq-form input[type="date"]::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+[data-theme="dark"] .enrolq-form input[type="date"] {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.14);
+}
+[data-theme="dark"] .enrolq-form input[type="date"]:focus {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.16);
+}
+/* The picker glyph is drawn by the browser in its own colour; invert it so it
+   is visible on the dark surface. */
+[data-theme="dark"] .enrolq-form input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* ─── SUBMIT + FOOT ──────────────────────────────────────────────────────── */
+.enrolq-submit { width: 100%; margin-top: 0.35rem; }
+
+.enrolq-foot {
+    margin-top: 0.35rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--border-subtle);
+    text-align: center;
+}
+.enrolq-foot p { font-size: 0.83rem; color: var(--mid); line-height: 1.65; margin: 0; }
+.enrolq-foot-contact { margin-top: 0.4rem !important; font-weight: var(--fw-medium); }
+
+/* ─── SUCCESS ────────────────────────────────────────────────────────────
+   Replaces the form rather than sitting above it, so there is no ambiguity
+   about whether it sent — and it answers the question the parent has next,
+   which is "so what happens now?". */
+.enrolq-success { text-align: center; padding: clamp(0.5rem, 2vw, 1.5rem) 0; }
+.enrolq-success-icon {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 1.4rem;
+    border-radius: 50%;
+    background: var(--green-pale);
+    color: var(--green-deep);
+}
+.enrolq-success-icon svg { width: 36px; height: 36px; }
+.enrolq-success h1 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin-bottom: 0.8rem; }
+.enrolq-success-lead {
+    color: var(--mid);
+    line-height: 1.75;
+    max-width: 46ch;
+    margin: 0 auto;
+}
+
+.enrolq-next {
+    list-style: none;
+    counter-reset: none;
+    padding: 1.4rem;
+    margin: 1.9rem 0;
+    display: grid;
+    gap: 0.9rem;
+    text-align: start;
+    border-radius: var(--radius-md);
+    background: var(--surface-1);
+    border: 1px solid var(--border-subtle);
+}
+.enrolq-next li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 0.75rem;
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+.enrolq-next li > span {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--blue-pale);
+    color: var(--blue-deep);
+    font-size: 0.75rem;
+    font-weight: var(--fw-medium);
+    line-height: 1;
+}
+
+.enrolq-success-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.8rem;
+}
+
+/* ─── DARK ───────────────────────────────────────────────────────────────
+   The card and the tinted wells sit on near-black here, so the elevated
+   surface and every hairline need lifting. */
+[data-theme="dark"] .enrolq-card {
+    background: var(--surface-3);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .enrolq-intent-face,
+[data-theme="dark"] .enrolq-next,
+[data-theme="dark"] .enrolq-tour {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+[data-theme="dark"] .enrolq-assurances li {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.10);
+}
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────────────────
+   Two breaks, each where the content forces it rather than at a device name:
+   three intent cards stop fitting, then the paired fields do. (contact-page.css
+   already stacks .form-row.two at 640px, so that is not repeated here.) */
+@media (max-width: 780px) {
+    .enrolq-intent { grid-template-columns: 1fr; }
+    /* Stacked, the cards are wide and short — the icon reads better beside the
+       label than above it. */
+    .enrolq-intent-face {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        column-gap: 0.85rem;
+        row-gap: 0.15rem;
+        align-items: center;
+        padding: 0.9rem 1rem;
+    }
+    .enrolq-intent-icon { grid-row: 1 / span 2; }
+}
+
+@media (max-width: 560px) {
+    .enrolq-shell { width: min(760px, 94%); }
+    .enrolq-success-actions > * { width: 100%; }
+    /* At this width the pills wrap to three lines and read as a list; keeping
+       them full-width is tidier than a ragged wrap. */
+    .enrolq-assurances { gap: 0.45rem; }
+    .enrolq-assurances li { font-size: 0.78rem; padding: 0.4rem 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .enrolq-intent-face { transition: none; }
+    .enrolq-intent-option:hover .enrolq-intent-face { transform: none; }
+}

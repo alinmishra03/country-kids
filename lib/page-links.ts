@@ -150,11 +150,11 @@ export const PAGE_LINKS: PageLink[] = [
     {
         id: 'enroll',
         href: '/enroll',
-        title: 'Enrol',
+        title: 'Book a Tour',
         summary:
-            'A simple, supported process from your first tour to your child’s first day, with our team guiding every step.',
+            'One short form to request a free weekday tour or start an enrolment. We reply within one business day.',
         icon: 'clipboard-check',
-        ariaLabel: 'Start the enrolment process',
+        ariaLabel: 'Book a tour or start an enrolment enquiry',
         image: art('1503454537195-1dcabb73ffb9'),
     },
 ];

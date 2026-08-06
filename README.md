@@ -11,7 +11,8 @@ components/
   home/              Home page sections (Hero, StatsBar, ProgramsGrid, …)
   layout/            SiteHeader, SiteFooter, ThemeToggle, PageTransition
   providers/         ThemeProvider, TranslationProvider
-  shared/            Page wrapper, T text helper, EnrollForm
+  enroll/            EnrolEnquiryForm (the whole /enroll page)
+  shared/            Page wrapper, T text helper, PageHero, SectionHeader
 hooks/               useAnimations, useFadeUps, useBorderGlow
 lib/                 nav-data, routes, programs-data, testimonials-data
 styles/              style.css (@import chain) + responsive.css

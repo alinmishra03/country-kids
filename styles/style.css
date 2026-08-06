@@ -43,6 +43,10 @@
 @import url("../css/fees.css");
 @import url("../css/families.css");
 @import url("../css/contact-page.css");
+/* /enroll — the form-only page. MUST follow contact-page.css: the form reuses
+   that stylesheet's input, error, alert and consent treatment wholesale and
+   corrects a few of its rules at equal specificity, so it only wins on order. */
+@import url("../css/enrol-form.css");
 /* Shared interior-page editorial layer — the SplitFeature section plus a grid
    alignment / overflow pass. MUST come after EVERY per-page stylesheet it
    corrects (rooms, curriculum, fees, enroll, contact above) and before
