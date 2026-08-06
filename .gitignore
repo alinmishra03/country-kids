@@ -10,3 +10,9 @@
 /tsconfig.tsbuildinfo
 _reference/
 /Screenshots/
+
+# Vercel CLI project link + OIDC token cache.
+.vercel
+# NOT a blanket `.env*` (which is what `vercel link` writes here): .env.production
+# is committed ON PURPOSE — it holds only NEXT_PUBLIC_* values, which are inlined
+# into the browser bundle anyway. `.env*.local` above already covers the secrets.
