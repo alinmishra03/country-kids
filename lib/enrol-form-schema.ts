@@ -20,9 +20,15 @@ import { z } from 'zod';
 import { isValidPhone } from '@/lib/contact-schema';
 
 /* ── What the visitor is here to do ──
-   Three intents, because they need different things from us. The choice is a
-   radio group (not a select): three options are worth showing all at once, and
-   it drives which fields the form reveals. */
+   Two intents, because they need different things from us: one wants a date in
+   the diary, the other wants a place. A radio group rather than a select — two
+   options are worth showing at once, and the choice drives which fields the
+   form reveals.
+
+   A third "ask a question" option was dropped: it duplicated /contact and gave
+   people a way to land on the enrolment form without ever entering the funnel
+   they pressed "Enroll Now" for. General questions still have a home — the
+   message field below, and the phone number in the form's footer. */
 export const ENQUIRY_TYPES = [
     {
         value: 'tour',
@@ -35,12 +41,6 @@ export const ENQUIRY_TYPES = [
         label: 'Start enrolment',
         icon: 'clipboard-check',
         blurb: 'Check room availability and secure a place.',
-    },
-    {
-        value: 'question',
-        label: 'Ask a question',
-        icon: 'heart',
-        blurb: 'Fees, kinder funding, meals — anything at all.',
     },
 ] as const;
 
@@ -113,7 +113,7 @@ const optionalText = (max: number) => trimmed(max).optional().or(z.literal(''));
 
 export const enrolEnquirySchema = z
     .object({
-        enquiryType: z.enum(['tour', 'enrol', 'question']),
+        enquiryType: z.enum(['tour', 'enrol']),
 
         firstName: trimmed(60).min(2, 'Please enter your first name.'),
         lastName: trimmed(60).min(2, 'Please enter your last name.'),

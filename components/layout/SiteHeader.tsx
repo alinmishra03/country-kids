@@ -96,6 +96,23 @@ export default function SiteHeader() {
     const routeId = routeIdFromPathname(pathname);
     const activeGroup = NAV_GROUP_FOR_ROUTE[routeId] || null;
 
+    /* ── Routes with no dark band under the bar ──
+       The transparent state exists for pages that open on something dark: the
+       home hero, or an interior .page-hero. The bar paints a white logo and
+       white links onto it, which only works because there is a navy photo
+       band behind them.
+
+       /enroll is the one route with neither — it is a form on a white canvas
+       (css/enrol-form.css), so an unscrolled transparent bar would render the
+       logo white on white and the nav would simply be invisible until the
+       visitor happened to scroll 40px. It therefore starts solid and stays
+       solid, which is exactly what `scrolled` already means.
+
+       This is a list rather than a boolean because the next page built this way
+       needs to join it, and the reason has to travel with the list. */
+    const NO_DARK_BAND = ['/enroll'];
+    const forceSolid = NO_DARK_BAND.includes(pathname);
+
     // Refs for GSAP-driven bits.
     const navRef = useRef<HTMLElement>(null);
     const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -405,7 +422,7 @@ export default function SiteHeader() {
                    is no frame in which it exists on screen before the pre-entry
                    layer takes over. */
                 className={
-                    [scrolled ? 'scrolled' : '', navRevealed ? '' : 'nav-concealed']
+                    [scrolled || forceSolid ? 'scrolled' : '', navRevealed ? '' : 'nav-concealed']
                         .filter(Boolean)
                         .join(' ') || undefined
                 }

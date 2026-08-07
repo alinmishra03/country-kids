@@ -261,8 +261,10 @@ export default function EnrolEnquiryForm() {
 
     return (
         <div className="enrolq-card">
-            {/* The page has no other copy, so the form introduces itself. */}
-            <header className="enrolq-head">
+            {/* The page has no other copy, so the form introduces itself — and
+                on a white canvas the navy banner is also what gives the card an
+                edge and the page its brand colour. */}
+            <header className="enrolq-banner">
                 <p className="enrolq-kicker">
                     Country Kids Learning Center · {ADDRESS.line2}
                 </p>
@@ -338,6 +340,13 @@ export default function EnrolEnquiryForm() {
                                     </span>
                                     <span className="enrolq-intent-label">{t.label}</span>
                                     <span className="enrolq-intent-blurb">{t.blurb}</span>
+                                    {/* Selection is already carried by the
+                                        border and the inverted icon plate; the
+                                        tick is a third, shape-based signal so
+                                        the state survives greyscale. */}
+                                    <span className="enrolq-intent-check" aria-hidden="true">
+                                        <Icon name="check" />
+                                    </span>
                                 </span>
                             </label>
                         ))}
