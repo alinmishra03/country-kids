@@ -325,8 +325,22 @@ export default function EnrolEnquiryForm() {
                     </div>
                 )}
 
+                {/* ── The two columns ──
+                    The card is the full width of the page shell, so the four
+                    steps run in two columns rather than one long ribbon — a
+                    single 1140px-wide column of inputs is a worse form, not a
+                    fuller one. Wrappers rather than grid placement on the steps
+                    themselves: the alerts above and the submit below must span
+                    the whole width, and two plain divs say that without any
+                    line-placement arithmetic to get wrong.
+
+                    Reading order is unchanged — column one, then column two —
+                    and the step numbers state it outright either way. */}
+                <div className="enrolq-grid">
+                    <div className="enrolq-col">
+
                 {/* ── 1 · Intent ──
-                    A radiogroup rather than a select: three options are worth
+                    A radiogroup rather than a select: two options are worth
                     seeing at once, and the choice changes what the form asks
                     for next. */}
                 <Step n={1} legend="What can we help you with?">
@@ -448,6 +462,9 @@ export default function EnrolEnquiryForm() {
                     </div>
                 </Step>
 
+                    </div>
+                    <div className="enrolq-col">
+
                 {/* ── 3 · What we need to check availability ──
                     Every field optional. A parent who does not yet know which
                     room their child belongs in should still be able to press
@@ -565,6 +582,9 @@ export default function EnrolEnquiryForm() {
                         )}
                     </div>
                 </Step>
+
+                    </div>
+                </div>
 
                 <button type="submit" className="btn-primary enrolq-submit" disabled={busy}>
                     {busy ? (
