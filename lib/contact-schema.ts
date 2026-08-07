@@ -104,6 +104,10 @@ export const enquiryPayloadSchema = z.object({
     room: z.string().trim().max(80).optional(),
     days: z.string().trim().max(80).optional(),
     centre: z.string().trim().max(80).optional(),
+    preferredCenter: z.string().trim().max(80).optional(),
+    date: z.string().trim().max(20).optional(),
+    timeSlot: z.string().trim().max(100).optional(),
     message: z.string().trim().max(2000).optional(),
+    notes: z.string().trim().max(2000).optional(),
     source: z.string().trim().max(40).optional(),
 });

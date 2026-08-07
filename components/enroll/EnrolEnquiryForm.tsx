@@ -116,7 +116,34 @@ export default function EnrolEnquiryForm() {
     });
 
     const enquiryType = watch('enquiryType');
+    const selectedTourDate = watch('tourDate');
     const wantsTour = enquiryType === 'tour';
+
+    const [slotAvailability, setSlotAvailability] = useState<Record<string, boolean>>({});
+    const [loadingSlots, setLoadingSlots] = useState(false);
+
+    useEffect(() => {
+        if (!selectedTourDate || !/^\d{4}-\d{2}-\d{2}$/.test(selectedTourDate)) {
+            setSlotAvailability({});
+            return;
+        }
+        setLoadingSlots(true);
+        fetch(`/api/tours/available-slots?date=${selectedTourDate}`)
+            .then((res) => res.json())
+            .then((json) => {
+                if (json?.data?.slots && Array.isArray(json.data.slots)) {
+                    const mapping: Record<string, boolean> = {};
+                    json.data.slots.forEach((s: { timeSlot: string; available: boolean }) => {
+                        mapping[s.timeSlot] = s.available;
+                    });
+                    setSlotAvailability(mapping);
+                } else {
+                    setSlotAvailability({});
+                }
+            })
+            .catch(() => setSlotAvailability({}))
+            .finally(() => setLoadingSlots(false));
+    }, [selectedTourDate]);
 
     const errorList = useMemo(() => Object.entries(errors), [errors]);
 
@@ -142,6 +169,8 @@ export default function EnrolEnquiryForm() {
             room: values.room,
             days: values.days,
             centre: CENTRE_OPTIONS[0],
+            date: values.tourDate || '',
+            timeSlot: values.tourTime || '',
             message: buildEnquiryMessage(values),
             source: 'enroll-page',
             renderedAt: renderedAt.current,
@@ -187,7 +216,7 @@ export default function EnrolEnquiryForm() {
                 type: values.enquiryType,
                 tour:
                     values.enquiryType === 'tour' && values.tourDate
-                        ? formatLongDate(values.tourDate)
+                        ? values.tourDate
                         : undefined,
             });
             reset();
@@ -389,14 +418,25 @@ export default function EnrolEnquiryForm() {
                                 />
                             </Field>
 
-                            <Field id="tourTime" label="Preferred time" optional>
-                                <select id="tourTime" defaultValue="" {...register('tourTime')}>
-                                    <option value="">Choose a time…</option>
-                                    {TOUR_TIMES.map((t) => (
-                                        <option key={t} value={t}>
-                                            {t}
-                                        </option>
-                                    ))}
+                            <Field id="tourTime" label="Preferred time" error={errors.tourTime?.message} required>
+                                <select
+                                    id="tourTime"
+                                    defaultValue=""
+                                    aria-invalid={!!errors.tourTime}
+                                    aria-describedby={errors.tourTime ? 'tourTime-error' : undefined}
+                                    {...register('tourTime')}
+                                >
+                                    <option value="">
+                                        {loadingSlots ? 'Checking available slots…' : 'Choose a time…'}
+                                    </option>
+                                    {TOUR_TIMES.map((t) => {
+                                        const isAvailable = slotAvailability[t] !== false;
+                                        return (
+                                            <option key={t} value={t} disabled={!isAvailable}>
+                                                {t} {!isAvailable ? ' (Fully Booked)' : ''}
+                                            </option>
+                                        );
+                                    })}
                                 </select>
                             </Field>
                         </div>

@@ -106,9 +106,12 @@ export async function POST(request: Request) {
             );
         }
 
+        const isTourBooking = body.enquiryType === 'tour' || (parsed.data.date && parsed.data.timeSlot);
+        const targetEndpoint = isTourBooking ? `${API_BASE_URL}/tours/book` : `${API_BASE_URL}/enquiries`;
+
         let backendRes: Response;
         try {
-            backendRes = await fetch(`${API_BASE_URL}/enquiries`, {
+            backendRes = await fetch(targetEndpoint, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(parsed.data),

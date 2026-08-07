@@ -49,10 +49,10 @@ export type EnquiryTypeValue = (typeof ENQUIRY_TYPES)[number]['value'];
 /* Tours run inside the center's own opening hours (Mon–Fri, 6:30am–6:30pm) and
    deliberately avoid rest time in the middle of the day. */
 export const TOUR_TIMES = [
-    'Morning · 9:30am – 11:00am',
-    'Midday · 11:30am – 12:30pm',
-    'Afternoon · 3:30pm – 5:00pm',
-    "I'm flexible — suggest a time",
+    '09:30 AM - 10:00 AM',
+    '10:30 AM - 11:00 AM',
+    '02:00 PM - 02:30 PM',
+    '03:00 PM - 03:30 PM',
 ] as const;
 
 export const START_TIMING = [
@@ -155,6 +155,14 @@ export const enrolEnquirySchema = z
     .superRefine((values, ctx) => {
         if (values.enquiryType !== 'tour') return;
 
+        if (!values.tourTime) {
+            ctx.addIssue({
+                code: 'custom',
+                path: ['tourTime'],
+                message: 'Please select a preferred tour time slot.',
+            });
+        }
+
         if (!values.tourDate) {
             ctx.addIssue({
                 code: 'custom',
@@ -208,7 +216,7 @@ export function buildEnquiryMessage(values: EnrolEnquiry): string {
     const lines: string[] = [`Enquiry type: ${typeLabel}`];
 
     if (values.enquiryType === 'tour' && values.tourDate) {
-        lines.push(`Preferred tour date: ${formatLongDate(values.tourDate)}`);
+        lines.push(`Preferred tour date: ${values.tourDate}`);
         if (values.tourTime) lines.push(`Preferred time: ${values.tourTime}`);
     }
     if (values.startTiming) lines.push(`Looking to start: ${values.startTiming}`);
