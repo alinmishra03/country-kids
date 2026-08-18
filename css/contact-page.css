@@ -519,6 +519,13 @@
     box-shadow: 0 0 0 4px rgba(var(--gold-rgb), 0.16);
 }
 
+/* Explicit option styles for dark mode so dropdown items are readable
+   (preventing white text on OS-default white backgrounds). */
+[data-theme="dark"] .contact-form select option {
+    background: var(--surface-3);
+    color: var(--text-primary);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .trust-mark,
     .contact-card,

@@ -305,6 +305,13 @@
         0 40px 72px -30px rgba(0, 0, 0, 0.8),
         0 72px 120px -60px rgba(0, 0, 0, 0.9);
 
+    /* Explicit option styles for dark mode so dropdown items are readable
+       (preventing white text on OS-default white backgrounds). */
+    select option {
+        background: var(--surface-3);
+        color: var(--text-primary);
+    }
+
     color-scheme: dark;
 }
 
