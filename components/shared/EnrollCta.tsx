@@ -19,8 +19,8 @@ import { useCallback, useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent as ReactPointerEvent } from 'react';
 import Icon from '@/components/shared/Icon';
 
-const ENROLL_HREF = '/enroll';
-const ENROLL_LABEL = 'Enroll Now';
+const ENROLL_HREF = '/enroll?type=enrol';
+const ENROLL_LABEL = 'Enroll for 2027';
 
 type Ripple = { id: number; x: number; y: number };
 

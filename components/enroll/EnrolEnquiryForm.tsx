@@ -74,30 +74,19 @@ export default function EnrolEnquiryForm() {
        date input unbounded for the fraction of a second before hydration. */
     const [dateBounds, setDateBounds] = useState<{ min: string; max: string } | null>(null);
 
-    useEffect(() => {
-        renderedAt.current = Date.now();
-
-        const today = startOfToday();
-        /* Six months is as far ahead as a room placement is worth pencilling
-           in; past that we would be booking a tour of a room the child has
-           outgrown. */
-        const horizon = new Date(today);
-        horizon.setMonth(horizon.getMonth() + 6);
-        setDateBounds({ min: toISODate(today), max: toISODate(horizon) });
-    }, []);
-
     const {
         register,
         handleSubmit,
         watch,
         reset,
         setError,
+        setValue,
         formState: { errors, isSubmitting, submitCount },
     } = useForm<EnrolEnquiry>({
         resolver: zodResolver(enrolEnquirySchema),
         mode: 'onTouched',
         defaultValues: {
-            enquiryType: 'tour',
+            enquiryType: 'enrol',
             firstName: '',
             lastName: '',
             email: '',
@@ -114,6 +103,26 @@ export default function EnrolEnquiryForm() {
             company: '',
         },
     });
+
+    useEffect(() => {
+        renderedAt.current = Date.now();
+
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            const type = params.get('type');
+            if (type === 'enrol' || type === 'tour') {
+                setValue('enquiryType', type);
+            }
+        }
+
+        const today = startOfToday();
+        /* Six months is as far ahead as a room placement is worth pencilling
+           in; past that we would be booking a tour of a room the child has
+           outgrown. */
+        const horizon = new Date(today);
+        horizon.setMonth(horizon.getMonth() + 6);
+        setDateBounds({ min: toISODate(today), max: toISODate(horizon) });
+    }, [setValue]);
 
     const enquiryType = watch('enquiryType');
     const selectedTourDate = watch('tourDate');
