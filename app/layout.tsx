@@ -9,6 +9,7 @@
 
 import '@/styles/style.css';
 import '@/styles/responsive.css';
+import Script from 'next/script';
 import { ThemeProvider } from '@/components/providers/ThemeProvider';
 import { TranslationProvider } from '@/components/providers/TranslationProvider';
 import SiteHeader from '@/components/layout/SiteHeader';
@@ -95,6 +96,9 @@ export const metadata = {
         shortcut: '/icon-32.png',
         apple: '/apple-icon.png',
     },
+    verification: {
+        google: 'KaUkflyzFQ-addA8ho1vF1m_ZMbsWhqJxeoZlsRBwI',
+    },
 };
 
 export const viewport = {
@@ -161,6 +165,18 @@ export default function RootLayout({ children }) {
                 </noscript>
             </head>
             <body>
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-HN2HQ8KTXQ"
+                    strategy="afterInteractive"
+                />
+                <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-HN2HQ8KTXQ');
+                    `}
+                </Script>
                 <ThemeProvider>
                     <TranslationProvider>
                         {/* Renders nothing — owns the Lenis + ScrollTrigger loop. */}
