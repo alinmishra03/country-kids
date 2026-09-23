@@ -7,6 +7,11 @@
 @import url("../css/nav.css");
 /* Nav refinements — MUST follow nav.css. */
 @import url("../css/nav-polish.css");
+/* Language selector — the header translation control, plus the rules that keep
+   the Google Website Translator banner from shifting the page. MUST follow
+   nav.css: it overrides the same #navbar:not(.scrolled) pattern the theme
+   toggle uses, so it only wins on order. */
+@import url("../css/language-selector.css");
 /* Enrol CTA finish + attention pulse. MUST follow both nav stylesheets — they
    style the same two buttons at one class, so this only wins on order. */
 @import url("../css/enroll-cta.css");

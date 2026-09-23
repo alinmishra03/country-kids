@@ -29,6 +29,7 @@ import { CustomEase } from 'gsap/CustomEase';
 import Icon from '@/components/shared/Icon';
 import EnrollCta from '@/components/shared/EnrollCta';
 import ThemeToggle from './ThemeToggle';
+import LanguageSelector, { GoogleTranslateHost } from './LanguageSelector';
 import { NAV_GROUP_FOR_ROUTE, routeIdFromPathname } from '@/lib/routes';
 import { PRIMARY_NAV } from '@/lib/nav-data';
 import { useHeroNav } from '@/components/providers/HeroNavProvider';
@@ -491,6 +492,11 @@ export default function SiteHeader() {
                     </ul>
 
                     <div className="nav-actions nav-reveal">
+                        {/* Leads the actions row, so it is read before the two
+                            toggles and never sits between the CTA and the
+                            hamburger. Hidden below 1080px by its own
+                            stylesheet, where the menu instance takes over. */}
+                        <LanguageSelector variant="bar" />
                         <ThemeToggle id="themeToggle" className="theme-toggle-desktop" />
                         <ThemeToggle
                             id="themeToggleHeaderMobile"
@@ -570,11 +576,27 @@ export default function SiteHeader() {
                         onNavigate={closeMobile}
                     />
 
+                    {/* An .m-item like every other row, so it inherits the
+                        menu's slide-in stagger and the panel's focus trap
+                        instead of needing either to know about it. Its list
+                        expands in flow — the panel is a scroll box, and an
+                        absolutely-positioned one would be clipped by it. */}
+                    <LanguageSelector
+                        variant="menu"
+                        className="m-item"
+                        onSelect={closeMobile}
+                    />
+
                     <div className="m-item mobile-toggles-row">
                         <ThemeToggle id="themeToggleMobile" className="theme-toggle-mobile" />
                     </div>
                 </nav>
             </aside>
+
+            {/* Mounted ONCE for the whole site. SiteHeader is rendered by the
+                root layout, so this is the one place both selector instances
+                can share a single translator without a provider. */}
+            <GoogleTranslateHost />
         </>
     );
 }

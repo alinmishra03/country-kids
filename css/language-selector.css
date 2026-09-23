@@ -1,0 +1,252 @@
+/* ─── LANGUAGE SELECTOR ──────────────────────────────────────────────────
+   The header's translation control, plus the handful of rules needed to keep
+   the Google Website Translator from redecorating the site.
+
+   Nothing here introduces a colour, a font or a radius of its own: the trigger
+   is the .theme-toggle treatment at a different width, and the panel is the
+   .dropdown treatment from nav.css. Both are rebuilt from the same tokens
+   rather than extended, because the originals are sized and positioned for
+   their own jobs (a 42px circle; a panel that hangs off a nav pill).
+
+   MUST load after nav.css — the over-hero state below overrides the same
+   #navbar:not(.scrolled) pattern the theme toggle uses. */
+
+/* ── 1. Neutralise the widget's own furniture ──
+   The translator injects a fixed banner iframe and pushes the document down by
+   setting an inline `top` on <body>. That is the layout shift the brief rules
+   out, and the banner is redundant when the site ships its own control.
+
+   The iframe selectors are deliberately narrow. `.skiptranslate` alone would
+   be wrong: the widget puts that class on OUR host element too, and hiding it
+   with display:none takes the hidden <select> out of the layout, which is the
+   thing the selector drives. */
+iframe.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-balloon-frame {
+    display: none !important;
+}
+body {
+    /* The widget writes this inline; only !important can take it back. */
+    top: 0 !important;
+}
+/* The "original text" bubble that follows the cursor over translated copy. */
+#goog-gt-tt,
+.goog-te-spinner-pos {
+    display: none !important;
+}
+/* Translated runs are wrapped in <font> and given a highlight. Let them
+   inherit the site's typography instead. */
+.goog-text-highlight {
+    background: none !important;
+    box-shadow: none !important;
+}
+font[style] {
+    background: none !important;
+    box-shadow: none !important;
+    vertical-align: inherit !important;
+}
+
+/* ── 2. The widget host ──
+   Parked off-screen, not display:none — see the note on GoogleTranslateHost.
+   Kept 1px and clipped so it can never contribute to page height or to the
+   horizontal scroll width. */
+.ck-gt-host {
+    position: absolute !important;
+    top: -9999px !important;
+    inset-inline-start: -9999px !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* ── 3. The control ── */
+.ck-lang {
+    position: relative;
+    flex-shrink: 0;
+}
+
+.ck-lang-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    /* 42px to match the theme toggle it sits beside, so the actions row keeps
+       one optical height. */
+    height: 42px;
+    padding-inline: 0.7rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 999px;
+    background: var(--surface-elevated);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: var(--fw-medium);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
+}
+.ck-lang-trigger:hover {
+    border-color: var(--gold);
+}
+/* The site's own focus treatment, not the browser's default outline. */
+.ck-lang-trigger:focus-visible,
+.ck-lang-option:focus-visible {
+    outline: 2px solid var(--gold-deep);
+    outline-offset: 2px;
+}
+
+.ck-lang-globe,
+.ck-lang-chevron {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.ck-lang-chevron {
+    width: 13px;
+    height: 13px;
+    opacity: 0.6;
+    transition: transform 0.25s var(--ease-out);
+}
+.ck-lang.is-open .ck-lang-chevron {
+    transform: rotate(180deg);
+}
+.ck-lang-code {
+    /* Fixed width so swapping EN → VI cannot resize the button and nudge the
+       Enrol CTA sideways. */
+    min-width: 1.6em;
+    text-align: center;
+}
+
+/* Over the dark hero band the bar is transparent, exactly as the theme toggle
+   handles it — same two colours, so the two controls stay a matched pair. */
+#navbar:not(.scrolled) .ck-lang--bar .ck-lang-trigger {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.32);
+    color: #fff;
+}
+#navbar:not(.scrolled) .ck-lang--bar .ck-lang-trigger:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+/* ── 4. The panel ── */
+.ck-lang-menu {
+    list-style: none;
+    margin: 0;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-elevation);
+    padding: 0.4rem;
+    /* `hidden` on the element already removes it; this keeps a hidden panel
+       from being revived by a display rule further down the cascade. */
+    display: grid;
+    gap: 0.1rem;
+}
+.ck-lang-menu[hidden] {
+    display: none;
+}
+
+/* Header variant — hangs below the trigger, right-aligned so it opens INTO the
+   page and never past the viewport edge. */
+.ck-lang--bar .ck-lang-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    inset-inline-end: 0;
+    width: 244px;
+    max-height: min(58vh, 420px);
+    overflow-y: auto;
+    /* Above the nav's own .dropdown (20) but below the mobile layers. */
+    z-index: 30;
+    overscroll-behavior: contain;
+}
+
+.ck-lang-option {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    width: 100%;
+    /* Comfortable touch target on every variant. */
+    min-height: 44px;
+    justify-content: center;
+    padding: 0.4rem 0.7rem;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: none;
+    text-align: start;
+    font-family: var(--font-body);
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.18s ease;
+}
+.ck-lang-option:hover {
+    background: var(--blue-pale);
+}
+.ck-lang-option.is-selected {
+    background: var(--green-pale);
+}
+.ck-lang-native {
+    font-size: 0.95rem;
+    font-weight: var(--fw-medium);
+    line-height: 1.25;
+}
+.ck-lang-label {
+    font-size: 0.74rem;
+    letter-spacing: 0.02em;
+    opacity: 0.62;
+    line-height: 1.2;
+}
+
+/* ── 5. Mobile slide-menu variant ──
+   In-flow rather than absolute. The panel it lives in is a scroll box, so an
+   absolutely-positioned list would be clipped by it; an in-flow list with its
+   own scroll area cannot be. Full width, matching the menu's other rows. */
+.ck-lang--menu {
+    width: 100%;
+    /* The same separation the toggles row below it already uses, so the two
+       utility rows read as a pair set apart from the navigation links. */
+    margin-top: 1.25rem;
+}
+.ck-lang--menu .ck-lang-trigger {
+    width: 100%;
+    justify-content: center;
+    height: 46px;
+}
+.ck-lang--menu .ck-lang-menu {
+    position: static;
+    width: 100%;
+    margin-top: 0.5rem;
+    max-height: 44vh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* ── 6. Breakpoint ──
+   1080px is where nav.css swaps the pill bar for the hamburger menu. The bar
+   control leaves with the rest of the desktop actions; the menu control is
+   already inside the slide panel and takes over. Mirrors the existing
+   .theme-toggle-desktop / .theme-toggle-header-mobile handover. */
+@media (max-width: 1080px) {
+    .ck-lang--bar {
+        display: none;
+    }
+}
+@media (min-width: 1081px) {
+    .ck-lang--menu {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ck-lang-trigger,
+    .ck-lang-chevron,
+    .ck-lang-option {
+        transition: none;
+    }
+}
