@@ -161,6 +161,69 @@ function applyToWidget(code: string, attempt = 0) {
     combo.dispatchEvent(new Event('change'));
 }
 
+/* ── Does the desktop bar still fit? ──
+   The pills and the Enrol CTA are nowrap, and the widget translates them in
+   place. In English the row only just fits at the 1080px handover; in Filipino,
+   Greek, Spanish or Vietnamese it runs 150–340px wider than the shell, which
+   shoves this control, the theme toggle and the CTA past the right edge of the
+   viewport. No width is safe for every language, so instead of shrinking
+   anything, the header falls back to its own tablet layout (hamburger + slide
+   menu, with the menu instance of this control) whenever the row would not fit.
+
+   The flag is an attribute on <html>, not a class: the widget rewrites the
+   root's className when it adds translated-ltr/rtl. Measured with the flag
+   removed so the answer is always about the full desktop row; the remove/read/
+   restore happens in one task, so it never paints. Below 1080px the media
+   query already owns the layout and the flag is simply cleared. */
+const COMPACT_ATTR = 'data-ck-nav-compact';
+
+function syncHeaderFit() {
+    const root = document.documentElement;
+    const inner = document.querySelector('.nav-inner') as HTMLElement | null;
+    if (!inner || window.matchMedia('(max-width: 1080px)').matches) {
+        root.removeAttribute(COMPACT_ATTR);
+        return;
+    }
+    root.removeAttribute(COMPACT_ATTR);
+    const kids = Array.from(inner.children).filter(
+        (el) => el.getBoundingClientRect().width > 0
+    );
+    const gap = parseFloat(getComputedStyle(inner).columnGap) || 0;
+    const needed =
+        kids.reduce((sum, el) => sum + el.getBoundingClientRect().width, 0) +
+        gap * Math.max(0, kids.length - 1);
+    /* Sub-pixel slack: flex rounding alone can report a fraction over. */
+    if (needed > inner.clientWidth + 1) root.setAttribute(COMPACT_ATTR, '');
+}
+
+function useHeaderFit(enabled: boolean) {
+    useEffect(() => {
+        if (!enabled) return;
+        let frame = 0;
+        const schedule = () => {
+            cancelAnimationFrame(frame);
+            frame = requestAnimationFrame(syncHeaderFit);
+        };
+        schedule();
+        window.addEventListener('resize', schedule);
+        /* Translation swaps the pills' text nodes; the root's class flips when
+           a language is applied or removed. */
+        const textObserver = new MutationObserver(schedule);
+        const inner = document.querySelector('.nav-inner');
+        if (inner) textObserver.observe(inner, { childList: true, subtree: true, characterData: true });
+        const rootObserver = new MutationObserver(schedule);
+        rootObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'lang'] });
+        document.fonts?.ready.then(schedule);
+        return () => {
+            cancelAnimationFrame(frame);
+            window.removeEventListener('resize', schedule);
+            textObserver.disconnect();
+            rootObserver.disconnect();
+            document.documentElement.removeAttribute(COMPACT_ATTR);
+        };
+    }, [enabled]);
+}
+
 function GlobeIcon() {
     return (
         <svg className="ck-lang-globe" viewBox="0 0 24 24" aria-hidden="true">
@@ -194,6 +257,10 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
     const listId = `ck-lang-list-${useId()}`;
 
     const active = LANGUAGES.find((l) => l.code === lang) || LANGUAGES[0];
+
+    /* One owner for the header-fit check: the bar instance, which is the one
+       that lives in the row being measured. */
+    useHeaderFit(variant === 'bar');
 
     /* Mount: start the widget, adopt whatever the cookie already says, and
        subscribe so the other instance's picks land here too. The widget

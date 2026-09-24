@@ -159,7 +159,12 @@ font[style] {
     position: absolute;
     top: calc(100% + 8px);
     inset-inline-end: 0;
-    width: 244px;
+    /* 244px is the designed width and every current name fits inside it; a
+       longer one grows the panel instead of overflowing it, up to a cap that
+       always leaves a gutter on both sides of the viewport. */
+    width: max-content;
+    min-width: min(244px, calc(100vw - 2rem));
+    max-width: min(320px, calc(100vw - 2rem));
     max-height: min(58vh, 420px);
     overflow-y: auto;
     /* Above the nav's own .dropdown (20) but below the mobile layers. */
@@ -190,6 +195,14 @@ font[style] {
 }
 .ck-lang-option.is-selected {
     background: var(--green-pale);
+}
+/* A name wider than the panel wraps onto a second line rather than pushing
+   past the panel edge; the row is min-height, not height, so it grows. */
+.ck-lang-native,
+.ck-lang-label {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
 }
 .ck-lang-native {
     font-size: 0.95rem;
@@ -240,6 +253,40 @@ font[style] {
 @media (min-width: 1081px) {
     .ck-lang--menu {
         display: none;
+    }
+}
+
+/* ── 7. Translated header too wide for the bar ──
+   Set by useHeaderFit (LanguageSelector.tsx) when the desktop row — pills,
+   this control, the toggle and the Enrol CTA — would not fit its shell,
+   typically because the page has been translated into a language with longer
+   nav labels. It replays the header's own ≤1080px rules above that width
+   (css/nav.css and section 6 here) so nothing is pushed off-screen; no new
+   styling is introduced. */
+@media (min-width: 1081px) {
+    html[data-ck-nav-compact] .pill-nav,
+    html[data-ck-nav-compact] .theme-toggle-desktop,
+    html[data-ck-nav-compact] .nav-cta,
+    html[data-ck-nav-compact] .ck-lang--bar {
+        display: none;
+    }
+    html[data-ck-nav-compact] .nav-actions {
+        margin-inline-start: auto;
+    }
+    html[data-ck-nav-compact] .hamburger {
+        display: flex;
+    }
+    html[data-ck-nav-compact] .theme-toggle-header-mobile {
+        display: grid;
+    }
+    html[data-ck-nav-compact] .m-backdrop {
+        display: block;
+    }
+    html[data-ck-nav-compact] .m-panel {
+        display: flex;
+    }
+    html[data-ck-nav-compact] .ck-lang--menu {
+        display: block;
     }
 }
 
