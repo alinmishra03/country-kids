@@ -34,9 +34,17 @@ body {
 .goog-te-spinner-pos {
     display: none !important;
 }
+/* The current widget ships the same furniture under obfuscated class names:
+   the loading spinner (a body-level div parked at a negative left offset, so
+   it sits partly outside the viewport on every page) and the hover tooltip. */
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+.VIpgJd-yAWNEb-L7lbkb {
+    display: none !important;
+}
 /* Translated runs are wrapped in <font> and given a highlight. Let them
    inherit the site's typography instead. */
-.goog-text-highlight {
+.goog-text-highlight,
+.VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
     background: none !important;
     box-shadow: none !important;
 }
@@ -288,6 +296,46 @@ font[style] {
     html[data-ck-nav-compact] .ck-lang--menu {
         display: block;
     }
+}
+
+/* ── 8. Translated typography ──
+   Everything below is scoped to html.translated-ltr / .translated-rtl, the
+   classes the widget puts on <html> while a translation is showing. English
+   never carries them, so its type, spacing and motion are untouched.
+
+   Fonts. Newsreader and Plus Jakarta Sans only cover Latin (plus Vietnamese),
+   so Hindi, Nepali, Punjabi, Arabic, Urdu and Greek fell through to whatever
+   the OS had — metrics the headings were never set for, and a different look
+   on every device. The Noto families are appended AFTER the site's own fonts,
+   so any Latin glyph still comes from Newsreader / Plus Jakarta Sans and only
+   the scripts they lack switch over. The stylesheet that defines them is only
+   requested once a translation is applied (ensureIntlFonts in
+   LanguageSelector.tsx). Chinese and Korean stay on the system CJK fonts,
+   which every platform ships and which a web font would take megabytes to
+   match. */
+html.translated-ltr,
+html.translated-rtl {
+    --font-display: 'Newsreader', 'Noto Serif', 'Noto Serif Devanagari', 'Noto Serif Gurmukhi',
+        'Noto Naskh Arabic', Georgia, 'Times New Roman', serif;
+    --font-body: 'Plus Jakarta Sans', 'Noto Sans', 'Noto Sans Devanagari', 'Noto Sans Gurmukhi',
+        'Noto Sans Arabic', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* Heading word masks (TextReveal — css/motion-system.css). Each word is clipped
+   to a box exactly one line-height tall (1.08 on h1), with room added below
+   for descenders but none above. That fits Newsreader's Latin capitals; it
+   shears the vowel signs above a Devanagari or Gurmukhi headstroke, stacked
+   Vietnamese and Greek accents, and Arabic marks.
+
+   The mask gets the same treatment upward that it already has downward:
+   padding grows the clip box, an equal negative margin gives the space back,
+   so the line box — and the heading's height — are exactly what they were.
+   Only the top grows: the hidden word waits BELOW its mask, so extra room at
+   the bottom would let it show before the reveal. */
+html.translated-ltr .tr-mask,
+html.translated-rtl .tr-mask {
+    padding-top: 0.45em;
+    margin-top: -0.45em;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -188,11 +188,18 @@ export default function FocusCard({ card, origin, closing, onClosed, onRequestCl
                     />
                     <span className="hero-focus-shade" aria-hidden="true" />
 
-                    <span className="hero-focus-badge" data-focus-anim>
+                    {/* The copy below is keyed per card: arrow keys swap the
+                        card while this component stays mounted, and on a
+                        translated page patching the old text would leave the
+                        previous card's translation showing. New elements are
+                        translated afresh; the enter effect re-queries
+                        [data-focus-anim] on every card change. */}
+
+                    <span key={`${card.id}-badge`} className="hero-focus-badge" data-focus-anim>
                         {card.category}
                     </span>
 
-                    <div className="hero-focus-heading">
+                    <div key={`${card.id}-heading`} className="hero-focus-heading">
                         <h2 className="hero-focus-title" data-focus-anim>
                             {card.title}
                         </h2>
@@ -203,10 +210,15 @@ export default function FocusCard({ card, origin, closing, onClosed, onRequestCl
                 </div>
 
                 <div className="hero-focus-body">
-                    <p className="hero-focus-text" data-focus-anim>
+                    <p key={`${card.id}-text`} className="hero-focus-text" data-focus-anim>
                         {card.description}
                     </p>
-                    <Link className="hero-focus-cta" href={card.href} data-focus-anim>
+                    <Link
+                        key={`${card.id}-cta`}
+                        className="hero-focus-cta"
+                        href={card.href}
+                        data-focus-anim
+                    >
                         {card.cta} <Icon name="arrow-right" />
                     </Link>
                 </div>

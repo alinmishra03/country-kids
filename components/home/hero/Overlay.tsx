@@ -15,7 +15,7 @@
    staggered fade / slide / scale. A ref-based timeline (not React state) so the
    animation never re-renders the tree it is animating. */
 
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import Icon from '@/components/shared/Icon';
@@ -83,8 +83,15 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
 
     return (
         <div className="hero-overlay" ref={rootRef}>
+            {/* Keyed per card so a change REPLACES these elements rather than
+                patching their text. On a translated page the text React holds
+                has been swapped out by the translator: patching it would leave
+                the previous card's copy on screen (and removing it used to
+                throw). Fresh elements are simply translated again. The entrance
+                timeline above already queries [data-anim] after every change,
+                so it animates the new elements exactly as before. */}
             {card ? (
-                <>
+                <Fragment key={card.id}>
                     <p className="hero-eyebrow" data-anim>
                         <span className="hero-eyebrow-dot" aria-hidden="true" />
                         {card.category}
@@ -101,9 +108,9 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
                             Back to overview
                         </button>
                     </div>
-                </>
+                </Fragment>
             ) : (
-                <>
+                <Fragment key="intro">
                     <p className="hero-eyebrow" data-anim>
                         <span className="hero-eyebrow-dot" aria-hidden="true" />
                         {HERO_INTRO.eyebrow}
@@ -121,11 +128,17 @@ export default function Overlay({ card, onClear, onStep, reduced, flat, onToggle
                             onClick={onToggleFlat}
                             aria-pressed={flat}
                         >
-                            {flat ? 'Back to globe' : 'Continue'}
+                            {/* Keyed for the same reason as the blocks above.
+                                The button is inline-flex, so the label was
+                                already its own flex item; the span changes
+                                nothing on screen. */}
+                            <span key={flat ? 'back' : 'continue'}>
+                                {flat ? 'Back to globe' : 'Continue'}
+                            </span>
                             <Icon name={flat ? 'chevron-right' : 'arrow-right'} />
                         </button>
                     </div>
-                </>
+                </Fragment>
             )}
         </div>
     );

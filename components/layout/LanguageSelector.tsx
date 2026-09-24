@@ -138,6 +138,34 @@ function ensureWidget() {
     document.body.appendChild(s);
 }
 
+/* Web fonts for the scripts the site's own fonts lack — see section 8 of
+   css/language-selector.css, which is what puts them in the font stacks.
+   Requested on first use rather than from the root layout: the stylesheet is
+   ~60KB of @font-face rules that an English visitor never needs. Once added it
+   stays; Google Fonts serves each script by unicode-range, so only the files
+   for glyphs actually on screen are ever downloaded. */
+const INTL_FONTS_ID = 'ck-intl-fonts';
+const INTL_FONTS_HREF =
+    'https://fonts.googleapis.com/css2' +
+    '?family=Noto+Naskh+Arabic:wght@400;500' +
+    '&family=Noto+Sans:wght@300;400;500' +
+    '&family=Noto+Sans+Arabic:wght@300;400;500' +
+    '&family=Noto+Sans+Devanagari:wght@300;400;500' +
+    '&family=Noto+Sans+Gurmukhi:wght@300;400;500' +
+    '&family=Noto+Serif:wght@300;400;500' +
+    '&family=Noto+Serif+Devanagari:wght@300;400;500' +
+    '&family=Noto+Serif+Gurmukhi:wght@300;400;500' +
+    '&display=swap';
+
+function ensureIntlFonts() {
+    if (typeof document === 'undefined' || document.getElementById(INTL_FONTS_ID)) return;
+    const link = document.createElement('link');
+    link.id = INTL_FONTS_ID;
+    link.rel = 'stylesheet';
+    link.href = INTL_FONTS_HREF;
+    document.head.appendChild(link);
+}
+
 /* Push a language into the widget's hidden <select>.
 
    The script is async, so the combo may not exist yet when someone picks a
@@ -150,6 +178,7 @@ function ensureWidget() {
    state, which is what restores the original copy. */
 function applyToWidget(code: string, attempt = 0) {
     if (typeof document === 'undefined') return;
+    if (code === DEFAULT_LANG && restoreOriginal()) return;
     const combo = document.querySelector('.goog-te-combo') as HTMLSelectElement | null;
     if (!combo) {
         if (attempt < 40) window.setTimeout(() => applyToWidget(code, attempt + 1), 150);
@@ -159,6 +188,35 @@ function applyToWidget(code: string, attempt = 0) {
     if (combo.value === target) return;
     combo.value = target;
     combo.dispatchEvent(new Event('change'));
+}
+
+/* The way back to English.
+
+   The combo DOES list English, so pushing 'en' into it asks the widget to
+   translate English into English: the page keeps its translated state, and the
+   widget is left half-switched and ignores the next language picked. The
+   widget's own "show original" action is the restore button in its banner — a
+   same-origin iframe the stylesheet hides, but which is still in the DOM.
+   Clicking that is exactly what a visitor would have done with the banner, and
+   it leaves the widget ready for the next pick.
+
+   Returns false when the banner is not there (widget not loaded yet, or a
+   future markup change), so the caller falls back to the combo. */
+function restoreOriginal(): boolean {
+    const frames = Array.from(document.querySelectorAll('iframe')) as HTMLIFrameElement[];
+    for (const frame of frames) {
+        let restore: HTMLElement | null = null;
+        try {
+            restore = frame.contentDocument?.querySelector('[id$=".restore"]') as HTMLElement | null;
+        } catch (e) {
+            /* Cross-origin frame — not the widget's banner. */
+        }
+        if (restore) {
+            restore.click();
+            return true;
+        }
+    }
+    return false;
 }
 
 /* ── Does the desktop bar still fit? ──
@@ -269,6 +327,7 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
         ensureWidget();
         const fromCookie = readCookieLang();
         if (fromCookie !== currentLang) currentLang = fromCookie;
+        if (currentLang !== DEFAULT_LANG) ensureIntlFonts();
         setLang(currentLang);
         const onChange = (next: string) => setLang(next);
         listeners.add(onChange);
@@ -320,7 +379,10 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
                 return;
             }
             if (code === DEFAULT_LANG) clearCookie();
-            else writeCookie(code);
+            else {
+                writeCookie(code);
+                ensureIntlFonts();
+            }
             broadcast(code);
             applyToWidget(code);
             /* Announce the language to assistive tech. Only the live document

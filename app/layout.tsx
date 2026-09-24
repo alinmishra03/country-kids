@@ -129,6 +129,40 @@ const THEME_INIT = `(function () {
     }
 })();`;
 
+/* Runs before hydration so React never sees an unguarded DOM. Keeps a
+   translated page alive.
+
+   The language selector translates the LIVE DOM (see LanguageSelector.tsx):
+   Google's widget swaps each text node React rendered for a <font> wrapper.
+   React still holds the original node, so the next time it removes or
+   reorders that text — opening a hero card, changing card, leaving a page — it
+   asks a parent for a child that is no longer there. The browser throws
+   NotFoundError, and one throw unmounts the whole app ("Application error").
+
+   Both methods are unchanged in every case that already works: they only step
+   in when the node is no longer a child of the element React asked, which
+   never happens on the untranslated site.
+     · removeChild of a node that has already left: nothing to do — if it now
+       sits under another parent, remove it from there, which is what React meant.
+     · insertBefore a reference that has left: append instead, so the new node
+       is still placed rather than lost. */
+const DOM_GUARD = `(function () {
+    if (typeof Node !== 'function' || !Node.prototype) return;
+    var remove = Node.prototype.removeChild;
+    var insert = Node.prototype.insertBefore;
+    Node.prototype.removeChild = function (child) {
+        if (child && child.parentNode !== this) {
+            if (child.parentNode) return remove.call(child.parentNode, child);
+            return child;
+        }
+        return remove.apply(this, arguments);
+    };
+    Node.prototype.insertBefore = function (node, ref) {
+        if (ref && ref.parentNode !== this) return insert.call(this, node, null);
+        return insert.apply(this, arguments);
+    };
+})();`;
+
 export default function RootLayout({ children }) {
     return (
         <html lang="en" data-theme="light" suppressHydrationWarning>
@@ -143,6 +177,7 @@ export default function RootLayout({ children }) {
                     rel="stylesheet"
                 />
                 <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+                <script dangerouslySetInnerHTML={{ __html: DOM_GUARD }} />
                 {/* Safety net. The reveal components ship their hidden state in
                     the server HTML (a word translated below its mask, an image
                     clipped away), which JS then animates in. With scripting off
