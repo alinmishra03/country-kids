@@ -345,6 +345,17 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
                 role="listbox"
                 aria-label="Choose a language"
                 onKeyDown={onListKeyDown}
+                /* The list is taller than its box and scrolls. Without this it
+                   could not: Lenis runs with smoothWheel on every non-touch
+                   pointer, and it answers the wheel by easing the PAGE — the
+                   event never reaches this element, so the list sat still while
+                   the site scrolled behind it. data-lenis-prevent is the opt-out
+                   Lenis checks for, and it hands the wheel back to the browser's
+                   native scrolling inside this subtree only.
+
+                   Touch needs nothing: SmoothScroll bails out entirely on a
+                   coarse pointer, so phones and tablets were already native. */
+                data-lenis-prevent
                 /* Removed from the accessibility tree AND the tab order while
                    closed — the mobile menu's focus trap walks this subtree. */
                 hidden={!open}
