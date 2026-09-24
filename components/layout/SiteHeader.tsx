@@ -439,9 +439,8 @@ export default function SiteHeader() {
                             item.children ? (
                                 <li
                                     key={item.id}
-                                    className={`pill-item has-dropdown${
-                                        openDropdown === item.id ? ' open' : ''
-                                    }${activeGroup === item.id ? ' is-active' : ''}`}
+                                    className={`pill-item has-dropdown${openDropdown === item.id ? ' open' : ''
+                                        }${activeGroup === item.id ? ' is-active' : ''}`}
                                 >
                                     <span className="pill-split">
                                         <Link
@@ -475,9 +474,8 @@ export default function SiteHeader() {
                             ) : (
                                 <li
                                     key={item.id}
-                                    className={`pill-item${
-                                        activeGroup === item.id ? ' is-active' : ''
-                                    }`}
+                                    className={`pill-item${activeGroup === item.id ? ' is-active' : ''
+                                        }`}
                                 >
                                     <Link
                                         href={item.href}
