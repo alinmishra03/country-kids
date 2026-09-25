@@ -95,7 +95,9 @@ font[style] {
     cursor: pointer;
     transition: background 0.25s var(--ease-out), border-color 0.25s var(--ease-out);
 }
-.ck-lang-trigger:hover {
+/* Desktop only. The header twin matches the theme toggle beside it, which has
+   no hover state — and on touch screens a hover colour sticks after the tap. */
+.ck-lang--bar .ck-lang-trigger:hover {
     border-color: var(--gold);
 }
 /* The site's own focus treatment, not the browser's default outline. */
@@ -143,6 +145,48 @@ font[style] {
     background: rgba(255, 255, 255, 0.22);
 }
 
+/* Header twin (hamburger mode) — the theme toggle beside it, as a pill: same
+   42px height, full radius, border, surface and 20px stroke icon, and over the
+   hero the same glass that css/hero.css gives that toggle. The two-letter
+   code is fixed-width and never translated, so the pill is the same width in
+   every language and the bar cannot overflow on a translated page. */
+.ck-lang--header .ck-lang-trigger {
+    padding-inline: 0.75rem;
+    gap: 0.4rem;
+    /* The site-wide control transition (css/base.css) that the toggle runs on,
+       restated because the trigger's own rule above replaces it. */
+    transition:
+        color 0.2s ease-in-out,
+        background-color 0.2s ease-in-out,
+        border-color 0.2s ease-in-out,
+        box-shadow 0.2s ease-in-out,
+        transform 0.2s ease-in-out;
+}
+.ck-lang--header .ck-lang-globe {
+    width: 20px;
+    height: 20px;
+}
+/* The panel hangs from the whole actions row, not from this pill: with the
+   theme toggle and hamburger to its right, a 244px panel right-aligned to the
+   pill runs off the left edge of a 320px screen. Anchored to the row, its
+   right edge is flush with the hamburger — the header's own edge — and it
+   opens into the page at every width. Positioning the row changes nothing
+   else: none of its children are offset, and the toggle's and hamburger's
+   tap targets are positioned against themselves (styles/responsive.css). */
+@media (max-width: 1080px) {
+    .nav-actions {
+        position: relative;
+    }
+    .ck-lang--header {
+        position: static;
+    }
+}
+#navbar:not(.scrolled) .ck-lang--header .ck-lang-trigger {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
 /* ── 4. The panel ── */
 .ck-lang-menu {
     list-style: none;
@@ -161,9 +205,10 @@ font[style] {
     display: none;
 }
 
-/* Header variant — hangs below the trigger, right-aligned so it opens INTO the
-   page and never past the viewport edge. */
-.ck-lang--bar .ck-lang-menu {
+/* Header variants — hangs below the trigger, right-aligned so it opens INTO
+   the page and never past the viewport edge. */
+.ck-lang--bar .ck-lang-menu,
+.ck-lang--header .ck-lang-menu {
     position: absolute;
     top: calc(100% + 8px);
     inset-inline-end: 0;
@@ -224,43 +269,35 @@ font[style] {
     line-height: 1.2;
 }
 
-/* ── 5. Mobile slide-menu variant ──
-   In-flow rather than absolute. The panel it lives in is a scroll box, so an
-   absolutely-positioned list would be clipped by it; an in-flow list with its
-   own scroll area cannot be. Full width, matching the menu's other rows. */
-.ck-lang--menu {
-    width: 100%;
-    /* The same separation the toggles row below it already uses, so the two
-       utility rows read as a pair set apart from the navigation links. */
-    margin-top: 1.25rem;
-}
-.ck-lang--menu .ck-lang-trigger {
-    width: 100%;
-    justify-content: center;
-    height: 46px;
-}
-.ck-lang--menu .ck-lang-menu {
-    position: static;
-    width: 100%;
-    margin-top: 0.5rem;
-    max-height: 44vh;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+/* ── 5. Touch target ──
+   The same treatment styles/responsive.css gives the theme toggle beside it:
+   the visible 42px pill keeps its box and gains a transparent 44px target, so
+   nothing moves and the two targets do not overlap across the row's gap. */
+@media (max-width: 768px) {
+    .ck-lang--header .ck-lang-trigger {
+        position: relative;
+    }
+    .ck-lang--header .ck-lang-trigger::before {
+        content: "";
+        position: absolute;
+        inset: -1px;
+    }
 }
 
 /* ── 6. Breakpoint ──
    1080px is where nav.css swaps the pill bar for the hamburger menu. The bar
-   control leaves with the rest of the desktop actions; the menu control is
-   already inside the slide panel and takes over. Mirrors the existing
-   .theme-toggle-desktop / .theme-toggle-header-mobile handover. */
+   control leaves with the rest of the desktop actions and the header twin
+   appears beside the header theme toggle. Mirrors the existing
+   .theme-toggle-desktop / .theme-toggle-header-mobile handover exactly. */
+.ck-lang--header {
+    display: none;
+}
 @media (max-width: 1080px) {
     .ck-lang--bar {
         display: none;
     }
-}
-@media (min-width: 1081px) {
-    .ck-lang--menu {
-        display: none;
+    .ck-lang--header {
+        display: block;
     }
 }
 
@@ -280,6 +317,7 @@ font[style] {
     }
     html[data-ck-nav-compact] .nav-actions {
         margin-inline-start: auto;
+        position: relative;
     }
     html[data-ck-nav-compact] .hamburger {
         display: flex;
@@ -293,8 +331,9 @@ font[style] {
     html[data-ck-nav-compact] .m-panel {
         display: flex;
     }
-    html[data-ck-nav-compact] .ck-lang--menu {
+    html[data-ck-nav-compact] .ck-lang--header {
         display: block;
+        position: static;
     }
 }
 

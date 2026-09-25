@@ -493,9 +493,14 @@ export default function SiteHeader() {
                         {/* Leads the actions row, so it is read before the two
                             toggles and never sits between the CTA and the
                             hamburger. Hidden below 1080px by its own
-                            stylesheet, where the menu instance takes over. */}
+                            stylesheet, where the header instance below takes
+                            over. */}
                         <LanguageSelector variant="bar" />
                         <ThemeToggle id="themeToggle" className="theme-toggle-desktop" />
+                        {/* Hamburger-mode twin of the bar control, beside the
+                            toggle's own hamburger-mode twin — shown and hidden
+                            by the same rules (css/language-selector.css). */}
+                        <LanguageSelector variant="header" />
                         <ThemeToggle
                             id="themeToggleHeaderMobile"
                             className="theme-toggle-header-mobile"
@@ -572,17 +577,6 @@ export default function SiteHeader() {
                         icon="sparkles"
                         iconPosition="start"
                         onNavigate={closeMobile}
-                    />
-
-                    {/* An .m-item like every other row, so it inherits the
-                        menu's slide-in stagger and the panel's focus trap
-                        instead of needing either to know about it. Its list
-                        expands in flow — the panel is a scroll box, and an
-                        absolutely-positioned one would be clipped by it. */}
-                    <LanguageSelector
-                        variant="menu"
-                        className="m-item"
-                        onSelect={closeMobile}
                     />
 
                     <div className="m-item mobile-toggles-row">

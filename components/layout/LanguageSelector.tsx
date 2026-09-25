@@ -92,8 +92,8 @@ function readCookieLang(): string {
 }
 
 /* ── Shared state ──
-   Two instances of this control are on screen at once (the bar on desktop, the
-   slide menu on mobile) and they must agree. A three-line module store rather
+   Two instances of this control are mounted at once (the bar on desktop, the
+   header's hamburger-mode twin on tablet and mobile) and they must agree. A three-line module store rather
    than a context: the control is self-contained and nothing else on the site
    needs to read the language, so there is no reason to add another provider to
    the root layout. */
@@ -226,7 +226,8 @@ function restoreOriginal(): boolean {
    shoves this control, the theme toggle and the CTA past the right edge of the
    viewport. No width is safe for every language, so instead of shrinking
    anything, the header falls back to its own tablet layout (hamburger + slide
-   menu, with the menu instance of this control) whenever the row would not fit.
+   menu, with the header instance of this control) whenever the row would not
+   fit.
 
    The flag is an attribute on <html>, not a class: the widget rewrites the
    root's className when it adds translated-ltr/rtl. Measured with the flag
@@ -293,15 +294,14 @@ function GlobeIcon() {
 }
 
 type Props = {
-    /** `bar` = absolutely-positioned panel in the header. `menu` = in-flow list
-        inside the mobile slide menu, which cannot be clipped by its scroll box. */
-    variant?: 'bar' | 'menu';
+    /** `bar` = the desktop actions row. `header` = the hamburger-mode twin that
+        sits beside the header theme toggle on tablet and mobile — an icon-and-
+        code pill sized to that toggle, with the same hanging panel. */
+    variant?: 'bar' | 'header';
     className?: string;
-    /** Mobile menu only: let the header close the menu after a pick. */
-    onSelect?: () => void;
 };
 
-export default function LanguageSelector({ variant = 'bar', className = '', onSelect }: Props) {
+export default function LanguageSelector({ variant = 'bar', className = '' }: Props) {
     const [open, setOpen] = useState(false);
     /* Always DEFAULT_LANG for the server render and the first client render —
        reading the cookie during render would be a hydration mismatch. The real
@@ -361,7 +361,7 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
         return () => document.removeEventListener('pointerdown', onPointerDown);
     }, [open]);
 
-    /* The bar and the slide menu swap at 1080px. A panel left open across that
+    /* The bar and header instances swap at 1080px. A panel left open across that
        swap would be stranded on a control that is no longer on screen. */
     useEffect(() => {
         if (!open) return;
@@ -374,10 +374,7 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
         (code: string) => {
             setOpen(false);
             triggerRef.current?.focus();
-            if (code === currentLang) {
-                onSelect?.();
-                return;
-            }
+            if (code === currentLang) return;
             if (code === DEFAULT_LANG) clearCookie();
             else {
                 writeCookie(code);
@@ -391,9 +388,8 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
             try {
                 document.documentElement.setAttribute('lang', code);
             } catch (e) {}
-            onSelect?.();
         },
-        [onSelect]
+        []
     );
 
     const onTriggerKeyDown = (e: React.KeyboardEvent) => {
@@ -463,9 +459,14 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
             >
                 <GlobeIcon />
                 <span className="ck-lang-code">{active.short}</span>
-                <svg className="ck-lang-chevron" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 9l6 6 6-6" />
-                </svg>
+                {/* The header twin sits beside the round theme toggle and
+                    reads as its sibling without one; its width is also what
+                    keeps a 320px bar clear of the logo. */}
+                {variant === 'bar' && (
+                    <svg className="ck-lang-chevron" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M6 9l6 6 6-6" />
+                    </svg>
+                )}
             </button>
 
             <div
@@ -486,7 +487,7 @@ export default function LanguageSelector({ variant = 'bar', className = '', onSe
                    coarse pointer, so phones and tablets were already native. */
                 data-lenis-prevent
                 /* Removed from the accessibility tree AND the tab order while
-                   closed — the mobile menu's focus trap walks this subtree. */
+                   closed. */
                 hidden={!open}
             >
                 {LANGUAGES.map((l, i) => {
