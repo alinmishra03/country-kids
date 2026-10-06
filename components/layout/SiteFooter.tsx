@@ -44,7 +44,8 @@ function SocialIcon({ brand }) {
 const FAMILY_LINKS = [
     { href: '/enroll', label: 'Book a Tour' },
     { href: '/enroll', label: 'Enroll Now' },
-    { href: '/fees', label: 'Fees & CCS' },
+    /* Fees & CCS page temporarily hidden — restore this line to bring it back. */
+    // { href: '/fees', label: 'Fees & CCS' },
     { href: '/curriculum', label: 'Our Curriculum' },
     { href: '/compliance', label: 'Quality & Compliance' },
     { href: '/contact#faqs', label: 'FAQs' },

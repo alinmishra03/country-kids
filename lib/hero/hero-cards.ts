@@ -87,6 +87,8 @@ const DAY_CARDS: HeroCard[] = GALLERY.map((g: any) => ({
 
 /* ── The Center (4) ── */
 const CENTRE_CARDS: HeroCard[] = [
+    /* Fees & CCS page temporarily hidden, and this card was its only hero entry —
+       uncomment it when the page comes back.
     {
         id: 'centre-kinder',
         img: '1578349035260-9f3d4042f1f7',
@@ -98,6 +100,7 @@ const CENTRE_CARDS: HeroCard[] = [
         href: '/fees',
         cta: 'See fees & subsidies',
     },
+    */
     {
         id: 'centre-educators',
         img: '1616089804390-b2daa80dbf02',

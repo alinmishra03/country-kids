@@ -16,7 +16,8 @@ export const PRIMARY_NAV: NavItem[] = [
     { id: 'rooms', href: '/rooms', label: 'Rooms', children: ROOM_LINKS },
     { id: 'curriculum', href: '/curriculum', label: 'Curriculum' },
     { id: 'compliance', href: '/compliance', label: 'Compliance' },
-    { id: 'fees', href: '/fees', label: 'Fees & CCS' },
+    /* Fees & CCS page temporarily hidden — restore this line to bring it back. */
+    // { id: 'fees', href: '/fees', label: 'Fees & CCS' },
     { id: 'families', href: '/families', label: 'Families' },
     { id: 'contact', href: '/contact', label: 'Contact' },
 ];

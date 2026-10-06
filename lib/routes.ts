@@ -14,7 +14,8 @@ export const ROUTES = [
     { id: 'rooms', path: '/rooms' },
     { id: 'curriculum', path: '/curriculum' },
     { id: 'compliance', path: '/compliance' },
-    { id: 'fees', path: '/fees' },
+    /* Fees & CCS page temporarily hidden — restore this line to bring it back. */
+    // { id: 'fees', path: '/fees' },
     { id: 'families', path: '/families' },
     { id: 'contact', path: '/contact' },
     { id: 'enroll', path: '/enroll' },
@@ -35,7 +36,8 @@ export const NAV_GROUP_FOR_ROUTE = {
     rooms: 'rooms',
     curriculum: 'curriculum',
     compliance: 'compliance',
-    fees: 'fees',
+    /* Fees & CCS page temporarily hidden. */
+    // fees: 'fees',
     families: 'families',
     contact: 'contact',
     enroll: null,

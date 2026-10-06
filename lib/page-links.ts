@@ -117,6 +117,7 @@ export const PAGE_LINKS: PageLink[] = [
         ariaLabel: 'See our quality and compliance record',
         image: art('1616089804390-b2daa80dbf02'),
     },
+    /* Fees & CCS page temporarily hidden — uncomment this entry to bring it back.
     {
         id: 'fees',
         href: '/fees',
@@ -127,6 +128,7 @@ export const PAGE_LINKS: PageLink[] = [
         ariaLabel: 'View fees and subsidy information',
         image: art('1596464716127-f2a82984de30'),
     },
+    */
     {
         id: 'families',
         href: '/families',
